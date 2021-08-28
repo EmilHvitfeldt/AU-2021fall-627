@@ -1,0 +1,11 @@
+---
+title: "Week 14 - SVM labs"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will continue last weeks talk on [SVMs](readings-13.html) and do the corresponding lab.
+
+The Thursday class will be dedicated for last minute questions and guidance about the final project.

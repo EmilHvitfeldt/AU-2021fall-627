@@ -1,0 +1,440 @@
+---
+title: "Tree-Based Methods"
+subtitle: "AU STAT627"
+author: "Emil Hvitfeldt"
+date: "2021-06-16"
+output:
+  xaringan::moon_reader:
+    css: ["theme.css", "default"]
+    lib_dir: libs
+    nature:
+      beforeInit: "macros.js"
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      titleSlideClass: [center, middle]
+---
+
+```{r, child="setup.Rmd", echo=FALSE}
+```
+
+```{r, echo=FALSE}
+library(horus)
+```
+
+
+# Overview
+
+We will cover 4 new methods today
+
+- Decision Trees
+- Bagging
+- Random Forrest
+- boosting
+
+---
+
+# Overview
+
+We will cover 4 new methods today
+
+- .blue[Decision Trees]
+- Bagging
+- Random Forrest
+- boosting
+
+Decision trees act as the building block for this chapter
+
+---
+
+# Decision Trees
+
+Given a problem, give me flow chart of if-else statements to find the answer
+
+---
+
+# Penguins
+
+```{r, warning=FALSE, echo=FALSE}
+library(palmerpenguins)
+
+library(ggplot2)
+ggplot(penguins, aes(bill_length_mm, flipper_length_mm, 
+                     color = species)) +
+  geom_point() +
+  theme_minimal() +
+  scale_color_manual(values = c(blue, pink, orange))
+```
+
+---
+
+# Penguins
+
+```{r, warning=FALSE, echo=FALSE}
+dt_spec <- decision_tree() %>%
+  set_mode("classification") %>%
+  set_engine("rpart")
+
+dt_wf <- workflow() %>%
+  add_model(dt_spec) %>%
+  add_formula(species ~ bill_length_mm + flipper_length_mm)
+
+fitted_dt <- fit(dt_wf, data = penguins)
+
+viz_decision_boundary(fitted_dt, penguins) +
+  scale_fill_manual(values = c(blue, pink, orange))
+```
+
+---
+
+# The flowchart
+
+```{r, echo=FALSE}
+rpart.plot::rpart.plot(fitted_dt$fit$fit$fit, roundint = FALSE, box.palette = list(blue, pink, orange))
+```
+
+---
+
+# The rules
+
+```{r, echo=FALSE}
+rpart.plot::rpart.rules(fitted_dt$fit$fit$fit, roundint = FALSE)
+```
+
+---
+
+# General setup
+
+- We divide the predictor space into multiple non-overlapping regions ( $R_1, R_2, ..., R_J$ ).
+- Every observation that falls into a region will have the same prediction, and that prediction will be based on the observations in that region
+    - Regression: mean value
+    - Classification: Most common value
+
+---
+
+# General setup
+
+The shapes could in theory be any shape, but for simplicity we are using rectangles/boxes to partition the space
+
+The main goal is to build a partition that minimizes some loss such as RSS
+
+$$\sum_{j=1}^J \sum_{i \in R_j} \left(y_i - \hat y_{R_j} \right)^2$$
+
+---
+
+# General setup
+
+It is generally computational unfeasible to calculate all possible partitions
+
+We use a **recursive binary splitting** procedure to find the trees
+
+This approach is **top-down** approach since we start at the top and split our way down
+
+It is **greedy** because we select the best possible split each time
+
+---
+
+# Details
+
+How many times should we split?
+
+If we continue to split we end up with each observation belonging to their own region, giving us a wildly flexible model
+
+We can control a number of different things, simple ones are
+
+- Tree depth, maximum depth of the tree
+- minimum number of data points in a node that are required for the node to be split further
+
+---
+
+# Tree Pruning
+
+Due to the way decision trees are grown, it can be beneficial to grow larger trees and then go back and reduce the complexity of the tree after
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+data_line <- tibble(x = runif(1000)) %>%
+  mutate(y = x + rnorm(x, sd = 0.25))
+
+data_line %>%
+  ggplot(aes(x, y)) +
+  geom_point()
+```
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+lm_wf <- workflow() %>%
+  add_model(linear_reg() %>% set_engine("lm"))
+
+lm_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_line) %>%
+  viz_fitted_line(data_line)
+```
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+dt_wf <- workflow() %>%
+  add_model(decision_tree(mode = "regression") %>% set_engine("rpart"))
+
+dt_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_line) %>%
+  viz_fitted_line(data_line)
+```
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+data_curve <- tibble(x = runif(1000, min = -1)) %>%
+  mutate(y = x^2 + rnorm(x^2, sd = 0.1))
+
+data_curve %>%
+  ggplot(aes(x, y)) +
+  geom_point()
+```
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+lm_wf <- workflow() %>%
+  add_model(linear_reg() %>% set_engine("lm"))
+
+lm_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_curve) %>%
+  viz_fitted_line(data_curve)
+```
+
+---
+
+# Regression "curves"
+
+```{r, echo=FALSE}
+dt_wf <- workflow() %>%
+  add_model(decision_tree(mode = "regression") %>% set_engine("rpart"))
+
+dt_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_curve) %>%
+  viz_fitted_line(data_curve)
+```
+
+---
+
+# Decision boundary
+
+```{r, echo=FALSE}
+data_horizontal <- tibble(x = runif(1000),
+                     y = runif(1000)) %>%
+  mutate(class = factor(x > 0.5))
+
+data_horizontal %>%
+  ggplot(aes(x, y, color = class)) +
+  geom_point() +
+  scale_color_manual(values = c(orange, blue)) +
+  guides(color = "none")
+```
+
+---
+
+#  Decision boundary
+
+```{r, echo=FALSE}
+dt_wf <- workflow() %>%
+  add_model(decision_tree(mode = "classification") %>% set_engine("rpart"))
+
+dt_wf %>%
+  add_formula(class ~ x + y) %>%
+  fit(data = data_horizontal) %>%
+  viz_decision_boundary(data_horizontal) +
+  scale_fill_manual(values = c(orange, blue)) +
+  guides(fill = "none")
+```
+
+---
+
+# Decision boundary
+
+```{r, echo=FALSE}
+data_diagonal <- tibble(x = runif(1000),
+                     y = runif(1000)) %>%
+  mutate(class = factor(x + y > 1))
+
+data_diagonal %>%
+  ggplot(aes(x, y, color = class)) +
+  geom_point() +
+  scale_color_manual(values = c(orange, blue)) +
+  guides(color = "none")
+```
+
+---
+
+#  Decision boundary
+
+```{r, echo=FALSE}
+dt_wf <- workflow() %>%
+  add_model(decision_tree(mode = "classification") %>% set_engine("rpart"))
+
+dt_wf %>%
+  add_formula(class ~ x + y) %>%
+  fit(data = data_diagonal) %>%
+  viz_decision_boundary(data_diagonal) +
+  scale_fill_manual(values = c(orange, blue)) +
+  guides(fill = "none")
+```
+
+---
+
+# Pros and Cons
+
+### Pros
+
+- Very easy to explain and reason about
+- Can Handle qualitative predictors without 
+the need for dummy variables
+
+### Cons
+
+- Don't have great predictive power
+- Non-robust, small changes in the data can give wildly different models
+
+---
+
+# Next Steps
+
+Individual decision trees don't offer great predictive performance due to their simple nature
+
+.blue[Bagging], .orange[Random Forests] and .pink[Boosting] uses multiple decision trees together to get better performance with a trade-off of more complexity
+
+---
+
+# Bagging
+
+Decision trees suffer for high variance
+
+We saw in week 3 how bootstrapping could be used to reduce the variance of a statistical learning method
+
+We will use bootstrapping again with decision trees to reduce the variance. We can feasible do this since individual decision trees are fast to train
+
+---
+
+# Bagging
+
+"Algorithm"
+
+- Generate $B$ different bootstrapped training data sets
+- Fit a decision tree on on each of the bootstraps to get $\hat {f^{*b}}(x)$
+- Take the average of all the estimates t get your final estimate
+
+$$\hat{f}_{\text{bag}}(x) = \dfrac{1}{B} \sum^B_{b=1} \hat {f^{*b}}(x)$$
+
+---
+
+# Bagging
+
+```{r, echo=FALSE}
+library(baguette)
+dt_wf <- workflow() %>%
+  add_model(bag_tree(mode = "regression", tree_depth = 3) %>% set_engine("rpart"))
+
+dt_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_curve) %>%
+  viz_fitted_line(data_curve)
+```
+
+---
+
+# Bagging Notes
+
+The number of bootstraps are not very important here, you just need to use a value of $B$ that is large enough to have the error settled down, ~100 seems to work well
+
+You do not overfit by increasing $B$, just increase the run-time
+
+Bagged trees offer quite low interpretability since it is a mixture of multiple models
+
+We can obtain a summary of the variable importance of our model by looking at the average amount of RSS a given predictor has decreased due to splits to a given variables
+
+---
+
+# Random Forest
+
+The Random Forest method offers an improvement over Bagged trees
+
+One of the main downsides to Bagged Trees are that the trees become quiet correlated with each other
+
+When fitting a Random forest, we start the same way as a Bagged tree with multiple bootstrapped data sets
+
+but each time a split in a tree is considered, only a random sample of the predictors can be chosen
+
+---
+
+# Random Forest
+
+The sample is typically $m = \sqrt{p}$ with $p$ predictors
+
+But this values is tuneable as well, along with everything tuneable from the decision tree
+
+---
+
+# Random Forest
+
+```{r, echo=FALSE}
+dt_wf <- workflow() %>%
+  add_model(rand_forest(mode = "regression", min_n = 50) %>% set_engine("ranger"))
+
+dt_wf %>%
+  add_formula(y ~ x) %>%
+  fit(data = data_curve) %>%
+  viz_fitted_line(data_curve)
+```
+
+---
+
+# Boosting
+
+Boosting is a general approach that can be used with many statistical machine learning methods
+
+In bagging we fit multiple decision trees side by side
+
+In Boosting we fit multiple decision trees back to back
+
+---
+
+# Boosting
+
+Algorithm
+
+- Fit a tree $\hat {f^b}$ to the model
+- Update the final fit using a shrunken version of the tree
+- Update the residuals using a shrunken version of the tree
+- repeat $B$ times
+
+Final model
+
+$$\hat f(x)= \sum_{b=1}^B \lambda \hat {f^b}(x)$$
+
+---
+
+# Boosting
+
+Large values of $B$ can result in overfitting
+
+The shrinkage parameter $\lambda$ typically takes a small values but will need to be tuned
+
+The number of splits $d$ will need to be tuned as well, typically very small trees are fit during boosting

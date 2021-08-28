@@ -1,0 +1,9 @@
+---
+title: "Week 15 - Finals Presentations"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Both days will be dedicated to presentations of finals.

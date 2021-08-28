@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Moving Beyond Linearity</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <meta name="date" content="2021-06-14" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Moving Beyond Linearity
+## AU STAT627
+### Emil Hvitfeldt
+### 2021-06-14
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+# Moving beyond Linearity
+
+We have so far worked (mostly) with linear models
+
+linear models are great because they are simple to describe, easy to work with in terms of interpretation and inference
+
+However, the linear assumption is often not satisfied
+
+This week we will see what happens once we slowly relax the linearity assumption
+
+---
+
+# Moving beyond Linearity
+
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Moving beyond Linearity
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Moving beyond Linearity
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial regression
+
+Simple linear regression
+
+`$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$`
+
+2nd degree polynomial regression
+
+`$$y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \epsilon_i$$`
+
+---
+
+# Polynomial regression
+
+Polynomial regression function with `\(d\)` degrees
+
+`$$y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + ... +  \beta_d x_i^d + \epsilon_i$$`
+
+Notice how we can treat the polynomial regression as 
+
+---
+
+# Polynomial regression
+
+We are not limited to only use 1 variable when doing polynomial regression
+
+Instead of thinking of it as fitting a "polynomial regression" model
+
+Think of it as fitting a linear regression using polynomially expanded variables
+
+---
+
+# Polynomial regression
+
+### 2 degrees
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial regression
+
+### 3 degrees
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial regression
+
+### 4 degrees
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial regression
+
+### 10 degrees
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Step Functions
+
+We can also try to turn continuous variables into categorical variables
+
+If we have data regarding the ages of people, then we can arrange the groups such as
+
+- under 21
+- 21-34
+- 35-49
+- 50-65
+- over 65
+
+---
+
+# Step Functions
+
+We divide a variable into multiple bins, constructing an ordered categorical variable
+
+---
+
+# Step Functions
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Step Functions
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Step Functions
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Step Functions
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Step Functions
+
+Depending on the number of cuts, you might miss the action of the variable in question
+
+Be wary about using this method if you are going in blind, you end up creating a lot more columns of your data set and your flexibility increase drastically
+
+---
+
+# Basis Functions
+
+Both polynomial and piecewise-constant regression models are special cases of the **basis function** modeling approach
+
+The idea is to have a selection of functions `\(b_1(X), b_2(X),  ..., b_K(X)\)` that we apply to our predictors
+
+`$$y_i = \beta_0 + \beta_1 b_1(x_i) + \beta_2 b_2(x_i) + \beta_3 b_3(x_i) + ... +  \beta_K b_K(x_i) + \epsilon_i$$`
+
+Where `\(b_1(X), b_2(X),  ..., b_K(X)\)` are fixed and known
+
+---
+
+# Basis Functions
+
+The upside to this approach is that we can take advantage of the linear regression model for calculations along with all the inference tools and tests
+
+This does not mean that we are limited to using linear regression models when using basis functions
+
+---
+
+# Regression Splines
+
+We can combine polynomial expansion and step functions to create **piecewise polynomials**
+
+Instead of fitting 1 polynomial over the whole range of the data, we can fit multiple polynomials in a piecewise manner
+
+
+---
+
+# Regression Splines
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression Splines
+
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression Splines
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression Splines
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Local Regression
+
+**local regression** is a method where the modeling is happening locally
+
+namely, the fitted line only takes in information about nearby points
+
+---
+
+# Local Regression
+
+.center[
+![:scale 45%](images/loess-animation.gif)
+]
+
+---
+
+# Local Regression
+
+.center[
+![:scale 45%](images/loess-multi-span-animation.gif)
+]
+
+---
+
+# Generalized Additive Models
+
+Generalized Additive Models provide a general framework to extend the linear regression model by allowing non-linear functions of each predictor while maintaining additivity
+
+The standard multiple linear regression model
+
+`$$y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_p x_{ip} + \epsilon_i$$`
+
+is extended by replacing each  linear component `\(\beta_j x_{ij}\)` with a smooth linear function `\(f_j(x_{ij})\)`
+
+---
+
+# Generalized Additive Models
+
+Given us
+
+`$$y_i = \beta_0 + f_1(x_{i1}) + f_2(x_{i2}) + f_3(x_{i3}) + ... +  f_p(x_{ip}) + \epsilon_i$$`
+
+Since we are keeping the model additive we left with a more interpretable model since we are able to look at the effect of each of the predictors on the response by keeping the other predictors constant
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

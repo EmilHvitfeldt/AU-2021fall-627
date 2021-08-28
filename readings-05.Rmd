@@ -1,0 +1,22 @@
+---
+title: "Week 5 - Feature Engineering"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Please read [Feature engineering with recipes](https://www.tmwr.org/recipes.html) from Tidy Modeling with R.
+
+[recipes](https://recipes.tidymodels.org/) will be introduces as the R package we will use to perform pre-processing. 
+
+As optional but highly recommended reading is chapter 5, 6, and 8 from [Feature Engineering and Selection: A Practical Approach for Predictive Models](http://www.feat.engineering/).
+
+- [Encoding Categorical Predictors](http://www.feat.engineering/encoding-categorical-predictors.html)
+- [Engineering Numeric Predictors](http://www.feat.engineering/engineering-numeric-predictors.html)
+- [Handling Missing Data](http://www.feat.engineering/handling-missing-data.html)
+
+## Slides
+
+To be posted!

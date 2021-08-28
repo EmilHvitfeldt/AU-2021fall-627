@@ -1,0 +1,21 @@
+---
+title: "Week 6 - Resampling"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Please read chapter 5 in "An Introduction to Statistical Learning", which looks at bootstrapping and cross-validation. In addition will we also talk about data leakage some more.
+We will also be talking about evaluating model performance so please also read chapter [9 - Judging model effectiveness](https://www.tmwr.org/performance.html) in "Tidy Modeling with R, which we will use as the introduction for the R package [yardstick](https://yardstick.tidymodels.org/).
+
+Please also read chapter 10 and 11 from Tidy Modeling with R
+
+- [Resampling for evaluating performance](https://www.tmwr.org/resampling.html)
+- [Comparing models with resampling](https://www.tmwr.org/compare.html)
+
+The accompanied tidymodels labs can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/resampling-methods.html).
+
+## Slides
+
+To be posted!

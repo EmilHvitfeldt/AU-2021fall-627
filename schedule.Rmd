@@ -1,0 +1,225 @@
+---
+title: "Schedule"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(glue)
+library(fs)
+library(stringr)
+
+link_generator <- function(name) {
+  function(x) {
+    if (file_exists(glue("{name}-{x}.Rmd"))) {
+      url <- glue("{name}-{x}.html")
+      return(glue("[{name}]({url})"))
+    } else {
+      return(glue("[{str_to_title(name)} haven't been posted yet]()"))
+    }
+  }
+}
+
+readings <- link_generator("readings")
+labs <- link_generator("labs")
+assignments <- link_generator("assignments")
+```
+
+```{r}
+library(lubridate)
+first_week <- date("2021-08-30") %m+% days(c(0, 6))
+
+week_days <- function(x) {
+  days <- first_week %m+% days((x - 1) * 7)
+  glue("*{days[1]} to {days[2]}*")
+}
+```
+
+# Week 1
+
+`r week_days(1)`
+
+### Monday
+
+Topics: Introductions, What is Statistical Machine Learning?, R, RStudio, Tidymodels
+
+`r readings("01")`
+
+### Thursday
+
+Topics: Linear regression, Regression
+
+# Week 2
+
+`r week_days(2)`
+
+Topics: Linear regression, Regression
+
+`r readings("02")`
+
+`r labs("02")`
+
+`r assignments("01")`
+
+# Week 3
+
+`r week_days(3)`
+
+Topics: Logistic Regression, Classification, Train-Test Split
+
+`r readings("03")`
+
+`r labs("03")`
+
+`r assignments("02")`
+
+# Week 4
+
+`r week_days(4)`
+
+Topics: LDA, QDA, K-Nearest Neighbors, Naive Bayes
+
+`r readings("04")`
+
+`r labs("04")`
+
+`r assignments("03")`
+
+# Week 5
+
+`r week_days(5)`
+
+Topics: Feature Engineering, Data Preprocessing
+
+`r readings("05")`
+
+`r labs("05")`
+
+No assignment due to "All American Weekend"
+
+# Week 6
+
+`r week_days(6)`
+
+Topics: Bootstrap, Model Diagnostics, Evaluation Metrics, Cross Validation
+
+`r readings("06")`
+
+`r labs("06")`
+
+`r assignments("04")`
+
+# Week 7
+
+`r week_days(7)`
+
+Topics: Clustering, K-Means Clustering, Hierarchical Clustering
+
+`r readings("07")`
+
+`r labs("07")`
+
+`r assignments("05")`
+
+# Week 8
+
+`r week_days(8)`
+
+Topics: Topics in ML
+
+`r readings("08")`
+
+`r labs("08")`
+
+`r assignments("midterm")`
+
+# Week 9
+
+`r week_days(9)`
+
+Topics: PCA, PCA Regression
+
+`r readings("09")`
+
+`r labs("09")`
+
+`r assignments("06")`
+
+# Week 10
+
+`r week_days(10)`
+
+Topics: Shrinkage Methods, Rigde, Lasso, Hyper Parameter Tuning
+
+`r readings("10")`
+
+`r labs("10")`
+
+`r assignments("07")`
+
+# Week 11
+
+`r week_days(11)`
+
+Topics: Splines, GAM
+
+`r readings("11")`
+
+`r labs("11")`
+
+`r assignments("08")`
+
+# Week 12
+
+`r week_days(12)`
+
+Topics: Decision Trees, Bagging, Boosting, Random Forests
+
+`r readings("12")`
+
+`r labs("12")`
+
+`r assignments("09")`
+
+# Week 13
+
+`r week_days(13)`
+
+Topics: SVM
+
+`r readings("13")`
+
+No lab due to Thanksgiving
+
+`r assignments("10")`
+
+# Week 14
+
+`r week_days(14)`
+
+Topics: SVM Labs
+
+`r readings("14")`
+
+`r labs("14")`
+
+`r assignments("final")`
+
+# Week 15
+
+`r week_days(15)`
+
+Topics: Final Project Presentations
+
+`r readings("15")`
+
+No labs this week due to Final
+
+`r assignments("final")`

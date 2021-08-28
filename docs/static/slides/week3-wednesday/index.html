@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Resampling Methods</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <meta name="date" content="2021-06-02" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Resampling Methods
+## AU STAT-427/627
+### Emil Hvitfeldt
+### 2021-06-02
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+# Motivation
+
+We are already familiar with train-test splits
+
+The main downside to to train-test splits so far is that we can only use them once
+
+This means we effectively can't make any decisions about the models we are using
+
+---
+
+# Resampling
+
+Resampling estimates of performance can generalize to new data
+
+
+---
+
+# Resampling Workflow
+
+.center[
+![:scale 70%](images/resampling.svg)
+]
+
+---
+
+# Resampling Workflow
+
+The resampling is only conducted on the training set
+
+We are still keeping the test set.The test set is not involved. 
+
+For each iteration of resampling, the data are partitioned into two subsamples:
+
+- The model is fit with the .orange[analysis set]
+- The model is evaluated with the .blue[assessment set]
+
+---
+
+# Resampling Workflow
+
+We have effectively created many train-test split out of our training data set.
+
+The .blue[challange] here now becomes how we are creating these resample sets
+
+---
+
+# Resampling Workflow
+
+Suppose we generate 10 different resamples
+
+This mean that we will be:
+
+- Fitting 10 different models
+- Perform predictions 10 times
+- Prodice 10 sets of performance statistics
+
+The final estimate of the .blue[performance] of the model will be the average of these 10 models
+
+---
+
+# Resampling Workflow
+
+If the resampling is done in a appropiate way then this average has very good generalization properties
+
+---
+
+# Leave-One-Out Cross Validation
+
+- 1 observation is used as the .blue[assessment set]
+- The remaining observations make up the .orange[analysis set]
+
+Notes:
+
+We are fitting the model on `\(n-1\)` observations and a prediction `\(\hat y_1\)` is made on the .blue[assessment set] using the value `\(x_1\)`
+
+---
+
+# Leave-One-Out Cross Validation
+
+Since `\((x_1, y_1)\)` is not used in the fitting process, then `\(MSE_1 = (y_1 - \hat y_1)^2\)` provides an approximately unbiased estimate for the test error.
+
+While this estimate is approximately unbiased, it is quite poor since it is highly variable
+
+---
+
+# Leave-One-Out Cross Validation
+
+We can repeat this for 
+
+- `\(MSE_2 = (y_2 - \hat y_2)^2\)`
+- `\(MSE_3 = (y_3 - \hat y_3)^2\)`
+- ...
+- `\(MSE_n = (y_n - \hat y_n)^2\)`
+
+ to get `\(n\)` estimates of the test error
+ 
+---
+
+# Leave-One-Out Cross Validation
+
+The LOOCV estimate of the test MSE is
+
+`$$CV_{(n)} = \dfrac{1}{n} \sum^n_{i=1}MSE_i$$`
+
+---
+
+# Leave-One-Out Cross Validation
+
+## Pros
+
+The LOOCV estimate of the test MSE is going to have low bias
+
+There is no randomness in the LOOCV estimate
+
+## Cons
+
+You need a lot of computational power even for modest data sets
+
+(Some models don't need to be repeatedly refit)
+
+---
+
+# K-Fold Cross Validation
+
+Could we think of a compromise between fitting 1 model and `\(n\)` models?
+
+.pink[K-Fold Cross Validation] has an answer:
+
+Randomly divide the observations into `\(k\)` groups (or .blue[folds]) or approximately equal size
+
+---
+
+# K-Fold Cross Validation
+
+Randomly divide the observations into `\(k\)` groups (or .blue[folds]) or approximately equal size
+
+- 1 .blue[fold] is used as the .blue[assessment set]
+- The remaining .blue[folds] make up the .orange[analysis set]
+
+Everything else happens as before.
+
+We now get fewer performance metrics, BUT they are each less variable
+
+&lt;style type="text/css"&gt;
+.footnote {
+    position: absolute;
+    bottom: 0em;
+    padding-right: 4em;
+    font-size: 90%;
+}
+&lt;/style&gt;
+
+---
+background-image: url(images/cross-validation/Slide2.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide3.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide4.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide5.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide6.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide7.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide8.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide9.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide10.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+background-image: url(images/cross-validation/Slide11.png)
+background-size: contain
+
+.footnote[
+Art by [Alison Hill](https://alison.rbind.io/)
+]
+
+---
+
+# Cross validation
+
+When we perform cross-validation our goal might be to determine how well a given model is expected to perform on new data
+
+Other times we are using cross-validation to find the best model/hyperparameters
+
+---
+
+# Bias-Variance radeoff of LOOCV and k-fold Cross Validation
+
+LOOCV has a lower bias then k-fold CV
+
+However since the mean of many highly correlated quantities has higher variance then the mean of many not correlated quantities, we have that LOOCV has a higher variance then k-fold CV
+
+---
+
+# Rsample
+
+We are back with `rsample`
+
+
+```r
+library(rsample)
+
+mtcars
+```
+
+```
+##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+## Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+## Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+## Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+## Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+## AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+## Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+## Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+```
+
+---
+
+# Rsample
+
+.pull-left[
+We can use the `vfold_cv()` function on a data.frame to create a `vfold_cv` object
+
+
+```r
+mtcars_folds &lt;- vfold_cv(mtcars, v = 4)
+mtcars_folds
+```
+]
+
+.pull-right[
+
+```
+## #  4-fold cross-validation 
+## # A tibble: 4 x 2
+##   splits         id   
+##   &lt;list&gt;         &lt;chr&gt;
+## 1 &lt;split [24/8]&gt; Fold1
+## 2 &lt;split [24/8]&gt; Fold2
+## 3 &lt;split [24/8]&gt; Fold3
+## 4 &lt;split [24/8]&gt; Fold4
+```
+]
+
+
+---
+
+# Rsample
+
+An under the hood, we have 4 analysis/assesment splits similar to `initial_split()`
+
+.pull-left[
+
+```r
+mtcars_folds &lt;- vfold_cv(mtcars, v = 4)
+mtcars_folds$splits
+```
+]
+
+.pull-right[
+
+```
+## [[1]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;24/8/32&gt;
+## 
+## [[2]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;24/8/32&gt;
+## 
+## [[3]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;24/8/32&gt;
+## 
+## [[4]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;24/8/32&gt;
+```
+]
+
+---
+
+# Using resamples in action
+
+We start by creating a linear regression sepecification
+
+
+```r
+library(parsnip)
+linear_spec &lt;- linear_reg() %&gt;%
+  set_mode("regression") %&gt;%
+  set_engine("lm")
+```
+
+---
+
+# Workflows
+
+Simple package that helps us formulate more about what happens to our model.
+
+Main functions are `workflow()`, `add_model()`, `add_formula()` or `add_variables()` (we will see `add_recipe()` later in the course)
+
+
+```r
+library(workflows)
+
+linear_wf &lt;- workflow() %&gt;%
+  add_model(linear_spec) %&gt;%
+  add_formula(mpg ~ disp + hp + wt)
+```
+
+---
+
+# Workflows
+
+This allows up to combine the model with what variables it should expect
+
+.pull-left[
+
+```r
+library(workflows)
+
+linear_wf &lt;- workflow() %&gt;%
+  add_model(linear_spec) %&gt;%
+  add_formula(mpg ~ disp + hp + wt)
+linear_wf
+```
+]
+
+.pull-right[
+
+```
+## ══ Workflow ════════════════════════════════════════════════════════════════
+## Preprocessor: Formula
+## Model: linear_reg()
+## 
+## ── Preprocessor ────────────────────────────────────────────────────────────
+## mpg ~ disp + hp + wt
+## 
+## ── Model ───────────────────────────────────────────────────────────────────
+## Linear Regression Model Specification (regression)
+## 
+## Computational engine: lm
+```
+]
+
+---
+
+`add_variables()` allows for a different way of specifying the the response and predictors in our model
+
+# Workflows
+
+.pull-left[
+
+```r
+library(workflows)
+
+linear_wf &lt;- workflow() %&gt;%
+  add_model(linear_spec) %&gt;%
+  add_variables(outcomes = mpg,
+                predictors = c(disp, hp, wt))
+linear_wf
+```
+]
+
+.pull-right[
+
+```
+## ══ Workflow ════════════════════════════════════════════════════════════════
+## Preprocessor: Variables
+## Model: linear_reg()
+## 
+## ── Preprocessor ────────────────────────────────────────────────────────────
+## Outcomes: mpg
+## Predictors: c(disp, hp, wt)
+## 
+## ── Model ───────────────────────────────────────────────────────────────────
+## Linear Regression Model Specification (regression)
+## 
+## Computational engine: lm
+```
+]
+
+---
+
+# Workflows
+
+You can use a `workflow` just like a parsnip object and fit it directly
+
+
+```r
+fit(linear_wf, data = mtcars)
+```
+
+```
+## ══ Workflow [trained] ══════════════════════════════════════════════════════
+## Preprocessor: Variables
+## Model: linear_reg()
+## 
+## ── Preprocessor ────────────────────────────────────────────────────────────
+## Outcomes: mpg
+## Predictors: c(disp, hp, wt)
+## 
+## ── Model ───────────────────────────────────────────────────────────────────
+## 
+## Call:
+## stats::lm(formula = ..y ~ ., data = data)
+## 
+## Coefficients:
+## (Intercept)         disp           hp           wt  
+##   37.105505    -0.000937    -0.031157    -3.800891
+```
+
+---
+
+# Tune
+
+We introduce the **tune** package. This package helps us fit many models in a controlled manner in the tidymodels framework. It relies heavily on parsnip and rsample
+
+---
+
+# Tune
+
+We can use `fit_resamples()` to fit the workflow we created within each resample
+
+
+```r
+library(tune)
+
+linear_fold_fits &lt;- fit_resamples(
+    linear_wf,
+    resamples = mtcars_folds
+)
+```
+
+---
+
+# Tune
+
+The results of this resampling comes as a data.frame
+
+
+```r
+linear_fold_fits
+```
+
+```
+## # Resampling results
+## # 4-fold cross-validation 
+## # A tibble: 4 x 4
+##   splits         id    .metrics             .notes              
+##   &lt;list&gt;         &lt;chr&gt; &lt;list&gt;               &lt;list&gt;              
+## 1 &lt;split [24/8]&gt; Fold1 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+## 2 &lt;split [24/8]&gt; Fold2 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+## 3 &lt;split [24/8]&gt; Fold3 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+## 4 &lt;split [24/8]&gt; Fold4 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+```
+
+---
+
+# Tune
+
+`collect_metrics()` can be used to extract the CV estimate
+
+
+```r
+library(tune)
+
+linear_fold_fits &lt;- fit_resamples(
+    linear_wf,
+    resamples = mtcars_folds
+)
+
+collect_metrics(linear_fold_fits)
+```
+
+```
+## # A tibble: 2 x 6
+##   .metric .estimator  mean     n std_err .config             
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+## 1 rmse    standard   3.54      4  0.529  Preprocessor1_Model1
+## 2 rsq     standard   0.778     4  0.0793 Preprocessor1_Model1
+```
+
+---
+
+# Tune
+
+Setting `summarize = FALSE` in `collect_metrics()` Allows us the see the individual performance metrics for each fold
+
+
+```r
+collect_metrics(linear_fold_fits, summarize = FALSE)
+```
+
+```
+## # A tibble: 8 x 5
+##   id    .metric .estimator .estimate .config             
+##   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+## 1 Fold1 rmse    standard       3.50  Preprocessor1_Model1
+## 2 Fold1 rsq     standard       0.836 Preprocessor1_Model1
+## 3 Fold2 rmse    standard       2.25  Preprocessor1_Model1
+## 4 Fold2 rsq     standard       0.796 Preprocessor1_Model1
+## 5 Fold3 rmse    standard       3.56  Preprocessor1_Model1
+## 6 Fold3 rsq     standard       0.555 Preprocessor1_Model1
+## 7 Fold4 rmse    standard       4.84  Preprocessor1_Model1
+## 8 Fold4 rsq     standard       0.926 Preprocessor1_Model1
+```
+
+---
+
+
+.pull-left[
+# Tune
+
+There are some settings we can set with `control_resamples()`.
+
+One of the most handy ones (IMO) is `verbose = TRUE`
+
+
+```r
+library(tune)
+
+linear_fold_fits &lt;- fit_resamples(
+  linear_wf,
+  resamples = mtcars_folds,
+  control = control_resamples(verbose = TRUE)
+)
+```
+]
+
+.pull-right[
+.center[
+![:scale 90%](images/verbose.png)
+]
+]
+
+---
+
+# Tune
+
+We can also directly specify the metrics that are calculated within each resample
+
+
+```r
+library(tune)
+
+linear_fold_fits &lt;- fit_resamples(
+    linear_wf,
+    resamples = mtcars_folds, 
+    metrics = metric_set(rmse, rsq, mase)
+)
+
+collect_metrics(linear_fold_fits)
+```
+
+```
+## # A tibble: 3 x 6
+##   .metric .estimator  mean     n std_err .config             
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+## 1 mase    standard   0.519     4  0.0634 Preprocessor1_Model1
+## 2 rmse    standard   3.54      4  0.529  Preprocessor1_Model1
+## 3 rsq     standard   0.778     4  0.0793 Preprocessor1_Model1
+```
+
+---
+
+# Bootstrapping
+
+Last week we looked at a couple of different Cross-Validation methods
+
+- Leave-One-Out Cross-Validation (LOOCV)
+- K-fold Cross-Validation
+
+---
+
+# Bootstrapping
+
+This week we will look at .orange[Bootstrapping]
+
+This is a technique that uses resampling with replacement to estimate the uncertainty with a given estimator or statistical learning method
+
+It is a powerful and general statistical tool, and can be used with most estimators/methods
+
+---
+
+# Bootstrapping VS Cross-Validation
+
+- .blue[Cross-Validation]: provide estimates of the test error.
+- .orange[Bootstrap]: provides the standard error of the estimates.
+
+---
+
+# Motivation
+
+.pull-left[
+Suppose We have an estimate we want to find out how variable it is.
+
+We could collect data `\(n\)` times and calculate the estimates.
+
+We then have a distribution of and can see the how well it is doing
+]
+
+.pull-right[
+1000 realizations  
+.pink[pink] line is the mean  
+.orange[orange] lines 95% percent quantiles
+
+&lt;img src="index_files/figure-html/unnamed-chunk-21-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Motivation
+
+## The Problem
+
+We are not always able to conduct multiple data collections at will
+
+Sometimes for resource issues or time-sensitive data
+
+We need the different samples to come from the same underlying distribution
+
+---
+
+# Motivation
+
+## The Solution
+
+We take our one data set and resample the rows with replacement. This allows us to get new data sets that approximate the original data set
+
+If the original data set is close to the underlying true distribution then the resampled data sets are also approximations of the true underlying distribution
+
+---
+
+# Example
+
+From "An Introduction to Statistical Learning"
+
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-23-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Example
+
+Visualizing multiple bootstrappings
+
+&lt;img src="index_files/figure-html/unnamed-chunk-24-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Example
+
+We want to minimize
+
+`$$\alpha = \dfrac{\sigma^2_Y - \sigma_{XY}}{\sigma^2_X + \sigma^2_Y - 2\sigma_{XY}}$$`
+
+
+
+Where `\(\sigma^2_X = \text{Var}(X)\)`, `\(\sigma^2_Y = \text{Var}(Y)\)`, and `\(\sigma_{XY} = \text{Cov}(X, Y)\)`
+
+---
+
+# Bootstrapping results
+
+
+```
+## # A tibble: 1,000 x 5
+##    id            var_x var_y cov_xy estimate
+##    &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+##  1 Bootstrap0001 0.972  1.09  0.472    0.555
+##  2 Bootstrap0002 1.29   1.52  0.806    0.593
+##  3 Bootstrap0003 1.10   1.25  0.481    0.554
+##  4 Bootstrap0004 1.38   1.33  0.514    0.485
+##  5 Bootstrap0005 1.44   1.22  0.603    0.424
+##  6 Bootstrap0006 0.919  1.01  0.269    0.533
+##  7 Bootstrap0007 1.26   1.18  0.409    0.475
+##  8 Bootstrap0008 1.16   1.21  0.457    0.520
+##  9 Bootstrap0009 1.29   1.19  0.505    0.468
+## 10 Bootstrap0010 1.53   1.33  0.699    0.431
+## # … with 990 more rows
+```
+
+---
+
+# Bootstrapping results
+
+With `\(n = 100\)` in original data set
+
+&lt;img src="index_files/figure-html/unnamed-chunk-26-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bootstrapping results
+
+With `\(n = 1000\)` in original data set
+
+&lt;img src="index_files/figure-html/unnamed-chunk-27-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bootstrapping results
+
+With `\(n = 10000\)` in original data set
+
+&lt;img src="index_files/figure-html/unnamed-chunk-28-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# What size of bootstrappings are we looking for?
+
+We are using bootstrapping sizes to be the same size of to get a comparatively estimate of the variation
+
+---
+
+
+# Rsample
+
+We are back with `rsample` and the `mtcars` data set
+
+
+```r
+library(rsample)
+
+mtcars
+```
+
+```
+##                      mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4           21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag       21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710          22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive      21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout   18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+## Valiant             18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+## Duster 360          14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+## Merc 240D           24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+## Merc 230            22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+## Merc 280            19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+## Merc 280C           17.8   6 167.6 123 3.92 3.440 18.90  1  0    4    4
+## Merc 450SE          16.4   8 275.8 180 3.07 4.070 17.40  0  0    3    3
+## Merc 450SL          17.3   8 275.8 180 3.07 3.730 17.60  0  0    3    3
+## Merc 450SLC         15.2   8 275.8 180 3.07 3.780 18.00  0  0    3    3
+## Cadillac Fleetwood  10.4   8 472.0 205 2.93 5.250 17.98  0  0    3    4
+## Lincoln Continental 10.4   8 460.0 215 3.00 5.424 17.82  0  0    3    4
+## Chrysler Imperial   14.7   8 440.0 230 3.23 5.345 17.42  0  0    3    4
+## Fiat 128            32.4   4  78.7  66 4.08 2.200 19.47  1  1    4    1
+## Honda Civic         30.4   4  75.7  52 4.93 1.615 18.52  1  1    4    2
+## Toyota Corolla      33.9   4  71.1  65 4.22 1.835 19.90  1  1    4    1
+## Toyota Corona       21.5   4 120.1  97 3.70 2.465 20.01  1  0    3    1
+## Dodge Challenger    15.5   8 318.0 150 2.76 3.520 16.87  0  0    3    2
+## AMC Javelin         15.2   8 304.0 150 3.15 3.435 17.30  0  0    3    2
+## Camaro Z28          13.3   8 350.0 245 3.73 3.840 15.41  0  0    3    4
+## Pontiac Firebird    19.2   8 400.0 175 3.08 3.845 17.05  0  0    3    2
+## Fiat X1-9           27.3   4  79.0  66 4.08 1.935 18.90  1  1    4    1
+## Porsche 914-2       26.0   4 120.3  91 4.43 2.140 16.70  0  1    5    2
+## Lotus Europa        30.4   4  95.1 113 3.77 1.513 16.90  1  1    5    2
+## Ford Pantera L      15.8   8 351.0 264 4.22 3.170 14.50  0  1    5    4
+## Ferrari Dino        19.7   6 145.0 175 3.62 2.770 15.50  0  1    5    6
+## Maserati Bora       15.0   8 301.0 335 3.54 3.570 14.60  0  1    5    8
+## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2
+```
+
+---
+
+# Rsample
+
+.pull-left[
+We can use the `bootstraps()` function on a data.frame to create a `bootstraps` object
+
+
+```r
+mtcars_boots &lt;- bootstraps(mtcars, times = 100)
+mtcars_boots
+```
+]
+
+.pull-right[
+
+```
+## # Bootstrap sampling 
+## # A tibble: 100 x 2
+##    splits          id          
+##    &lt;list&gt;          &lt;chr&gt;       
+##  1 &lt;split [32/13]&gt; Bootstrap001
+##  2 &lt;split [32/13]&gt; Bootstrap002
+##  3 &lt;split [32/11]&gt; Bootstrap003
+##  4 &lt;split [32/11]&gt; Bootstrap004
+##  5 &lt;split [32/10]&gt; Bootstrap005
+##  6 &lt;split [32/11]&gt; Bootstrap006
+##  7 &lt;split [32/13]&gt; Bootstrap007
+##  8 &lt;split [32/13]&gt; Bootstrap008
+##  9 &lt;split [32/13]&gt; Bootstrap009
+## 10 &lt;split [32/10]&gt; Bootstrap010
+## # … with 90 more rows
+```
+]
+
+---
+
+# Rsample
+
+An under the hood, we have 100 analysis/assesment splits similar to `initial_split()` and `vfold_cv()`
+
+.pull-left[
+
+```r
+mtcars_boots &lt;- bootstraps(mtcars, times = 100)
+mtcars_boots$splits
+```
+]
+
+.pull-right[
+
+```
+## [[1]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[2]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[3]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/15/32&gt;
+## 
+## [[4]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[5]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[6]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/8/32&gt;
+## 
+## [[7]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[8]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[9]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/15/32&gt;
+## 
+## [[10]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[11]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/15/32&gt;
+## 
+## [[12]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[13]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[14]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[15]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[16]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[17]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[18]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[19]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/15/32&gt;
+## 
+## [[20]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[21]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[22]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[23]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[24]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[25]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[26]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[27]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[28]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[29]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[30]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[31]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[32]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[33]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[34]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[35]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[36]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[37]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[38]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/8/32&gt;
+## 
+## [[39]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[40]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[41]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[42]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[43]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[44]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[45]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[46]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[47]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[48]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[49]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/8/32&gt;
+## 
+## [[50]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[51]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[52]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[53]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[54]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[55]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[56]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[57]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[58]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[59]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[60]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[61]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[62]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[63]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[64]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[65]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[66]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[67]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[68]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[69]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[70]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[71]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[72]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[73]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[74]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[75]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[76]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[77]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[78]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[79]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[80]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[81]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[82]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[83]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[84]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[85]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/13/32&gt;
+## 
+## [[86]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[87]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[88]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[89]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[90]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[91]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+## 
+## [[92]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/12/32&gt;
+## 
+## [[93]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/14/32&gt;
+## 
+## [[94]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/15/32&gt;
+## 
+## [[95]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[96]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[97]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/9/32&gt;
+## 
+## [[98]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[99]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/10/32&gt;
+## 
+## [[100]]
+## &lt;Analysis/Assess/Total&gt;
+## &lt;32/11/32&gt;
+```
+]
+
+---
+
+# Using resamples in action
+
+We start by creating a linear regression specification and create a `workflow` object with `workflows()`
+
+
+```r
+library(parsnip)
+linear_spec &lt;- linear_reg() %&gt;%
+  set_mode("regression") %&gt;%
+  set_engine("lm")
+
+library(workflows)
+
+linear_wf &lt;- workflow() %&gt;%
+  add_model(linear_spec) %&gt;%
+  add_formula(mpg ~ disp + hp + wt)
+```
+
+---
+
+# Tune
+
+We can use `fit_resamples()` to fit the workflow we created within each bootstrap
+
+
+```r
+library(tune)
+
+linear_fold_fits &lt;- fit_resamples(
+    linear_wf,
+    resamples = mtcars_boots
+)
+```
+
+---
+
+# Tune
+
+The results of this resampling comes as a data.frame
+
+
+```r
+linear_fold_fits
+```
+
+```
+## # Resampling results
+## # Bootstrap sampling 
+## # A tibble: 100 x 4
+##    splits          id           .metrics             .notes              
+##    &lt;list&gt;          &lt;chr&gt;        &lt;list&gt;               &lt;list&gt;              
+##  1 &lt;split [32/12]&gt; Bootstrap001 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  2 &lt;split [32/14]&gt; Bootstrap002 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  3 &lt;split [32/15]&gt; Bootstrap003 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  4 &lt;split [32/11]&gt; Bootstrap004 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  5 &lt;split [32/12]&gt; Bootstrap005 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  6 &lt;split [32/8]&gt;  Bootstrap006 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  7 &lt;split [32/11]&gt; Bootstrap007 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  8 &lt;split [32/11]&gt; Bootstrap008 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+##  9 &lt;split [32/15]&gt; Bootstrap009 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+## 10 &lt;split [32/12]&gt; Bootstrap010 &lt;tibble[,4] [2 × 4]&gt; &lt;tibble[,1] [0 × 1]&gt;
+## # … with 90 more rows
+```
+
+---
+
+# Tune
+
+`collect_metrics()` can be used to extract the CV estimate
+
+
+```r
+library(tune)
+
+collect_metrics(linear_fold_fits)
+```
+
+```
+## # A tibble: 2 x 6
+##   .metric .estimator  mean     n std_err .config             
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+## 1 rmse    standard   3.00    100 0.0585  Preprocessor1_Model1
+## 2 rsq     standard   0.816   100 0.00635 Preprocessor1_Model1
+```
+
+---
+
+# Tune
+
+Setting `summarize = FALSE` in `collect_metrics()` Allows us the see the individual performance metrics for each fold
+
+
+```r
+collect_metrics(linear_fold_fits, summarize = FALSE)
+```
+
+```
+## # A tibble: 200 x 5
+##    id           .metric .estimator .estimate .config             
+##    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+##  1 Bootstrap001 rmse    standard       3.84  Preprocessor1_Model1
+##  2 Bootstrap001 rsq     standard       0.851 Preprocessor1_Model1
+##  3 Bootstrap002 rmse    standard       2.94  Preprocessor1_Model1
+##  4 Bootstrap002 rsq     standard       0.726 Preprocessor1_Model1
+##  5 Bootstrap003 rmse    standard       4.15  Preprocessor1_Model1
+##  6 Bootstrap003 rsq     standard       0.822 Preprocessor1_Model1
+##  7 Bootstrap004 rmse    standard       2.88  Preprocessor1_Model1
+##  8 Bootstrap004 rsq     standard       0.794 Preprocessor1_Model1
+##  9 Bootstrap005 rmse    standard       2.66  Preprocessor1_Model1
+## 10 Bootstrap005 rsq     standard       0.866 Preprocessor1_Model1
+## # … with 190 more rows
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

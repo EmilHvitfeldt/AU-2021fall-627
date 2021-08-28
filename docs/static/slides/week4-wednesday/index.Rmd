@@ -1,0 +1,444 @@
+---
+title: "Shrinkage Methods and Hyperparameter tunning"
+subtitle: "AU STAT627"
+author: "Emil Hvitfeldt"
+date: "2021-06-09"
+output:
+  xaringan::moon_reader:
+    css: ["theme.css", "default"]
+    lib_dir: libs
+    nature:
+      beforeInit: "macros.js"
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      titleSlideClass: [center, middle]
+---
+
+```{r, child="setup.Rmd", echo=FALSE}
+```
+
+# Shrinkage Methods
+
+We saw last Monday how PCA can be used as a dimensionality reduction method
+
+This can help us deal with data sets with many variables, high dimensional data
+
+Another way to deal with high dimensional data is to use **feature selection**
+
+We will talk about .blue[shrinkage methods]
+
+---
+
+# Shrinkage Methods
+
+Fit a model with all the predictors + constraints to the coefficient estimates
+
+These constraints will typically try to drag the coefficients towards zero (hence the name)
+
+Shrinkage methods can significantly reduce the variance of the coefficient estimates
+
+---
+
+# Shrinkage Methods
+
+Two best-known techniques
+
+- Ridge regression
+- Lasso regression
+
+---
+
+# Ridge Regression
+
+We recall that the least-squares estimator is found by minimizing RSS
+
+$$\text{RSS} = \sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2$$
+
+ridge regression builds on this method
+
+---
+
+
+# Ridge Regression
+
+Introducing a .orange[shrinkage penalty]
+
+$$\sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2 + \orange{\lambda \sum_{j=1}^p \beta_j^2}$$
+
+where $\lambda \geq 0$ is a **tuning parameter** 
+
+---
+
+# Choice of $\lambda$
+
+$$\sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2 + \orange{\lambda \sum_{j=1}^p \beta_j^2}$$
+
+The value of $\lambda$ have a big effect on the parameter estimates
+
+- If $\lambda = 0$ we don't have any penalization and we get the standard OLS estimates
+- If $\lambda \rightarrow \infty$ then all the parameters estimates will be shrunk towards zero
+
+Somewhere in the middle is where interesting things start to happen. The different coefficients will be shrunk at different rates
+
+---
+
+# Choice of $\lambda$
+
+There is no way to select the .blue[best] value of $\lambda$ from the data directly. We will have to try different values out and pick which one performs best
+
+Luckily for this method, The algorithm can fit the model for multiple values of $\lambda$ at once, leaving us with only 1 model fit
+
+We will see later how this is done
+
+---
+
+# Importance of variable scales
+
+$$\sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2 + \orange{\lambda \sum_{j=1}^p \beta_j^2}$$
+
+In general, for regression models we are not worried about the scale of the variables as the fit will be the same regardless
+
+However, the penalty term here is not scale-invariant
+
+You must scale your variables to have them influence the model evenly
+
+---
+
+# Bias - Variance trade-off
+
+The beauty of this method is that different values of $\lambda$ slides across the bias/variance spectrum
+
+---
+
+# Lasso Regression
+
+One of the main downsides to ridge regression is that the coefficients will not be shrunk to 0 exactly (unless $\lambda = \infty$)
+
+We technically have to use all the parameters each time we predict and try to explain the model
+
+Lasso regression tries to deal with this issue
+
+---
+
+# Ridge regression
+
+$$\sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2 + \orange{\lambda \sum_{j=1}^p \beta_j^2}$$
+
+# Lasso Regression
+
+$$\sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2 + \blue{\lambda \sum_{j=1}^p |\beta_j|}$$
+
+---
+
+# Lasso Regression
+
+Lasso regression allows us to shrink some of the coefficients directly down to 0 depending on the value of $\lambda$
+
+This allows Lasso to ask as a variable selection method
+
+---
+
+# Fitting a Ridge Regression Model
+
+First, let us select some data. We will be using the `concrete` data set from {modeldata}.
+
+.pull-left[
+```{r}
+library(tidymodels)
+
+data("biomass")
+
+biomass_scaled <- biomass %>%
+  select(where(is.numeric)) %>%
+  scale() %>%
+  as_tibble()
+```
+]
+
+.pull-right[
+```{r}
+biomass_scaled
+```
+]
+
+---
+
+# Fitting a Ridge Regression Model
+
+A Ridge regression model specification can be specified using `linear_reg()` with `mixture = 0`
+
+```{r}
+ridge_spec <- linear_reg(mixture = 0, penalty = 0) %>%
+  set_engine("glmnet")
+```
+
+Then we can fit it just like normal
+
+```{r}
+ridge_fit <- ridge_spec %>%
+  fit(HHV ~ ., data = biomass_scaled)
+```
+
+---
+
+# Plotting coefficients for Ridge Model
+
+```{r}
+plot(ridge_fit$fit, xvar = "lambda")
+```
+
+---
+
+# Predicting for a Ridge Regression model
+
+```{r, error=TRUE}
+predict(ridge_fit, new_data = biomass_scaled)
+```
+
+---
+
+# Predicting for a Ridge Regression model
+
+Specifying a value lets up predict
+
+```{r}
+predict(ridge_fit, new_data = biomass_scaled, penalty = 100)
+```
+
+---
+
+# Predicting for a Ridge Regression model
+
+We could also specify the penalty directly when we fit the model, but there is not as often a usecase for this
+
+```{r}
+ridge_spec <- linear_reg(mixture = 0, penalty = 100) %>%
+  set_engine("glmnet")
+
+ridge_fit <- ridge_spec %>%
+  fit(HHV ~ ., data = biomass_scaled)
+
+predict(ridge_fit, new_data = biomass_scaled)
+```
+
+---
+
+# Fitting a Lasso Regression model
+
+Fitting a lasso model is done the same way a ridge model is fit, instead, we have to set `mixture = 1`
+
+```{r}
+lasso_spec <- linear_reg(mixture = 1, penalty = 0) %>%
+  set_engine("glmnet")
+
+lasso_fit <- lasso_spec %>%
+  fit(HHV ~ ., data = biomass_scaled)
+```
+
+---
+
+# Plotting coefficients for Lasso Model
+
+```{r}
+lasso_fit$fit %>%
+  plot(xvar = "lambda")
+```
+
+---
+
+# Ridge VS Lasso
+
+.pull-left[
+```{r, echo=FALSE}
+ridge_fit$fit %>%
+  plot(xvar = "lambda")
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+lasso_fit$fit %>%
+  plot(xvar = "lambda")
+```
+]
+
+---
+
+# Hyperparameter Tuning
+
+Some models have parameters that can not directly be estimated from the data alone. These parameters are found by other means
+
+The "simple" way is to try a lot of different values and pick the one that performs the best
+
+---
+
+# Hyperparameter Tuning
+
+We will use a cross-validation approach to find the best value for the penalty.
+
+we start by splitting up our data and creating some folds.
+
+```{r}
+biomass_split <- initial_split(biomass)
+
+biomass_train <- training(biomass_split)
+
+biomass_folds <- vfold_cv(biomass_train, v = 5)
+```
+
+
+---
+
+# Hyperparameter Tuning
+
+Now we create a new lasso specification, but this time we use `tune()` to denote that we want to tune the `penalty` parameter.
+
+```{r}
+lasso_spec <- linear_reg(mixture = 1, penalty = tune()) %>%
+  set_engine("glmnet")
+lasso_spec
+```
+
+---
+
+# Hyperparameter Tuning
+
+We also create a recipe to normalize (scale + center) all the predictors
+
+```{r}
+rec_spec <- recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, 
+                   data = biomass) %>%
+  step_normalize(all_predictors())
+```
+
+And we combine these two into a `workflow`
+
+```{r}
+lasso_wf <- workflow() %>%
+  add_model(lasso_spec) %>%
+  add_recipe(rec_spec)
+```
+
+---
+
+# Hyperparameter Tuning
+
+We also need to specify what values of the hyperparameters we are trying to tune we want to calculate. Since the lasso model can calculate all paths at once let us get back 50 evenly spaced values of $\lambda$
+
+```{r}
+lambda_grid <- grid_regular(penalty(), levels = 50)
+lambda_grid
+```
+
+---
+
+# Hyperparameter Tuning
+
+We combine these things in `tune_grid()` which works much like `fit_resamples()` but takes a `grid` argument as well
+
+```{r}
+tune_rs <- tune_grid(
+  object = lasso_wf,
+  resamples = biomass_folds,
+  grid = lambda_grid
+)
+```
+
+---
+
+# Hyperparameter Tuning
+
+We can see how each of the values of $\lambda$ is doing with `collect_metrics()`
+
+```{r}
+collect_metrics(tune_rs)
+```
+
+---
+
+# Hyperparameter Tuning
+
+.pull-left[
+And there is even a plotting method that can show us how the different values of the hyperparameter are doing
+]
+
+.pull-right[
+```{r}
+autoplot(tune_rs)
+```
+]
+
+---
+
+# Hyperparameter Tuning
+
+Look at the best performing one with `show_best()` and select the best with `select_best()`
+
+```{r}
+tune_rs %>%
+  show_best("rmse")
+```
+
+```{r}
+best_rmse <- tune_rs %>%
+  select_best("rmse")
+```
+
+---
+
+# Hyperparameter Tuning
+
+Remember how the specification has `penalty = tune()`?
+
+```{r}
+lasso_wf
+```
+
+---
+
+# Hyperparameter Tuning
+
+We can update it with `finalize_workflow()`
+
+```{r}
+final_lasso <- finalize_workflow(lasso_wf, best_rmse)
+final_lasso
+```
+
+---
+
+# Hyperparameter Tuning
+
+And this finalized specification can now we can fit using the whole training data set.
+
+```{r}
+fitted_lasso <- fit(final_lasso, biomass_train)
+```
+
+---
+
+# Hyperparameter Tuning
+
+this fitted model can now be used to predict on the testing data set
+
+```{r}
+biomass_test <- training(biomass_split)
+
+predict(fitted_lasso, biomass_test)
+```
+
+---
+
+# Hyperparameter Tuning
+
+```{r, echo=FALSE}
+bind_cols(
+  predict(fitted_lasso, biomass_test),
+  biomass_test
+) %>%
+  ggplot(aes(HHV, .pred)) +
+  geom_point() +
+  theme_minimal()
+```

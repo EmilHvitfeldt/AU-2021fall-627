@@ -1,0 +1,15 @@
+---
+title: "Week 7 - Topics in ML"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will be working on the midterm this week. I will take the opportunity to talk about topics in Machine Learning on a broader scale then just implementation and statistics.
+
+I'll post more reading soon!
+
+## Slides
+
+To be posted!

@@ -1,0 +1,27 @@
+---
+title: "Statistical Machine Learning"
+description: |
+  American University 427/627
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Learn more about creating websites with Distill at:
+# https://rstudio.github.io/distill/website.html
+
+```
+
+This website contains most of the information and material that will be used for one of the sections of the course [Statistical Machine Learning](https://catalog.american.edu/preview_course_nopop.php?catoid=9&coid=41770) at [American University](https://www.american.edu/).
+
+The navigation bar contains information about the [syllabus](syllabus.html), [schedule](schedule.html), [readings](readings.html), [labs](labs.html) and [assignments](assignments.html).
+
+## License {.unnumbered}
+
+<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" alt="Creative Commons License" style="border-width:0"/></a><br />This online work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International</a>.
+Visit [here](https://github.com/EmilHvitfeldt/AU-2021spring-627) for more information about the license.
+
+## Colophon {-}
+
+This book was written in [RStudio](http://www.rstudio.com/ide/) using [distill](https://rstudio.github.io/distill/). The complete source is available on [GitHub](https://github.com/EmilHvitfeldt/AU-2021fall-627). All packages versions are being handled with [renv](https://rstudio.github.io/renv/).

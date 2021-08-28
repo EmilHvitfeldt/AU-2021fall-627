@@ -1,0 +1,15 @@
+---
+title: "Week 9 - PCA"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This week we will take a look at PCA (chapter 10 in "An Introduction to Statistical Learning") and PCA regression (chapter 6.2).
+
+The tidymodels lab sections can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/linear-model-selection-and-regularization.html#principal-components-regression) and [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/unsupervised-learning.html#principal-components-analysis).
+
+## Slides
+
+To be posted!

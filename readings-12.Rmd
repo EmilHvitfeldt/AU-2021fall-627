@@ -1,0 +1,15 @@
+---
+title: "Week 12 - Trees"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will be talking about Decision trees, bagging, boosting and random forests. Please read chapter 8 in "An Introduction to Statistical Learning".
+
+The tidymodels lab sections can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/tree-based-methods.html).
+
+## Slides
+
+To be posted!

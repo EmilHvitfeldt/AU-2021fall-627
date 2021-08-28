@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Logistic Regression</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Logistic Regression
+## AU STAT-427/627
+### Emil Hvitfeldt
+### 2021-5-24
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+# Classification
+
+Last we looked at regression tasks. 
+In regression the response variable `\(Y\)` is quantitative 
+
+In classification tasks, the response variable `\(Y\)` is **qualitative**
+
+This Difference will present some challenges we will cover this week
+
+---
+
+.center[
+![:scale 90%](images/nominal_ordinal_binary.png)
+]
+
+---
+
+# Examples of classification tasks
+
+- Should we sent an email ad to this person?
+- Are these symptoms indicative of cancer?
+- Given an image, which fruit is depicted?
+
+--
+
+Two or more classes
+
+--
+
+There can be uncertainty
+
+--
+
+Can be more than one class at the same time
+
+---
+
+# Classification visual
+
+&lt;img src="index_files/figure-html/unnamed-chunk-2-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Classification visual - decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Classification visual
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Classification visual - no hope
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Nonlinear decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Logistic regression
+
+conceptually creates a linear line separating 2 classes
+
+Low flexibility, explainable method
+
+(we will talk about LDA, QLA, and K-nearest neighbors on Wednesday)
+
+---
+
+# Logistic regression
+
+You might ask
+
+--
+
+- Why can't you use linear regression?
+
+--
+
+---
+
+# Response encoding
+
+Propose we want to classify what kind of wine to market:
+
+- red
+- white
+
+`\(Y\)` has to be numeric for a linear model to work.
+
+--
+
+We could decode `\(red = 0, white = 1\)`.
+
+--
+
+but what would happen if we let `\(\hat{Y} &gt;1\)`
+
+---
+
+# Response encoding
+
+What if we have more than 2 classes?
+
+- red
+- white
+- .pink[rose]
+- .pink[dessert]
+- .pink[sparkling]
+
+We can't do `\(red = 1, white = 2, rose = 3, dessert = 4, sparking = 5\)` because there isn't natural ordering and nothing to indicate that dessert wine is twice of white wine
+
+---
+
+# Logistic regression
+
+logistic (abstractly) models the probability that Y corresponds to a particular category
+
+--
+
+Now some mathematics!
+
+---
+
+# The Logistic Model
+
+We want to model the relationship between `\(p(X) = Pr(Y = 1|X)\)` and `\(X\)`.
+
+If we use a linear formulation
+
+`$$p(X) = \beta_0 + \beta_1X$$`
+
+then we will get negative probabilities which would be no good!
+
+---
+
+# The Logistic Model
+
+.pull-left[
+We need to restrict the values of `\(p(X)\)` to be between 0 and 1
+
+We can use the .orange[logistic function]
+
+`$$f(x) = \dfrac{e^x}{1-e^x}$$`
+
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# The Logistic Model
+
+Using the .orange[logistic function] gives us
+
+`$$p(X) = \dfrac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}$$`
+
+Now no matter what the values of `\(X\)`, `\(\beta_0\)` or `\(\beta_1\)`, `\(p(X)\)` will always be contained between 0 and 1.
+
+---
+
+# The Logistic Model
+
+
+If we start with 
+
+`$$p(X) = \dfrac{e^{\blue{\beta_0 + \beta_1X}}}{1 + e^{\blue{\beta_0 + \beta_1X}}}$$`
+
+and we see that .blue[this] looks familiar, it is the linear combination we saw in linear regression we saw last week
+
+Explain what the parameter estimates mean
+
+---
+
+# odds
+
+If we start with 
+
+`$$p(X) = \dfrac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}$$`
+
+after rearrangement gives
+
+`$$\dfrac{p(X)}{1 + p(X)} = e^{\beta_0 + \beta_1X}$$`
+
+---
+
+# odds
+
+If we start with 
+
+`$$p(X) = \dfrac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}$$`
+
+after rearrangement gives
+
+`$$\orange{\dfrac{p(X)}{1 + p(X)}} = e^{\beta_0 + \beta_1X}$$`
+
+.orange[This] is called the **odds** and can take any value between 0 and `\(\infty\)`.
+
+
+---
+
+# log-odds
+
+If we start with 
+
+`$$p(X) = \dfrac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}$$`
+
+after rearrangement gives
+
+`$$\dfrac{p(X)}{1 + p(X)} = e^{\beta_0 + \beta_1X}$$`
+
+taking the logarithm
+
+`$$\log\left(\dfrac{p(X)}{1 + p(X)}\right) = \beta_0 + \beta_1X$$`
+
+---
+
+# log-odds
+
+`$$\blue{\log\left(\dfrac{p(X)}{1 + p(X)}\right)} = \beta_0 + \beta_1X$$`
+
+.blue[The left-hand side] is called the **log-odds** or **logit**.
+
+---
+
+# How is this a classifier?
+
+Logistic regression is not modeling classes
+
+Logistic regression is modeling the probabilities that Y is equal on of the classes
+
+Logistic regression turns into a classifier by picking a cutoff (usually 50%) and classifying according to this threshold.
+
+---
+
+# Logistic regression decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Non-linear separator
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Coefficients
+
+Understanding:
+
+&gt; Increasing `\(X\)` by one unit changes the log odds by a factor of `\(e^{\beta_1}\)`
+
+&gt; The amount of change in `\(p(X)\)` depends on the current value of `\(X\)`
+
+---
+
+# Making Predictions
+
+Fitting the model gives us `\(\hat{\beta_0}\)` and `\(\hat{\beta_1}\)` which we can use to construct `\(\hat{p}(X)\)`
+
+`$$\hat{p}(X) = \dfrac{e^{\hat{\beta_0} + \hat{\beta_1}X}}{1 + e^{\hat{\beta_0} + \hat{\beta_1}X}}$$`
+
+Plugging in the values of `\(\hat{\beta_0}\)`, `\(\hat{\beta_1}\)` and `\(X\)` gives us a prediction
+
+---
+
+# Example with penguins &lt;a href='https://allisonhorst.github.io/palmerpenguins'&gt;&lt;img src='images/palmer.png' align="right" height="138.5" /&gt;&lt;/a&gt;
+
+
+```r
+library(palmerpenguins)
+
+penguins2 &lt;- penguins %&gt;%
+  mutate(species = factor(species == "Adelie", 
+                          labels = c("Adelie", "Not Adelie")))
+
+library(parsnip)
+lr_spec &lt;- logistic_reg() %&gt;%
+  set_engine("glm") %&gt;%
+  set_mode("classification")
+
+lr_fit &lt;- lr_spec %&gt;%
+  fit(species ~ bill_length_mm + bill_depth_mm + body_mass_g,
+      data = penguins2)
+```
+
+---
+
+# Example with penguins &lt;a href='https://allisonhorst.github.io/palmerpenguins'&gt;&lt;img src='images/palmer.png' align="right" height="138.5" /&gt;&lt;/a&gt;
+
+
+```r
+lr_fit
+```
+
+```
+## parsnip model object
+## 
+## Fit time:  4ms 
+## 
+## Call:  stats::glm(formula = species ~ bill_length_mm + bill_depth_mm + 
+##     body_mass_g, family = stats::binomial, data = data)
+## 
+## Coefficients:
+##    (Intercept)  bill_length_mm   bill_depth_mm     body_mass_g  
+##      32.965109       -4.903438        8.616116        0.006746  
+## 
+## Degrees of Freedom: 341 Total (i.e. Null);  338 Residual
+##   (2 observations deleted due to missingness)
+## Null Deviance:	    469.4 
+## Residual Deviance: 9.652 	AIC: 17.65
+```
+
+---
+
+# Example with penguins &lt;a href='https://allisonhorst.github.io/palmerpenguins'&gt;&lt;img src='images/palmer.png' align="right" height="138.5" /&gt;&lt;/a&gt;
+
+
+```r
+tidy(lr_fit)
+```
+
+```
+## # A tibble: 4 x 5
+##   term           estimate std.error statistic p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)    33.0      25.6          1.29  0.199 
+## 2 bill_length_mm -4.90      2.65        -1.85  0.0647
+## 3 bill_depth_mm   8.62      4.81         1.79  0.0733
+## 4 body_mass_g     0.00675   0.00385      1.75  0.0800
+```
+
+---
+
+# Multi class classification
+
+We have so far only talked about what happens with 2 classes
+
+Logistic regression isn't able to work with multiple classes since it finds 1 best line to separate 2 classes
+
+---
+
+# Logistic regression multiclass struggles
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Logistic regression multiclass struggles
+
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Evaluation
+
+To evaluate a classifier we need to quantify how good and bad it is performing
+
+![](images/table.jpeg)
+
+Different metrics will be different algebraic combinations of the above numbers
+
+---
+
+# Evaluation metrics
+
+## Accuracy 
+
+`\(\dfrac{TN + TP}{TN + FN + FP + TP}\)`
+
+Percentage of correct predictions
+
+Drawback: If there are two classes A and B split 99% and 1%, you can get an accuracy of 99% by always predicting A
+
+---
+
+# Evaluation metrics
+
+## Sensitivity
+
+`\(\dfrac{TP}{FP + TP}\)`
+
+Defined as the proportion of positive results out of the number of samples that were positive
+
+---
+
+# Evaluation metrics
+
+## Specificity
+
+`\(\dfrac{TP}{FP + TP}\)`
+
+Measures the proportion of negatives that are correctly identified as negatives
+
+---
+
+# ROC curve
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Test-Train split
+
+We have spent some time talking about fitting model and measuring performance
+
+However, we need to be careful about how we go about that
+
+performance metrics calculated on the data that was used to fit the data is likely to mislead
+
+---
+
+# Test-Train split
+
+In a prediction model, we are interested in the generalized performance. e.i. how well the model can perform on data it hasn't seen
+
+---
+
+# Test-Train split
+
+&lt;img src="index_files/figure-html/all-split-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Test-Train split
+
+We split the data into two groups (typically 75%/25%)
+
+- training data set
+- testing data set
+
+We do the modeling on the training data set (it can be multiple models)
+
+And then we use the testing data set **ONCE** to measure the performance
+
+---
+
+# Why 75%/25%?
+
+There are no real guidelines as to how you split the data
+
+80/20 split is also used
+
+It Will depend on data size
+
+---
+
+# Why just once?
+
+If you are working in a prediction setting, the testing data set represents fresh new data
+
+If you modify your model you are essentially using information from the future to guide your modeling decisions
+
+This is a kind of data-leakage and it will lead to overconfidence in the model and will come back to bite you once you start using the model
+
+---
+
+# How will I be able to iterate?
+
+We will talk more about how to efficiently use data in the next two weeks
+
+---
+
+## How should we handle unbalanced classes?
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+## How should we handle unbalanced classes?
+
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+## How should we handle unbalanced classes?
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# stratified sampling
+
+This stratification also works for regression tasks. The variable can be binned and samples to ensure equal distribution between training and testing data
+
+There is very little downside to using stratified sampling.
+
+---
+
+# More Data Leakage
+
+Performing training-testing split in another place where data can leak
+
+Any transformation done to the data should be done **AFTER** the split occurs as to not have had future information affect the modeling process 
+
+---
+
+# rsample &lt;a href='https://rsample.tidymodels.org/'&gt;&lt;img src='images/rsample.png' align="right" height="138.5" /&gt;&lt;/a&gt;
+
+**sample** provides functionally to perform all different kinds of data splitting with a minimal footprint
+
+---
+
+# rsample example
+
+We bring back the `penguins`
+
+
+```r
+penguins
+```
+
+```
+## # A tibble: 344 x 8
+##    species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+##    &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+##  1 Adelie  Torgersen           39.1          18.7               181        3750
+##  2 Adelie  Torgersen           39.5          17.4               186        3800
+##  3 Adelie  Torgersen           40.3          18                 195        3250
+##  4 Adelie  Torgersen           NA            NA                  NA          NA
+##  5 Adelie  Torgersen           36.7          19.3               193        3450
+##  6 Adelie  Torgersen           39.3          20.6               190        3650
+##  7 Adelie  Torgersen           38.9          17.8               181        3625
+##  8 Adelie  Torgersen           39.2          19.6               195        4675
+##  9 Adelie  Torgersen           34.1          18.1               193        3475
+## 10 Adelie  Torgersen           42            20.2               190        4250
+## # … with 334 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+```
+
+---
+
+# rsample example
+
+Use `initial_split()` from rsample to generate a `rsplit` object
+
+
+```r
+set.seed(1234) # remember the seed!
+penguins_split &lt;- initial_split(penguins)
+penguins_split
+```
+
+```
+## &lt;Analysis/Assess/Total&gt;
+## &lt;258/86/344&gt;
+```
+
+This object store the information of what observations belong to each data set
+
+---
+
+# rsample example
+
+`training()` and `testing()` is used to extract the training data set and testing data set
+
+
+```r
+set.seed(1234) # remember the seed!
+penguins_split &lt;- initial_split(penguins)
+
+penquins_train &lt;- training(penguins_split)
+penquins_test &lt;- testing(penguins_split)
+
+dim(penquins_train)
+```
+
+```
+## [1] 258   8
+```
+
+```r
+dim(penquins_test)
+```
+
+```
+## [1] 86  8
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

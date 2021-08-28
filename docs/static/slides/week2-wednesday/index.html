@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>LDA, QDA &amp; KNN</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# LDA, QDA &amp; KNN
+## AU STAT-427/627
+### Emil Hvitfeldt
+### 2021-5-26
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+# Classification
+
+We have 2 or more groups in our data and we want to create rules to detect/classify them
+
+We looked at logistic regression last week
+
+--
+
+This week we will explore 3 more methods
+
+- .blue[L]inear .blue[D]iscriminant .blue[A]nalysis (.blue[LDA])
+- .pink[Q]uadratic .pink[D]iscriminant .pink[A]nalysis (.pink[QDA])
+- .orange[K]-.orange[N]earest .orange[N]eighbor (.orange[KNN])
+
+---
+
+# LDA
+
+logistic regression tries to modeling `\(Pr(Y = k|X = x)\)` directly
+
+--
+
+Idea:
+
+Model the distribution of predictors `\(X\)` in each of the classes `\(k\)`. Then use Bayes' theorem to flip these around to create estimates for `\(Pr(Y = k|X = x)\)`
+
+---
+
+# LDA
+
+- LDA is more stable than logistic regression when the classes are well separated
+- If `\(n\)` is small and the distribution of the predictors are approximately normal in each of the classes LDA is more stable than logistic regression
+- LDA naturally extends to work with more than 2 classes
+
+---
+
+# LDA
+
+For simplicity, we start with the case of 1 predictor
+
+Notation:
+
+`$$f_k(x) = Pr(X = x | Y = k)$$`
+
+denote the **density function** of `\(X\)` for an observation that comes from the `\(k\)`th class.
+
+- `\(f_k(x)\)` is .blue[large] if there is a .blue[high] probability that an observation is part of class `\(k\)` when `\(X = k\)`
+- `\(f_k(x)\)` is .orange[small] if there is a .orange[low] probability that an observation is part of class `\(k\)` when `\(X = k\)`
+
+---
+
+# Bayes' Theorem
+
+let `\(\pi_k\)` represent the overall(prior) probability that a randomly chosen observation is associated with the `\(k\)`th class
+
+We have that
+
+`$$Pr(Y = k | X = x) = \dfrac{\pi_k f_k(x)}{\sum^K_{l = 1}\pi_l f_l(x)}$$`
+
+with the abbreviation `\(p_k(X) = Pr(Y = k | X)\)`
+
+---
+
+# Bayes' Theorem
+
+`$$Pr(Y = k | X = x) = \dfrac{\pi_k f_k(x)}{\sum^K_{l = 1}\pi_l f_l(x)}$$`
+
+Idea:
+
+estimate `\(\pi_k\)` and `\(f_k(x)\)` and plug those in instead of directly computing `\(p_k(X)\)`
+
+---
+
+# LDA
+
+To estimate `\(f_k(x)\)` we start by making some assumptions for `\(f_k(x)\)`
+
+- We assume that `\(f_k(x)\)` is **normal**, for 1-dimensional the normal density takes the form
+
+`$$f_k(x) = \dfrac{1}{\sqrt{2\pi}\sigma_k} \text{exp}\left( - \dfrac{1}{2\sigma^2_k} (x-\mu_k)^2 \right)$$`
+
+where `\(\mu_k\)` and `\(\sigma^2_k\)` are the mean and variance for the `\(k\)`th class
+
+---
+
+# LDA
+
+To estimate `\(f_k(x)\)` we start by making some assumptions for `\(f_k(x)\)`
+
+- We assume that `\(\sigma^2_1 = ... = \sigma^2_K\)`: there is a shared variance term across all `\(K\)` classes
+
+We denote this shared variable by `\(\sigma^2\)`
+
+Plugging everything in we get
+
+`$$p_k(x) = \dfrac{\pi_k\dfrac{1}{\sqrt{2\pi}\sigma} \text{exp}\left( - \dfrac{1}{2\sigma^2} (x-\mu_k)^2 \right)}{\sum^K_{l = 1}\pi_l\dfrac{1}{\sqrt{2\pi}\sigma} \text{exp}\left( - \dfrac{1}{2\sigma^2} (x-\mu_l)^2 \right)}$$`
+
+---
+
+# LDA
+
+Taking the log and rearranging some terms we an equivalent function
+
+`$$\delta_k(x) = x \cdot\dfrac{\mu_k}{\sigma^2} - \dfrac{\mu^2_k}{2\sigma^2} + \log(\pi_k)$$`
+
+which we what to find the largest value for
+
+So now we just have to estimate the means `\(\mu_1, ..., \mu_K\)`, prior probabilities `\(\pi_1, ..., \pi_K\)` and the shared variance `\(\sigma^2\)`
+
+So we have `\(2K + 1\)` parameters to estimate
+
+---
+
+# LDA
+
+The estimate we will use are
+
+`$$\hat{\mu}_k = \dfrac{1}{n_k} \sum\limits_{i:y_i=k} x_i$$`
+
+`$$\hat{\sigma} = \dfrac{1}{n-K} \sum^K_{k=1}\sum\limits_{i:y_i=k}(x_i-\hat{\mu}_k)^2$$`
+
+where `\(n\)` is the number of observations overall and `\(n_k\)` is the number of observations in the `\(K\)`th class
+
+---
+
+# LDA
+
+We also estimate the prior probabilities with 
+
+`$$\hat{\pi}_k = \dfrac{n_k}{n}$$`
+
+We plug in our estimate and get the estimator
+
+`$$\hat{\delta}_k(x) = x \cdot\dfrac{\hat\mu_k}{\hat\sigma^2} - \dfrac{\hat\mu^2_k}{2\hat\sigma^2} + \log(\hat\pi_k)$$`
+
+---
+
+# LDA
+
+We need to extend the LDA classifier to work with multiple predictors
+
+For this, to work we assume that `\(X = (X_1, X_2, ..., X_p)\)` is drawn from a multivariate normal distribution, with a class-specific mean vector and a common covariance matrix.
+
+---
+
+# LDA
+
+The multivariate normal density is defined as
+
+`$$f(x) = \dfrac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}} \text{exp}\left(-\dfrac{1}{2} (x-\mu)^T\Sigma^{-1}(x-\mu)\right)$$`
+
+---
+
+# LDA
+
+Plugging in a rearranging we get
+
+`$$\delta_k(x) = x^T\Sigma^{-1}\mu_k - \dfrac{1}{2}\mu^Y_k \Sigma^{-1}\mu_k+ \log(\pi_k)$$`
+
+This is the vector/matrix version of what we saw for `\(p=1\)`
+
+if `\(p=1\)` then this simplifies back to the earlier case
+
+---
+
+# LDA
+
+the linear discriminant analysis gets its name because the discriminant function is a linear combination of x and the decision boundary is linear
+
+---
+
+# QDA
+
+We made a couple of assumptions of the distribution of the predictors X to construct the LDA classifier
+
+If we relax the assumption that each class has its own covariance matrix then we get the quadratic discriminant analysis (QDA) model
+
+We assume that an observation from the `\(k\)`th class is of the form `\(X \sim N(\mu_k, \Sigma_k)\)` where `\(\Sigma_k\)` is the covariance matrix for the `\(k\)`th class.
+
+---
+
+# QDA
+
+The discriminant function under this assumption has the form
+
+`$$\delta_k(x) = \blue{-\dfrac{1}{2}x^T\Sigma^{-1}_k x} + x^T\Sigma^{-1}\mu_k - \dfrac{1}{2}\mu^Y_k \Sigma^{-1}\mu_k \blue{-\dfrac{1}{2}\log|\Sigma_k|} + \log(\pi_k)$$`
+
+with .blue[these terms] being new for the QDA over LDA
+
+QDA gets its name because the discriminant function is quadratic in `\(x\)`
+
+We end up getting a quadratic decision boundaries
+
+---
+
+# Why would one prefer QDA over LDA?
+
+Bias-variance trade-off!
+
+LDA has a lot fewer parameters then QDA
+
+`$$\dfrac{p(p+1)}{2} \quad vs \quad \dfrac{Kp(p+1)}{2}$$`
+
+LDA is a much less flexible classifier (partly because it is linear) and has a lower variance
+
+---
+
+# Why would one prefer QDA over LDA?
+
+If LDA's assumption that the K classes share a common covariance matrix is badly off, then LDA can suffer from high bias.
+
+If you have few observation and you want to reduce variance then you need to use LDA other QDA
+
+In the end, if you have a linear decision boundary in your data then an LDA will work just as good as a QDA but the QDA will have a higher variance since it needs to estimate a larger number of parameters
+
+---
+
+# LDA or logistic regression
+
+Only applicable for `\(K = 2\)`
+
+.pull-left[
+## Logistic regression
+
+The groups may have quite different `\(n\)` 
+
+Not so sensitive to outliers
+
+concentrates more on examples near the class boundary and basically disregards cases at the "backside" of the distributions.
+]
+
+.pull-right[
+## LDA
+
+The groups should have similar `\(n\)`
+
+Quite sensitive to outliers
+]
+
+---
+
+# KNN
+
+k-nearest neighbor was introduced in the second chapter and we will catch up this week
+
+We want to estimate the conditional distribution of `\(Y\)` given `\(X\)` and classify an observation to the class with the highest probability
+
+K-nearest neighbor takes this literally and classifies an observation solely based on what the classes of its neighbors would be in the training data set.
+
+---
+
+# KNN
+
+`$$Pr(Y=k|X = x_0) = \dfrac{1}{K} \sum\limits_{i \in \mathcal{N}_0} I(y_i = k)$$`
+For `\(K = 1\)` the algorithm predicts the new points only according to the closest neighbors
+
+For `\(k = 5\)` the algorithm predicts whichever class appears most often 
+
+---
+
+# KNN
+
+K is typically taken to be odd to avoid ties
+
+We don't really do any modeling, the model queries the training data to find the neighbors for new points
+
+---
+
+
+
+.absolute[
+# Penguins data
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: full
+
+.absolute[
+# KNN: K = 1
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: full
+
+.absolute[
+# KNN: K = 5
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: full
+
+.absolute[
+# KNN: K = 11
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: full
+
+.absolute[
+# KNN: K = 25
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: full
+
+.absolute[
+# LDA
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: full
+
+.absolute[
+# QDA
+]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# KNN
+
+Does not like high-dimensional data
+
+Is VERY flexible
+
+we have to carry around all the data
+
+Here scaling matters!!
+
+---
+
+# KNN regression
+
+KNN can also be used for regression tasks as well by taking a weighted average for the neighbors to give the prediction
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

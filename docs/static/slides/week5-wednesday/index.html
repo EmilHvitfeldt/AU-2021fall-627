@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tree-Based Methods</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <meta name="date" content="2021-06-16" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Tree-Based Methods
+## AU STAT627
+### Emil Hvitfeldt
+### 2021-06-16
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+
+
+
+# Overview
+
+We will cover 4 new methods today
+
+- Decision Trees
+- Bagging
+- Random Forrest
+- boosting
+
+---
+
+# Overview
+
+We will cover 4 new methods today
+
+- .blue[Decision Trees]
+- Bagging
+- Random Forrest
+- boosting
+
+Decision trees act as the building block for this chapter
+
+---
+
+# Decision Trees
+
+Given a problem, give me flow chart of if-else statements to find the answer
+
+---
+
+# Penguins
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Penguins
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The flowchart
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The rules
+
+
+```
+##        ..y  Ade Chi Gen                                                      
+##     Adelie [.97 .03 .00] when flipper_length_mm &lt;  207 &amp; bill_length_mm &lt;  43
+##  Chinstrap [.06 .92 .02] when flipper_length_mm &lt;  207 &amp; bill_length_mm &gt;= 43
+##     Gentoo [.02 .04 .95] when flipper_length_mm &gt;= 207
+```
+
+---
+
+# General setup
+
+- We divide the predictor space into multiple non-overlapping regions ( `\(R_1, R_2, ..., R_J\)` ).
+- Every observation that falls into a region will have the same prediction, and that prediction will be based on the observations in that region
+    - Regression: mean value
+    - Classification: Most common value
+
+---
+
+# General setup
+
+The shapes could in theory be any shape, but for simplicity we are using rectangles/boxes to partition the space
+
+The main goal is to build a partition that minimizes some loss such as RSS
+
+`$$\sum_{j=1}^J \sum_{i \in R_j} \left(y_i - \hat y_{R_j} \right)^2$$`
+
+---
+
+# General setup
+
+It is generally computational unfeasible to calculate all possible partitions
+
+We use a **recursive binary splitting** procedure to find the trees
+
+This approach is **top-down** approach since we start at the top and split our way down
+
+It is **greedy** because we select the best possible split each time
+
+---
+
+# Details
+
+How many times should we split?
+
+If we continue to split we end up with each observation belonging to their own region, giving us a wildly flexible model
+
+We can control a number of different things, simple ones are
+
+- Tree depth, maximum depth of the tree
+- minimum number of data points in a node that are required for the node to be split further
+
+---
+
+# Tree Pruning
+
+Due to the way decision trees are grown, it can be beneficial to grow larger trees and then go back and reduce the complexity of the tree after
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Regression "curves"
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+#  Decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+#  Decision boundary
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Pros and Cons
+
+### Pros
+
+- Very easy to explain and reason about
+- Can Handle qualitative predictors without 
+the need for dummy variables
+
+### Cons
+
+- Don't have great predictive power
+- Non-robust, small changes in the data can give wildly different models
+
+---
+
+# Next Steps
+
+Individual decision trees don't offer great predictive performance due to their simple nature
+
+.blue[Bagging], .orange[Random Forests] and .pink[Boosting] uses multiple decision trees together to get better performance with a trade-off of more complexity
+
+---
+
+# Bagging
+
+Decision trees suffer for high variance
+
+We saw in week 3 how bootstrapping could be used to reduce the variance of a statistical learning method
+
+We will use bootstrapping again with decision trees to reduce the variance. We can feasible do this since individual decision trees are fast to train
+
+---
+
+# Bagging
+
+"Algorithm"
+
+- Generate `\(B\)` different bootstrapped training data sets
+- Fit a decision tree on on each of the bootstraps to get `\(\hat {f^{*b}}(x)\)`
+- Take the average of all the estimates t get your final estimate
+
+`$$\hat{f}_{\text{bag}}(x) = \dfrac{1}{B} \sum^B_{b=1} \hat {f^{*b}}(x)$$`
+
+---
+
+# Bagging
+
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bagging Notes
+
+The number of bootstraps are not very important here, you just need to use a value of `\(B\)` that is large enough to have the error settled down, ~100 seems to work well
+
+You do not overfit by increasing `\(B\)`, just increase the run-time
+
+Bagged trees offer quite low interpretability since it is a mixture of multiple models
+
+We can obtain a summary of the variable importance of our model by looking at the average amount of RSS a given predictor has decreased due to splits to a given variables
+
+---
+
+# Random Forest
+
+The Random Forest method offers an improvement over Bagged trees
+
+One of the main downsides to Bagged Trees are that the trees become quiet correlated with each other
+
+When fitting a Random forest, we start the same way as a Bagged tree with multiple bootstrapped data sets
+
+but each time a split in a tree is considered, only a random sample of the predictors can be chosen
+
+---
+
+# Random Forest
+
+The sample is typically `\(m = \sqrt{p}\)` with `\(p\)` predictors
+
+But this values is tuneable as well, along with everything tuneable from the decision tree
+
+---
+
+# Random Forest
+
+&lt;img src="index_files/figure-html/unnamed-chunk-18-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Boosting
+
+Boosting is a general approach that can be used with many statistical machine learning methods
+
+In bagging we fit multiple decision trees side by side
+
+In Boosting we fit multiple decision trees back to back
+
+---
+
+# Boosting
+
+Algorithm
+
+- Fit a tree `\(\hat {f^b}\)` to the model
+- Update the final fit using a shrunken version of the tree
+- Update the residuals using a shrunken version of the tree
+- repeat `\(B\)` times
+
+Final model
+
+`$$\hat f(x)= \sum_{b=1}^B \lambda \hat {f^b}(x)$$`
+
+---
+
+# Boosting
+
+Large values of `\(B\)` can result in overfitting
+
+The shrinkage parameter `\(\lambda\)` typically takes a small values but will need to be tuned
+
+The number of splits `\(d\)` will need to be tuned as well, typically very small trees are fit during boosting
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

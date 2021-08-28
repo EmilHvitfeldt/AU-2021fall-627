@@ -1,0 +1,13 @@
+---
+title: "Readings"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+The readings for this course will be based on the textbooks listed in the [syllabus](syllabus.html#main-textbook). Readings will primarily be taken from the main textbook, but will sometimes be other material. Additional optional reading will also be listed for each week for the students who want to dig deeper into the content of the week. Information from the optional reading will not be expected knowledge in the homework and the exams and should be seen as a learning opportunity only.
+
+Reading before class is strongly encouraged to allow you to find the areas you have additional questions about and ask them in class.
+
+Slides will also be posted here for each week.

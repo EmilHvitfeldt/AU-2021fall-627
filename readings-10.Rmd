@@ -1,0 +1,17 @@
+---
+title: "Week 10 - Shrinkage"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Please finish reading chapter 6 of "An Introduction to Statistical Learning". The chapter covers Shrinkage methods including ridge and lasso regression.
+
+This will be a good time to finally talk about hyper parameter tuning. We will use the [tune](https://tune.tidymodels.org/) package and [dials](https://dials/tidymodels.org/) package. A great place to start learning about these packages is [this post](https://tune.tidymodels.org/articles/getting_started.html).
+
+The tidymodels labs chapter can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/linear-model-selection-and-regularization.html).
+
+## Slides
+
+To be posted!

@@ -1,0 +1,49 @@
+---
+title: "Week 1 - Introduction"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+## Monday
+
+Read chapter 2 of "An Introduction to Statistical Learning". This is a big picture chapter that lays the foundation of the rest of the book. It is not expected to have read this before class.
+
+Chapter 1 serves as an introduction to the book, data, and notation. Can be read or skimmed through if you want.
+
+We will be using [R](https://cran.r-project.org/) which can be downloaded [here](https://cran.r-project.org/). Additionally, it is also advised to use [RStudio](https://rstudio.com/) which can be downloaded [here](https://rstudio.com/products/rstudio/download/#download), but any [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment) will work.
+
+We will be using the [tidymodels](https://www.tidymodels.org/) ecosystem of packages designed for modeling. If you haven't already you should install these packages along with [tidyverse](https://www.tidyverse.org/).
+
+```{r}
+install.packages("tidymodels")
+install.packages("tidyverse")
+```
+
+## Thursday
+
+Read chapter 3 of "An Introduction to Statistical Learning". This chapter goes over simple linear regression, multiple linear regression, and the considerations used in linear regression. As far as I can tell, you have all taken courses where linear regression has been introduced. It is still worthwhile for you to read this chapter to get familiar with the book, and hopefully, it will be an easy read.
+
+If you want more information about the way to fit a model using the tidymodels, read chapter 6 of Tidy Modeling with R, [Fitting models with parsnip](https://www.tmwr.org/models.html).
+
+If you want more information on the theoretical background you can read sections 3.1 and 3.2 of "The Elements of Statistical Learning". This is optional reading.
+
+Instead of reading the lab sections of chapter 3, read [this](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/linear-regression.html) chapter instead which I rewrote to use tidymodels.
+
+## Slides Monday
+
+```{r, echo=FALSE, eval=TRUE}
+xaringanExtra::embed_xaringan(url = "static/slides/week-01-monday/index.html", ratio = "16:9")
+```
+
+[PDF download](static/slides/week-01-monday/week-01-monday.pdf) [Full Screen](static/slides/week-01-monday/index.html)
+
+## Slides Thursday
+
+```{r, echo=FALSE, eval=TRUE}
+xaringanExtra::embed_xaringan(url = "static/slides/week-01-thursday/index.html", ratio = "16:9")
+```
+
+[PDF download](static/slides/week-01-thursday/week-01-thursday.pdf) [Full Screen](static/slides/week-01-thursday/index.html)
+

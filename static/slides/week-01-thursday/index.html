@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Linear Regression</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <meta name="date" content="2021-09-02" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Linear Regression
+## AU STAT-427/627
+### Emil Hvitfeldt
+### 2021-09-02
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+.center[
+# What is statistical learning?
+]
+
+- **Building a (statistical) model to represent relationships between different quantities**
+
+--
+
+Quantities are defined here very broadly to be data or measurements
+
+---
+
+.center[
+# What is statistical learning?
+]
+
+- Building a (statistical) model to represent relationships between different quantities
+- **Using data to create rules**
+
+---
+
+.center[
+# What is statistical learning?
+]
+
+.center[
+![](images/rules.jpeg)
+]
+
+---
+
+# What is statistical Learning?
+
+Some machine learning methods have a statistical underpinning
+
+This allows us to quantify the uncertainty
+
+Examples of "non-statistical machine learning methods" are
+
+- Genetic algorithms
+- K-nearest neighbors
+
+There is not a hard and fast distinction. Machine learning is about getting answers. Statistics is a great way to find answers.
+
+---
+
+# Why use statistical Learning?
+
+The main goals are
+
+- Understanding/Inference
+- Prediction
+
+---
+
+# General setup
+
+For response `\(Y\)` and `\(p\)` different predictors `\(X_1, X_2, ..., X_p\)`
+
+Then the relationship between them can be written as
+
+`$$Y = f(X) + \epsilon$$`
+
+with `\(\epsilon\)` being a random *error term*, independent from `\(X\)`  and has mean 0.
+
+--
+
+This formulation is VERY general.  
+There is no assumption that `\(f\)` provides any information.
+
+--
+
+Our goal is to find `\(f\)` 
+
+--
+
+Y: response/dependent variable  
+X: predictors, independent variables, features/variables
+
+---
+
+# Why estimate f?
+
+If `\(f\)` is different than the null-model or monkey model.
+
+- Prediction
+- Inference
+
+---
+
+# Prediction
+
+Main thesis:
+
+&gt; If we can find f then we can predict the value of Y for different values of X
+
+This holds a major assumption that the scenario in which we estimate `\(f\)` stays the same.
+
+Models trained on data from a recession may not apply to data in a depression
+
+Models trained on low-income houses might not work on high-income houses
+
+---
+
+# Covid-19 data
+
+.center[
+![](images/covid-timeseries.png)
+]
+
+https://twitter.com/topepos/status/1333967942686543873
+
+---
+
+# Prediction
+
+`$$\hat{Y} = \hat{f}(X)$$`
+
+--
+
+.pull-left[
+
+
+
+&lt;img src="index_files/figure-html/unnamed-chunk-3-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Prediction
+
+`$$\hat{Y} = \hat{f}(X)$$`
+
+.pull-left[
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Prediction
+
+`$$\hat{Y} = \hat{f}(X)$$`
+
+.pull-left[
+&lt;img src="index_files/figure-html/unnamed-chunk-7-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Tradeoff between reducible error and irreducible error
+
+The error is how much `\(f\)` is different from `\(\hat{f}\)`
+
+We split this into **reducible** and **irreducible**
+
+We will generally not be able to completely predict anything from a limited number of features  
+Any error left when a perfect statistical model is trained is the irreducible error  
+
+Sub-optimal estimates of `\(\hat{f}\)` introduce error which could have been reduced.
+
+(this hinges on a more philosophical basis. Is the world fully deterministic?)
+
+---
+
+# Tradeoff between reducible error and irreducible error
+
+If we could, we technically have a mathematical formula.  
+
+&gt; amount of sales tax on an item
+
+is generally not statistical
+you might need a complicated model, but you should be able to eliminate all the error
+
+---
+
+# Tradeoff between reducible error and irreducible error
+
+Examples with error:
+
+bolt factory. Estimate the weight of the bolt.
+
+Machines are calibrated, but things like, temperature, air quality, material quality, particles will still play (a small) factor.
+
+---
+
+# Inference
+
+Understanding how Y is related to X
+
+We want to understand the exact form
+
+"What effect will changing price affect the rating of a product?"
+
+This is inference. We are primarily interested in the effect, not the outcome
+
+---
+
+As we will see later, there is a trade-off between models that work well for prediction and easily explainable models
+
+.center[
+![:scale 60%](images/xkcd-interpretability-vs-flexibility.png)
+]
+
+---
+
+# Inference vs prediction
+
+hard to explain models can be good predictors but bad for inference  
+
+
+Certain fields will hold different weight on explainability/interpretability
+
+---
+
+# Supervised vs Unsupervised Learning
+
+Most of what we will are working on is going to be supervised.  
+The learning we are doing is based on a specific parameter Y we are working around
+
+--
+
+unsupervised learning on the other hand doesn't have an explicit goal or answer sheet
+
+--
+
+- pattern matching
+- clustering
+
+--
+
+&gt; "here is all our customer data, do they form groups?"
+
+---
+
+# Model accuracy
+
+the book covers **mean squared error**
+
+There are many ways to access how well a model performs.
+
+many of these will be related to how far away the prediction is from the observation
+
+---
+
+# Linear models
+
+We have seen this before so we are just freshening up
+
+Start with simple
+
+`$$Y = \beta_0 + \beta_1 X + \epsilon$$`
+
+Where `\(X\)` is a single predictor variable
+
+--
+
+Notice this is 
+
+$$ f(X) = \beta_0 + \beta_1 X $$
+
+We need to find the values for the betas that makes it the line as close to the data as possible
+
+
+
+---
+
+.pull-left[
+Consider the data on the right
+
+It appears to have a possible linear trend
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.pull-left[
+Consider the data on the right
+
+It appears to have a possible linear trend
+
+If we draw a simple horizontal line for `y = 16`
+
+This would be `\(\beta_0 = 16, \beta_1 = 0\)`
+
+If we take the square of all the vertical lines and sum them we get
+
+
+```
+## # A tibble: 1 × 1
+##     rss
+##   &lt;dbl&gt;
+## 1 1998.
+```
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.pull-left[
+Consider the data on the right
+
+It appears to have a possible linear trend
+
+If we minimize the RSS then we would get `\(\beta_0 = 5.31537, \beta_1 = 0.04897\)`
+
+With a resulting RSS of
+
+
+```
+## # A tibble: 1 × 1
+##     rss
+##   &lt;dbl&gt;
+## 1  216.
+```
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.pull-left[
+Consider the data on the right
+
+Overlaying the true relationship in orange
+
+since we are only receiving a sample of the underlying distribution, we are not able to completely determine the right slope and intercept
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Least Square Criterion
+
+We are minimizing the residual sum of squares (RSS)
+
+$$
+`\begin{align}
+\hat{\beta}_1 &amp;= \dfrac{\sum^n_{i=1}(x_i - \bar{x})(y_i - \bar{y})}{\sum^n_{i=1}(x_i - \bar{x})^2}  \\
+\hat{\beta}_0 &amp;= \bar{y} - \hat{\beta}_1 \bar{x}
+\end{align}`
+$$
+
+Where `\(\bar{x}\)` and `\(\bar{y}\)` are sample means of `\(x\)` and `\(y\)`
+
+---
+
+# Hypothesis tests
+
+Since this model is built on certain assumptions, we can calculate standard error estimates for each parameter estimate.
+
+These standard errors can be used to determine if the estimates are significantly different from 0
+
+An inverse relationship between the size of effect and number of observations
+
+---
+
+# Assessing model accuracy
+
+How much does the model fit the data?
+
+We want to know **how well** the model is performing
+
+Again a measure of how far away the predictions are away from the actual model
+
+---
+
+# Assessing model accuracy
+
+Remember how *residuals squared sum* (RSS) depended on the number of observations?
+
+--
+
+$$ RSE = \sqrt{\dfrac{1}{n-2} RSS} = \sqrt{\dfrac{1}{n-2} \sum\limits^n_{i=1}(y_i - \hat{y}_i)^2}$$
+
+*residual standard error* takes care of this by normalization
+
+Interpretation:
+
+&gt; RSE is the average amount that the response will deviate from the true regression line
+
+RSE measures the lack of fit. Smaller values are better
+
+---
+
+# Assessing model accuracy
+
+$$ R^2 = 1 - \dfrac{RSS}{TSS}$$
+
+where `\(TSS = \sum(y_i - \bar{y})^2\)` is the total sum of squares
+
+Interpretation:
+
+&gt; `\(R^2\)` is the proportion of variance explained
+
+takes values between 0 and 1, higher being better
+
+---
+
+# Multiple linear regression
+
+This is a simple extension, 
+
+`$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p  + \epsilon$$`
+
+All the previous questions apply here with slightly different answers
+
+---
+
+# Model selection
+
+When `\(p=1\)` we have the question
+
+&gt; Is there an association between Y and X
+
+but when `\(p&gt;1\)` then question becomes
+
+&gt; Is at least one of the predictors `\(X_1, X_2, ..., X_p\)` useful in predicting the response
+
+and 
+
+&gt; Which of the X's have an association with Y
+
+---
+
+# F statistics
+
+&gt; Is at least one of the predictors `\(X_1, X_2, ..., X_p\)` useful in predicting the response
+
+$$  F = \dfrac{(TSS-RSS)/p}{RSS/(n-p-1)}  $$
+
+If F-statistic is close to 1 then we suspect there is no relationship between the response and predictors
+
+---
+
+# Model selection
+
+- Forward selection
+- Backward selection
+- Mixed selection
+
+---
+
+# Qualitative predictors
+
+We will come back to this later
+
+---
+
+# Model assumptions 
+
+The linear model works well in a lot of cases.
+
+But there are assumptions
+
+1. Linear relationship: There exists a linear relationship between the independent variable, x, and the dependent variable, y.
+2. Independence: The residuals are independent. In particular, there is no correlation between consecutive residuals in time series data.
+3. Homoscedasticity: The residuals have constant variance at every level of x.
+4. Normality: The residuals of the model are normally distributed.
+
+---
+
+# Model assumptions 
+
+If the assumptions are not met then the model will not be sound
+
+--
+
+If the error terms are correlated, we may have an unwarranted sense of confidence in our model
+
+---
+
+# Outliers
+
+You should be careful to throw out data that does not fit well into your model
+
+- Don't remove points because they result in a bad fit
+- Remove data if they are wrongly collected
+- Consider using a model that isn't affected much by outliers
+
+domain, linear models perform badly if some of the observations are FAR away from the other points
+
+---
+
+# User-facing problems in modeling in R
+
+- Data must be a matrix (except when it needs to be a data.frame)
+- Must use formula or x/y (or both)
+- Inconsistent naming of arguments (ntree in randomForest, num.trees in ranger)
+- na.omit explicitly or silently
+- May or may not accept factors
+
+---
+
+# Syntax for Computing Predicted Class Probabilities
+
+|Function     |Package      |Code                                       |
+|:------------|:------------|:------------------------------------------|
+|`lda`        |`MASS`       |`predict(obj)`                             |
+|`glm`        |`stats`      |`predict(obj, type = "response")`          |
+|`gbm`        |`gbm`        |`predict(obj, type = "response", n.trees)` |
+|`mda`        |`mda`        |`predict(obj, type = "posterior")`         |
+|`rpart`      |`rpart`      |`predict(obj, type = "prob")`              |
+|`Weka`       |`RWeka`      |`predict(obj, type = "probability")`       |
+|`logitboost` |`LogitBoost` |`predict(obj, type = "raw", nIter)`        |
+
+blatantly stolen from Max Kuhn
+
+---
+
+.center[
+![:scale 45%](images/parsnip.png)
+]
+
+---
+
+The goals of `parsnip` is...  
+
+- Decouple the *model classification* from the *computational engine*
+- Separate the definition of a model from its evaluation
+- Harmonize argument names
+- Make consistent predictions (always tibbles with na.omit=FALSE)
+
+---
+
+
+```r
+model_lm &lt;- lm(mpg ~ disp + drat + qsec, data = mtcars)
+```
+
+---
+
+
+```r
+library(parsnip)
+model_lm &lt;- linear_reg() %&gt;%
+  set_mode("regression") %&gt;%
+  set_engine("lm")
+model_lm
+```
+
+```
+## Linear Regression Model Specification (regression)
+## 
+## Computational engine: lm
+```
+
+--
+
+
+```r
+fit_lm &lt;- model_lm %&gt;%
+  fit(mpg ~ disp + drat + qsec, data = mtcars)
+fit_lm
+```
+
+```
+## parsnip model object
+## 
+## Fit time:  3ms 
+## 
+## Call:
+## stats::lm(formula = mpg ~ disp + drat + qsec, data = data)
+## 
+## Coefficients:
+## (Intercept)         disp         drat         qsec  
+##    11.52439     -0.03136      2.39184      0.40340
+```
+
+
+---
+
+# Tidy prediction
+
+
+```r
+predict(fit_lm, mtcars)
+```
+
+```
+## # A tibble: 32 × 1
+##    .pred
+##    &lt;dbl&gt;
+##  1  22.5
+##  2  22.7
+##  3  24.9
+##  4  18.6
+##  5  14.6
+##  6  19.2
+##  7  14.3
+##  8  23.8
+##  9  25.7
+## 10  23.0
+## # … with 22 more rows
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

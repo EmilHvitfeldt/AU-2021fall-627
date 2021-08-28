@@ -1,0 +1,16 @@
+---
+title: "Week 4 - LDA, QDA, KNN, Naive Bayes"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This lecture will be covering Linear Discriminant Analysis (LDA), Quadratic Discriminant Analysis (QDA), K-Nearest Neighbors (KNN) and Naive Bayes. Please finish reading chapter 4 (4.4 and 4.5) in "An Introduction to Statistical Learning". If you haven't already please make brush up on section 3.5 where KNN is covered for regression.
+
+The reading labs for chapter 4 can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/classification.html)
+
+## Slides
+
+To be posted!

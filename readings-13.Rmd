@@ -1,0 +1,17 @@
+---
+title: "Week 13 - SVM"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will be talking about Support Vector Machines. Please read chapter 9 in "An Introduction to Statistical Learning".
+
+The tidymodels lab sections can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/support-vector-machines.html).
+
+There will not be any labs this week due to Thanksgiving. The corresponding lab will be done next Monday.
+
+## Slides
+
+To be posted!

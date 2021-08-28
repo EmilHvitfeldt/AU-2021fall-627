@@ -1,0 +1,19 @@
+---
+title: "Week 3 - Logistic Regression"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Start read chapter 4 of "An Introduction to Statistical Learning", we will color 4.1, 4.2, and 4.3. This chapter covers logistic regression, linear discriminant analysis, quadratic discriminant analysis, and Naive Bayes.
+We will start by talking about logistic regression this week and talk about linear discriminant analysis and quadratic discriminant analysis next week.
+Furthermore, this is the first we will be talking about classification methods, take note of the differences between this and regression.
+
+We will also talk about the notion of data splitting or "train-test splitting". Please read the 5th chapter of "Tidy Modeling with R" which can be found [here](https://www.tmwr.org/splitting.html).
+
+The reading labs for chapter 4 can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/classification.html)
+
+## Slides
+
+To be posted!

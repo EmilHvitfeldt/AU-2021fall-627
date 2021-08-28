@@ -1,0 +1,62 @@
+name: "stat627"
+title: "Statistical Machine Learning"
+theme: theme.css
+description: |
+  Statistical Machine Learning
+output_dir: "docs"
+include: ["Readings"]
+exclude: ["papers.Rmd", "DESCRIPTION", "renv.lock"]
+navbar:
+  right:
+    - text: "Syllabus"
+      href: syllabus.html
+    - text: "Schedule"
+      href: schedule.html
+    - text: "Readings"
+      menu:
+        - text: "Information"
+          href: readings.html
+        - text: "---"
+        - text: "Week 1 - Introduction"
+          href: readings-01.html
+        - text: "Week 2 - Linear Regression"
+          href: readings-02.html
+        - text: "Week 3 - Logistic Regression"
+          href: readings-03.html
+        - text: "Week 4 - LDA, QDA, KNN, Naive Bayes"
+          href: readings-04.html
+        - text: "Week 5 - Feature Engineering"
+          href: readings-05.html
+        - text: "Week 6 - Resampling"
+          href: readings-06.html
+        - text: "Week 7 - Clustering"
+          href: readings-07.html
+        - text: "Week 8 - Topics in ML"
+          href: readings-08.html
+        - text: "Week 9 - PCA"
+          href: readings-09.html
+        - text: "Week 10 - Shrinkage"
+          href: readings-10.html
+        - text: "Week 11 - Splines & GAMs"
+          href: readings-11.html
+        - text: "Week 12 - Trees"
+          href: readings-12.html
+        - text: "Week 13 - SVM"
+          href: readings-13.html
+        - text: "Week 14 - SVM Labs"
+          href: readings-14.html
+        - text: "Week 15 - Finals"
+          href: readings-15.html
+    - text: "Labs"
+      menu:
+        - text: "Information"
+          href: labs.html
+        - text: "---"
+    - text: "Assignments"
+      menu:
+        - text: "Information"
+          href: assignments.html
+        - text: "---"
+    - text: "Reference"
+      href: reference.html
+output: distill::distill_article

@@ -1,0 +1,14 @@
+Imports: 
+    tidymodels,
+    tidyverse,
+    xaringanExtra,
+    distill,
+    here,
+    pagedown,
+    palmerpenguins,
+    distillcourse,
+    xaringan,
+    remotes
+Remotes:
+    EmilHvitfeldt/distillcourse,
+    gadenbuie/xaringanExtra

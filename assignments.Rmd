@@ -1,0 +1,22 @@
+---
+title: "Assignments"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+We will 10 weekly assignments, a midterm, and a final project in this class. The placement of these is located in the [schedule](schedule.html).
+
+Assignments are to be turned in on Canvas. Assignments will be available no later than 3 days before class and are due to be turned in on the following Sunday. Specific times can be found on Canvas. The assignment will contain a mix of conceptual, technical, and coding exercises.
+
+The midterm will much like the assignments but with a larger focus on a real analysis.
+ 
+The final project will have two parts. The final project will be a full data analysis of data of your choosing. The Project is a chance for you to show that you understand the data and to showcase some of the models and techniques you have learned to use in this class.
+The project can be done in groups. Both groups and the data you want to use should be approved by email by me. Approval must happen no later than November 14th.
+
+Ideas for data can be found here:
+
+- https://github.com/rfordatascience/tidytuesday
+- https://www.data-is-plural.com/
+- https://www.kaggle.com/

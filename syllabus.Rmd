@@ -1,0 +1,181 @@
+---
+title: "Syllabus"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Instructor
+
+Instructor: Emil Hvitfeldt  
+Time: Monday & Thursday 8:20-9:35PM ET - 9:35PM ET time zone (Washington DC time)  
+Course website: https://emilhvitfeldt.github.io/AU-2021fall-627/index.html  
+Office hours: Thursday 9:35PM - 10:35PM & Sunday 3:00PM - 4:00PM  
+Email: emilh@american.edu  
+Twiter: @Emil_Hvitfeldt  
+
+
+E-mail are the best ways to get in contact with me. I will try to respond to all course-related e-mails within 24 hours (really) but also remember that life can be busy and chaotic for everyone (including me!), so if I don't respond right away, don't worry!
+
+# Pre-requisites
+
+STAT 520 “Applied Multivariate Analysis” or STAT 615 “Regression”. 
+
+# Textbooks
+
+## Main textbook
+
+This book will be required reading and we will aim to cover most of the content.
+
+"An Introduction to Statistical Learning with Applications in R" by G. James, D. Witten, T. Hastie, and R. Tibshirani; Springer, 2021. ISBN 1071614177 The latest corrected printing is available on James's page at https://statlearning.com/
+
+The lab sections of ISLR have been rewritten to use tidymodels and can be found [here](https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/index.html).
+
+## Supplementary books
+
+These books are by no means necessary to buy or read to complete this course but serve as great stepping stones for deeper study. Some week's readings will refer to these books for extra readings.
+
+"The Elements of Statistical Learning: Data Mining, Inference, and Prediction", by T. Hastie, R. Tibshirani, and J. Friedman, 2nd Edition; Springer, 2009. ISBN 0387848576. Available on Hastie's page at https://web.stanford.edu/~hastie/Papers/ESLII.pdf
+[more technical; contains advanced explanations and mathematical proofs].
+
+"Tidy Modeling with R" by Max Kuhn and Julia Silge. Available online at https://www.tmwr.org/.
+
+# Course Plan
+
+1. Introduction, motivation, and examples. Understanding large and complex data sets. Statistical
+learning. First steps in R. [Chap. 1-2].
+2. Review of regression modeling and analysis; implementation in R. [Chap. 3].
+3. Classification problems and classification tools. Logistic regression and review of linear discriminant
+analysis. [Chap. 4]
+4. Resampling methods; bootstrap. [Chap. 5 and lecture notes].
+5. High-dimensional data and shrinkage. Ridge regression. LASSO. Model selection methods and
+dimension reduction. Principal components. Partial least squares. [Chap. 6]
+6. Nonlinear trends and splines. [Chap. 7; 7.4-7.5]
+7. Regression trees and decision trees [Chap. 8]
+8. Introduction to support vector machines [Chap. 9]
+9. Clustering methods [Chap. 10]
+10. Additional topics and applications, if time permits.
+
+# Assignments and grading
+
+Assignments (30%): During the semester I will assign, collect, and grade assignments. You may receive assistance from other students in the class and me, but your submissions must be composed of your own thoughts, coding, and words. A typical homework will include a few problems to do by hand, to see how things work, and a few realistic problems to do using R. Late submission is accepted at a cost of a 5% deduction for each day, with a maximum deduction of 50%.
+
+Labs (30%): 30-45 minute labs at the end of each class. Each lab covers the material of the lecture. You will have to submit the solutions of each lab on Blackboard the Sunday after each class.
+
+midterm (10%) will much like the assignments but with a larger focus on a real analysis.
+
+Project (30%) (25% report 5% presentation): Each student will receive or choose a data set with data description, problem formulation, and instructions. Using sound statistical methods, you will do the necessary modeling and data analysis and write a report summarizing your results and answering specific questions of your project. A 10-minute presentation summarizing the report will be given to the class or submitted on Canvas.
+
+90 – 100 % = A  
+87 – 90 % = A-  
+83 – 87 % = B+  
+80 – 83 % = B  
+77 – 80 % = B-   
+73 – 77 = C+  
+70 – 73 % = C  
+60 – 70 % = C-  
+
+Please schedule a meeting with me if you would like to see or discuss your grade at any point during the semester.
+
+# Learning objectives
+
+**Graduate students (STAT 627)**  
+Students will be able to:
+
+- Identify appropriate statistical learning methods for the given problem involving real data.
+- Understand the underlying assumptions, verify them, and propose appropriate actions if some assumptions do not hold.
+- Identify other possible problems with messy data, such as multicollinearity, understand their consequences, and propose solutions.
+- Evaluate the performance of the chosen regression and classification techniques and compare them.
+- Apply cross-validation techniques to find the optimal degree of flexibility - the best subset of predictors or the optimal tuning parameters.
+- Show, analytically, or empirically, the optimal balance between precision within training data and prediction power.
+- Illustrate results with appropriate plots and diagrams.
+
+**Undergraduate students (STAT 427)**  
+Students will be able to:
+
+- Identify appropriate statistical learning methods for the given problem involving real data.
+- Understand the underlying assumptions, techniques available to verify them, and propose appropriate remedies.
+- Use training and testing data to evaluate the performance of the chosen regression and classification techniques and compare them.
+- Use available empirical tools to find the optimal balance between precision within training data and prediction power.
+- Illustrate results with appropriate plots and diagrams.
+
+Students will demonstrate competence in using different statistical learning methods involving large, messy, and multi-dimensional numerical and categorical data. Methods include linear, logistic, and polynomial regression with proper variable selection, linear and quadratic discriminant analysis, K-nearest neighbor classifier, bootstrap, ridge regression, lasso, principal components regression, partial least squares, splines, regression and classification trees, support vector machines, clustering, and related methods. In addition, graduate students (STAT 627) will demonstrate competency in the analytic justification of the chosen methods, tuning of the algorithms, and evaluating their prediction power. 
+
+# Online help
+
+Data science and statistical programming can be difficult. Computers are stupid and little errors in your code can cause hours of headache (even if you've been doing this stuff for years!).
+
+Fortunately, there are tons of online resources to help you with this. Two of the most important are StackOverflow (a Q&A site with hundreds of thousands of answers to all sorts of programming questions) and RStudio Community (a forum specifically designed for people using RStudio and the tidyverse (i.e. you)).
+
+If you use Twitter, post R-related questions, and content with #rstats. The community there is exceptionally generous and helpful.
+
+Searching for help with R on Google can sometimes be tricky because the program name is, um, a single letter. Google is generally smart enough to figure out what you mean when you search for “r scatterplot,” but if it does struggle, try searching for “rstats” instead (e.g. “rstats scatterplot”).
+
+Additionally, we have a class chatroom at Slack where anyone in the class can ask questions and anyone can answer. I will monitor Slack regularly and will respond quickly. Ask questions about the readings, assignments, and project. You'll likely have similar questions as your peers, and you'll likely be able to answer other people's questions too.
+
+# Software 
+
+We will be using [R](https://cran.r-project.org/) and [tidymodels](https://www.tidymodels.org/) in this class. While not required, it is highly recommended that you use an IDE for R, I recommend  [https://rstudio.com/products/rstudio/](https://rstudio.com/products/rstudio/).
+
+# Learning during a pandemic
+
+Life absolutely sucks right now. None of us is really okay. We're all just pretending.
+
+You most likely know people who have lost their jobs, have tested positive for COVID-19, have been hospitalized, or perhaps have even died. You all have increased (or possibly decreased) work responsibilities and increased family care responsibilities—you might be caring for extra people (young and/or old!) right now, and you are likely facing uncertain job prospects (or have been laid off!).
+
+I'm fully committed to making sure that you learn everything you were hoping to learn from this class! I will make whatever accommodations I can to help you finish your exercises, do well on your projects, and learn and understand the class material. Under ordinary conditions, I am flexible and lenient with grading and course expectations when students face difficult challenges. Under pandemic conditions, that flexibility and leniency are intensified.
+
+If you tell me you're having trouble, I will not judge you or think less of you. I hope you'll extend me the same grace.
+
+You never owe me personal information about your health (mental or physical). You are always welcome to talk to me about things that you're going through, though. If I can't help you, I usually know somebody who can.
+
+If you need extra help, or if you need more time with something, or if you feel like you're behind or not understanding everything, do not suffer in silence! Talk to me! I will work with you. I promise.
+
+# Lauren's Promise
+
+I will listen and believe you if someone is threatening you.
+
+Lauren McCluskey, a 21-year-old honors student-athlete, was murdered on October 22, 2018, by a man she briefly dated on the University of Utah campus. We must all take action to ensure that this never happens again.
+
+If you are in immediate danger, call 911 or AU police (202 885-2527).
+
+If you are experiencing sexual assault, domestic violence, or stalking, please report it to me and I will connect you to resources or find appropriate contact information for [Counseling Center](https://www.american.edu/ocl/counseling/).
+
+# Support Services
+
+## Emergency preparedness
+
+In the event of an emergency, students should refer to the AU Web site http: //www.american.edu/emergency and the AU information line at (202) 885-1100 for general university-wide information. In case of a prolonged closure of the University, I send updates to you by email and will post all announcements on Blackboard.
+
+## Mathematics & Statistics Tutoring Lab (Don Myers Building) 
+
+provides tutoring in Intermediate Mathematics and Statistics. http://www.american.edu/cas/mathstat/tutoring.cfm
+
+## Academic Support and Access Center 
+
+offers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities. Writing support is also available in the Writing Center, Battelle-Tompkins 228.
+
+## Center for Diversity & Inclusion (X3651, MGC 201) 
+
+is dedicated to enhancing LGBTQ, Multicultural, First Generation, and Women's experiences on campus and to advance AU's commitment to respecting & valuing diversity by serving as a resource and liaison to students, staff, and faculty on issues of equity through education, outreach, and advocacy.
+
+## The Office of Advocacy Services for Interpersonal and Sexual Violence (X7070) 
+
+provides free and confidential advocacy services for anyone in the campus community who is impacted by sexual violence (sexual assault, dating or domestic violence, and stalking).
+
+## Counseling Center (x3500) 
+
+offers counseling and consultations regarding personal concerns, self-help information, and connections to off-campus mental health resources. Academic Support and Access Center (x3360) offers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities.
+
+## Religious Holidays
+Students may receive accommodation in the course for the observance of a religious and/or cultural holiday. The student should notify the professor as soon as possible should such a need exist. More information about accommodations for religious and/or cultural holidays can be found at www.american.edu/ocl/kay/request-for-religious-accommodation.cfm.
+
+## Academic Integrity Code
+
+Please be sure that you are familiar with AU's Academic Integrity Code, as I am required to report any cases of academic dishonesty to the dean of CAS. For your review: http://www.american.edu/academics/ integrity/.

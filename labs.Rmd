@@ -1,0 +1,22 @@
+---
+title: "Labs"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Each lecture will be followed by lab time which is sometimes where we will be using [R](https://cran.r-project.org/) and [tidymodels](https://www.tidymodels.org/) to implement the methods we will have talked about that week.
+
+Labs are to be turned in on Blackboard. labs will be available no later than 3 days before class and are due to be turned in on the following Sunday. We will be collectively be talking about the labs and come up with some of the answers. To get full credit for labs the document that is turned in should contain not just the right code to solve the problem but also text explaining what has been done.
+
+- Don't print raw data.frames. If you want to print part, turn it into a tibble
+- Don't print verbose code
+
+Output can be excluding by setting `echo=FALSE` in chunks.
+
+````
+```{r, echo=FALSE}
+
+```
+````

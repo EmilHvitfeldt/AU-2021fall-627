@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Support Vector Machines</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Emil Hvitfeldt" />
+    <meta name="date" content="2021-06-21" />
+    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, title-slide
+
+# Support Vector Machines
+## AU STAT627
+### Emil Hvitfeldt
+### 2021-06-21
+
+---
+
+
+
+
+
+
+
+
+&lt;div style = "position:fixed; visibility: hidden"&gt;
+`$$\require{color}\definecolor{orange}{rgb}{1, 0.603921568627451, 0.301960784313725}$$`
+`$$\require{color}\definecolor{blue}{rgb}{0.301960784313725, 0.580392156862745, 1}$$`
+`$$\require{color}\definecolor{pink}{rgb}{0.976470588235294, 0.301960784313725, 1}$$`
+&lt;/div&gt;
+
+&lt;script type="text/x-mathjax-config"&gt;
+MathJax.Hub.Config({
+  TeX: {
+    Macros: {
+      orange: ["{\\color{orange}{#1}}", 1],
+      blue: ["{\\color{blue}{#1}}", 1],
+      pink: ["{\\color{pink}{#1}}", 1]
+    },
+    loader: {load: ['[tex]/color']},
+    tex: {packages: {'[+]': ['color']}}
+  }
+});
+&lt;/script&gt;
+
+&lt;style&gt;
+.orange {color: #FF9A4D;}
+.blue {color: #4D94FF;}
+.pink {color: #F94DFF;}
+&lt;/style&gt;
+
+
+
+
+
+&lt;style type="text/css"&gt;
+.small {
+  font-size: 75%;
+}
+&lt;/style&gt;
+
+
+# Boston Data Set
+
+.small[
+.pull-left[
+- **crim** per capita crime rate by town.
+- **zn** proportion of residential land zoned for lots over 25,000 sq.ft.
+- **indus** proportion of non-retail business acres per town.
+- **chas** Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+- **nox** nitrogen oxides concentration (parts per 10 million).
+- **rm** average number of rooms per dwelling.
+- **age** proportion of owner-occupied units built prior to 1940
+]
+
+.pull-right[
+- **dis** weighted mean of distances to five Boston employment centres.
+- **rad** index of accessibility to radial highways.
+- **tax** full-value property-tax rate per $10,000.
+- **ptratio** pupil-teacher ratio by town.
+- **black** 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+- **lstat** lower status of the population (percent).
+- **medv** median value of owner-occupied homes in $1000s.
+]
+]
+
+---
+
+# Boston Data Set
+
+**black** 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+
+---
+
+# Support Vector Machines
+
+A fairly new contender in the machine learning space
+
+A generalization of the **maximal margin classifier**
+
+We will talk about 
+
+- the maximal margin classifier
+- How it can be extended to the support vector classifier (SVM)
+- How the SVM can be extended using non-linear separators
+
+---
+
+# What is a hyperplane?
+
+We know that a line can separate a 2-dimensional space, and the plane can separate a 3-dimensional space
+
+A **hyperplane** in `\(p\)` dimensions is a flat subspace of dimension `\(p-1\)`
+
+This will generalize to any number of dimensions but can be hard to visualize for `\(p&gt;3\)`
+
+---
+
+# What is a hyperplane?
+
+A hyperplane will separate a space into regions, one for each side (technically 3 since a point can be directly on the hyperplane)
+
+In two dimensions a hyperplane is defined by the equation
+
+`$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0$$`
+
+And this is the hyperplane where any pair of `\(X = (X_1, X_2)^T\)` that satisfy this equation is on the hyperplane
+
+---
+
+# What is a hyperplane?
+
+The two regions formed by this hyperplane are the points that satisfy
+
+`$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 &gt; 0$$`
+
+and 
+
+`$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 &lt; 0$$`
+
+---
+
+# `\(0.2 + 0.2 X - 0.8 Y = 0\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Creating a classifier
+
+Idea:
+
+Given some data, we can find a hyperplane that separates the data
+
+such that we can use the hyperplane defined to classify new observations
+
+---
+
+# The Maximal Margin Classifier
+
+There might be many different hyperplanes that separate
+
+that can separate two different regions but we would ideally want to have only one
+
+The **Maximal Margin Classifier** aims the find the hyperplane that separates the perpendicular distance to the 
+
+---
+
+### Hyperplane only depends on closest points
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+### Hyperplane only depends on closest points
+
+&lt;img src="index_files/figure-html/unnamed-chunk-6-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Support vectors
+
+The vectors from the border points to the hyperplane are the support vectors
+
+These are the only points that directly have any influence on the model
+
+---
+
+# What happens when we can't separate the regions?
+
+The idea of a Maximal Margin Classifier is great but it will rarely work in practice since it only works for regions that are separately
+
+Create an extension that allows for hyperplanes that "almost" separate the regions
+
+This hyperplane would be called a *soft margin*
+
+---
+
+# Support Vector Classifiers
+
+- Greater robustness to individual observations, and
+- Better classification of most of the training observations.
+
+This is once again a trade-off
+
+---
+
+# Support Vector Classifiers
+
+How do we create hyperplanes that "almost" separate our two classes of observations
+
+.center[
+![:scale 100%](images/svm.png)
+]
+
+where C is a non-negative tuning parameter. and M is the width of the margin
+
+---
+
+# Support Vector Classifiers
+
+`\(\epsilon_1, ..., \epsilon_n\)` are *slack variables*
+
+and they allow individual observations to be on the wrong side of the margin or the hyperplane
+
+if
+
+- `\(\epsilon_i = 0\)` then the `\(i\)`th observation is on the right side of the hyperplane
+- `\(\epsilon_i &gt; 0\)` then the `\(i\)`th observation is on the wrong side of the margin
+- `\(\epsilon_i &gt; 1\)` then the `\(i\)`th observation is on the wrong side of the hyperplane
+
+---
+
+# Support Vector Classifiers
+
+We can think of `\(C\)` as a budget of violations
+
+- if `\(C=0\)` then we have a maximal margin classifier
+- if `\(C&gt;0\)` no more than `\(C\)` observations can be on the wrong side of the hyperplane
+
+When `\(C\)` increase we become more tolerant of violations and the margin widens
+
+When `\(C\)` decreases we become less tolerant of violations and the margin widens
+
+---
+
+# Support Vector Classifiers
+
+Note:
+
+SVM are typically fitted iteratively, if `\(C\)` is chosen too low then there are no correct solutions
+
+---
+
+# Support Vector Classifiers
+
+`\(C\)` is essentially a tuning parameter that controls the bias-variance trade-off
+
+- Small `\(C\)` gives narrow margins that are rarely violated, highly fit to the data, low bias, high variance
+- Large `\(C\)` gives wide margins that are more often violated, loosely fit to data, high bias, low variance
+
+---
+
+# Support Vector Classifiers
+
+Only wrongly predicted points affect the hyperplane
+
+Support Vector Classifier are very robust to outliers as they have no effect
+
+---
+
+# Support Vector Machine
+
+Support vector classifiers work well when the classes are linearly separable
+
+We saw in earlier chapters how we handle non-linear transformations by enlargening the feature-space
+
+We can do this in (at least) two ways, using .blue[polynomials] and .orange[kernels]
+
+---
+
+# Support Vector Machine
+
+Without going into too many details, the main the algorithm at works ends up calculation similarities between two observations
+
+`\(K(x_i, x_{i'})\)`
+
+Which is some function called a *kernel*.
+
+Depending on what `\(K\)` is we get different results.
+
+---
+
+# Support Vector Machine
+
+`$$K(x_i, x_{i'}) = \sum_{j=1}^p x_{ij}x_{i'j}$$`
+
+is known as a linear kernel
+
+---
+
+
+
+---
+
+# Linear kernel
+
+&lt;img src="index_files/figure-html/unnamed-chunk-8-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Support Vector Machine
+
+`$$K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij}x_{i'j}\right)^d$$`
+
+is known as a polynomial kernel of degree `\(d\)`
+
+---
+
+# Polynomial kernel of degree 2
+
+&lt;img src="index_files/figure-html/unnamed-chunk-9-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial kernel of degree 3
+
+&lt;img src="index_files/figure-html/unnamed-chunk-10-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Polynomial kernel of degree 15
+
+
+```
+## line search fails -0.001783313 0.4335592 4.001625e-05 1.157726e-08 -3.468026e-12 8.837028e-11 -1.377543e-16
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-11-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Support Vector Machine
+
+`$$K(x_i, x_{i'}) = \exp\left(-\gamma\sum_{j=1}^p (x_{ij}x_{i'j})^2\right)$$`
+
+is known as a radial kernel
+
+Where `\(\gamma\)` is a positive constant
+
+This means that the radial kernel has very *local* behavior
+
+---
+
+# radial kernel `\(\gamma = 1\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-12-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# radial kernel `\(\gamma = 10\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# radial kernel `\(\gamma = 100\)`
+
+&lt;img src="index_files/figure-html/unnamed-chunk-14-1.png" width="700px" style="display: block; margin: auto;" /&gt;
+
+---
+
+# SVMs for more than 2 classes
+
+This is actually a more general question
+
+How do we extend a binary classifier to multi-classification
+
+- one-versus-one
+- one-versus-all
+
+---
+
+# One-Versus-One Classification
+
+If we have `\(K&gt;2\)` classes
+
+We construct `\({K}\choose{2}\)` binary classification models, each comparing 2 classes
+
+An observation is classified by running each of the `\({K}\choose{2}\)` and tallying up the results
+
+The observation is assigned the class that was predicted most often in the `\({K}\choose{2}\)` models
+
+---
+
+# One-Versus-All Classification
+
+If we have `\(K&gt;2\)` classes
+
+We fit `\(K\)` models, each comparing 1 class against the `\(K-1\)` remaining classes
+
+Whichever model performs best wins the observation
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
