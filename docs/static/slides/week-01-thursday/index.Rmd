@@ -93,11 +93,6 @@ There is no assumption that $f$ provides any information.
 
 Our goal is to find $f$ 
 
---
-
-Y: response/dependent variable  
-X: predictors, independent variables, features/variables
-
 ---
 
 # Why estimate f?
