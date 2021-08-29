@@ -8,7 +8,9 @@ Imports:
     palmerpenguins,
     distillcourse,
     xaringan,
-    remotes
+    remotes,
+    sass,
+    flair
 Remotes:
     EmilHvitfeldt/distillcourse,
     gadenbuie/xaringanExtra
