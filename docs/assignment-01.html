@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Statistical Machine Learning: Week 10 - Shrinkage</title>
+  <title>Statistical Machine Learning: Assignment 1</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Statistical Machine Learning: Week 10 - Shrinkage"/>
+  <meta property="og:title" content="Statistical Machine Learning: Assignment 1"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Statistical Machine Learning"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Statistical Machine Learning: Week 10 - Shrinkage"/>
+  <meta property="twitter:title" content="Statistical Machine Learning: Assignment 1"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Week 10 - Shrinkage"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Assignment 1"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2356,7 +2356,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Week 10 - Shrinkage","authors":[]}
+{"title":"Assignment 1","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2428,7 +2428,7 @@ Assignments
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Week 10 - Shrinkage</h1>
+<h1>Assignment 1</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2436,11 +2436,48 @@ Assignments
 
 
 <div class="d-article">
-<p>Please finish reading chapter 6 of “An Introduction to Statistical Learning”. The chapter covers Shrinkage methods including ridge and lasso regression.</p>
-<p>This will be a good time to finally talk about hyper parameter tuning. We will use the <a href="https://tune.tidymodels.org/">tune</a> package and <a href="https://dials/tidymodels.org/">dials</a> package. A great place to start learning about these packages is <a href="https://tune.tidymodels.org/articles/getting_started.html">this post</a>.</p>
-<p>The tidymodels labs chapter can be found <a href="https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/linear-model-selection-and-regularization.html">here</a>.</p>
-<h2 id="slides">Slides</h2>
-<p>To be posted!</p>
+<h2 id="exercise-1-5-points">Exercise 1 (5 points)</h2>
+<p>For each of parts (a) through (d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.</p>
+<ol type="1">
+<li>The sample size <span class="math inline">\(n\)</span> is extremely large, and the number of predictors <span class="math inline">\(p\)</span> is small.</li>
+<li>The number of predictors <span class="math inline">\(p\)</span> is extremely large, and the number of observations <span class="math inline">\(n\)</span> is small.</li>
+<li>The relationship between the predictors and response is highly non-linear.</li>
+<li>The variance of the error terms, is extremely high.</li>
+</ol>
+<h2 id="exercise-2-5-points">Exercise 2 (5 points)</h2>
+<p>Describe the difference between a parametric and non-parametric statistical learning approach. What are the advantages of a parametric approach to regression or classification (as opposed to a noon-parametric approach)? What are its disadvantages?</p>
+<h2 id="exercise-3-5-points">Exercise 3 (5 points)</h2>
+<p>Carefully explain the the difference between the KNN classifier and KNN regression methods. Name a downside when using this model on very large data.</p>
+<h2 id="exercise-4-5-points">Exercise 4 (5 points)</h2>
+<p>Suppose we have a data set with five predictors, <span class="math inline">\(X1 =\)</span> GPA, <span class="math inline">\(X2 =\)</span> extracurricular activities (EA), <span class="math inline">\(X3 =\)</span> Gender (1 for Female and 0 for Male), <span class="math inline">\(X4 =\)</span> Interaction between GPA and EA, and <span class="math inline">\(X5 =\)</span> Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get <span class="math inline">\(\beta_0 = 50\)</span>, <span class="math inline">\(\beta_1 = 20\)</span>, <span class="math inline">\(\beta_2 = 0.07\)</span>, <span class="math inline">\(\beta_3 = 35\)</span>, <span class="math inline">\(\beta_4 = 0.01\)</span>, <span class="math inline">\(\beta_5 = - 10\)</span>.</p>
+<ol type="a">
+<li>Which answer is correct, and why?
+<ol type="1">
+<li>For a fixed value of EA and GPA, males earn more on average than females.</li>
+<li>For a fixed value of EA and GPA, females earn more on average than males.</li>
+<li>For a fixed value of EA and GPA, males earn more on average than females provided that the GPA is high enough.</li>
+<li>For a fixed value of EA and GPA, females earn more on average than males provided that the GPA is high enough.</li>
+</ol></li>
+<li>Predict the salary of a female with EA of 110 and a GPA of 4.0.</li>
+<li>True or false: Since the coefficient for the GPA/EA interaction term is very small, there is very little evidence of an interaction effect. Justify your answer.</li>
+</ol>
+<h2 id="exercise-5-10-points">Exercise 5 (10 points)</h2>
+<p>This question should be answered using the <code>biomass</code> data set.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"biomass"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<ol type="a">
+<li>Fit a multiple regression model to predict <code>HHV</code> using <code>carbon</code>, <code>hydrogen</code> and <code>oxygen</code>.</li>
+<li>Provide an interpretation of each coefficient in the model. Be careful, note the values <code>Cruise</code> is able to take.</li>
+<li>Write out the model in equation form.</li>
+<li>For which the predictors can you reject the null hypothesis <span class="math inline">\(H_0: \beta_j = 0\)</span>?</li>
+<li>On the basis of your response to the previous question, fit a smaller model that only uses the predictors for which there is evidence of association with the outcome.</li>
+<li>How well do the models in (a) and (e) fit the data? How big was the effect of removing the predictor?</li>
+</ol>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
@@ -2449,6 +2486,15 @@ Assignments
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

@@ -1,0 +1,55 @@
+---
+title: "Assignment 1"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1 (5 points)
+
+For each of parts (a) through (d), indicate whether we would generally expect the
+performance of a flexible statistical learning method to be better or worse than an inflexible
+method. Justify your answer.
+
+1. The sample size $n$ is extremely large, and the number of predictors $p$ is small.
+1. The number of predictors $p$ is extremely large, and the number of observations $n$ is small.
+1. The relationship between the predictors and response is highly non-linear.
+1. The variance of the error terms, is extremely high.
+
+## Exercise 2 (5 points)
+
+Describe the difference between a parametric and non-parametric statistical learning approach. What are the advantages of a parametric approach to regression or classification (as opposed to a noon-parametric approach)? What are its disadvantages?
+
+## Exercise 3 (5 points)
+
+Carefully explain the the difference between the KNN classifier and KNN regression methods. Name a downside when using this model on very large data.
+
+## Exercise 4 (5 points)
+
+Suppose we have a data set with five predictors, $X1 =$ GPA, $X2 =$ extracurricular activities (EA), $X3 =$ Gender (1 for Female and 0 for Male), $X4 =$ Interaction between GPA and EA, and $X5 =$ Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get $\beta_0 = 50$, $\beta_1 = 20$, $\beta_2 = 0.07$, $\beta_3 = 35$, $\beta_4 = 0.01$, $\beta_5 = - 10$.
+
+a. Which answer is correct, and why?
+    1. For a fixed value of EA and GPA, males earn more on average than females.
+    1. For a fixed value of EA and GPA, females earn more on average than males.
+    1. For a fixed value of EA and GPA, males earn more on average than females provided that the GPA is high enough.
+    1. For a fixed value of EA and GPA, females earn more on average than males provided that the GPA is high enough.
+a. Predict the salary of a female with EA of 110 and a GPA of 4.0.
+b. True or false: Since the coefficient for the GPA/EA interaction term is very small, there is very
+little evidence of an interaction effect. Justify your answer.
+
+## Exercise 5 (10 points)
+
+This question should be answered using the `biomass` data set.
+
+```{r, eval=FALSE}
+library(tidymodels)
+data("biomass")
+```
+
+a. Fit a multiple regression model to predict `HHV` using `carbon`, `hydrogen` and `oxygen`.
+a. Provide an interpretation of each coefficient in the model. Be careful, note the values `Cruise` is able to take.
+a. Write out the model in equation form.
+a. For which the predictors can you reject the null hypothesis $H_0: \beta_j = 0$?
+a. On the basis of your response to the previous question, fit a smaller model that only uses the predictors for which there is evidence of association with the outcome.
+a. How well do the models in (a) and (e) fit the data? How big was the effect of removing the predictor?

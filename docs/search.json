@@ -1,11 +1,18 @@
 {
   "articles": [
     {
+      "path": "assignment-01.html",
+      "title": "Assignment 1",
+      "author": [],
+      "contents": "\nExercise 1 (5 points)\nFor each of parts (a) through (d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.\nThe sample size \\(n\\) is extremely large, and the number of predictors \\(p\\) is small.\nThe number of predictors \\(p\\) is extremely large, and the number of observations \\(n\\) is small.\nThe relationship between the predictors and response is highly non-linear.\nThe variance of the error terms, is extremely high.\nExercise 2 (5 points)\nDescribe the difference between a parametric and non-parametric statistical learning approach. What are the advantages of a parametric approach to regression or classification (as opposed to a noon-parametric approach)? What are its disadvantages?\nExercise 3 (5 points)\nCarefully explain the the difference between the KNN classifier and KNN regression methods. Name a downside when using this model on very large data.\nExercise 4 (5 points)\nSuppose we have a data set with five predictors, \\(X1 =\\) GPA, \\(X2 =\\) extracurricular activities (EA), \\(X3 =\\) Gender (1 for Female and 0 for Male), \\(X4 =\\) Interaction between GPA and EA, and \\(X5 =\\) Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get \\(\\beta_0 = 50\\), \\(\\beta_1 = 20\\), \\(\\beta_2 = 0.07\\), \\(\\beta_3 = 35\\), \\(\\beta_4 = 0.01\\), \\(\\beta_5 = - 10\\).\nWhich answer is correct, and why?\nFor a fixed value of EA and GPA, males earn more on average than females.\nFor a fixed value of EA and GPA, females earn more on average than males.\nFor a fixed value of EA and GPA, males earn more on average than females provided that the GPA is high enough.\nFor a fixed value of EA and GPA, females earn more on average than males provided that the GPA is high enough.\n\nPredict the salary of a female with EA of 110 and a GPA of 4.0.\nTrue or false: Since the coefficient for the GPA/EA interaction term is very small, there is very little evidence of an interaction effect. Justify your answer.\nExercise 5 (10 points)\nThis question should be answered using the biomass data set.\n\n\nlibrary(tidymodels)\ndata(\"biomass\")\n\n\n\nFit a multiple regression model to predict HHV using carbon, hydrogen and oxygen.\nProvide an interpretation of each coefficient in the model. Be careful, note the values Cruise is able to take.\nWrite out the model in equation form.\nFor which the predictors can you reject the null hypothesis \\(H_0: \\beta_j = 0\\)?\nOn the basis of your response to the previous question, fit a smaller model that only uses the predictors for which there is evidence of association with the outcome.\nHow well do the models in (a) and (e) fit the data? How big was the effect of removing the predictor?\n\n\n\n",
+      "last_modified": "2021-09-05T23:11:00-07:00"
+    },
+    {
       "path": "assignments.html",
       "title": "Assignments",
       "author": [],
       "contents": "\nWe will 10 weekly assignments, a midterm, and a final project in this class. The placement of these is located in the schedule.\nAssignments are to be turned in on Canvas. Assignments will be available no later than 3 days before class and are due to be turned in on the following Sunday. Specific times can be found on Canvas. The assignment will contain a mix of conceptual, technical, and coding exercises.\nThe midterm will much like the assignments but with a larger focus on a real analysis.\nThe final project will have two parts. The final project will be a full data analysis of data of your choosing. The Project is a chance for you to show that you understand the data and to showcase some of the models and techniques you have learned to use in this class. The project can be done in groups. Both groups and the data you want to use should be approved by email by me. Approval must happen no later than November 14th.\nIdeas for data can be found here:\nhttps://github.com/rfordatascience/tidytuesday\nhttps://www.data-is-plural.com/\nhttps://www.kaggle.com/\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:35-07:00"
+      "last_modified": "2021-09-05T23:11:00-07:00"
     },
     {
       "path": "index.html",
@@ -13,147 +20,147 @@
       "description": "American University 427/627\n",
       "author": [],
       "contents": "\nThis website contains most of the information and material that will be used for one of the sections of the course Statistical Machine Learning at American University.\nThe navigation bar contains information about the syllabus, schedule, readings, labs and assignments.\nLicense\nThis online work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International. Visit here for more information about the license.\nColophon\nThis book was written in RStudio using distill. The complete source is available on GitHub. All packages versions are being handled with renv.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:36-07:00"
+      "last_modified": "2021-09-05T23:11:01-07:00"
     },
     {
       "path": "labs.html",
       "title": "Labs",
       "author": [],
       "contents": "\nEach lecture will be followed by lab time which is sometimes where we will be using R and tidymodels to implement the methods we will have talked about that week.\nLabs are to be turned in on Blackboard. labs will be available no later than 3 days before class and are due to be turned in on the following Sunday. We will be collectively be talking about the labs and come up with some of the answers. To get full credit for labs the document that is turned in should contain not just the right code to solve the problem but also text explaining what has been done.\nDon’t print raw data.frames. If you want to print part, turn it into a tibble\nDon’t print verbose code\nOutput can be excluding by setting echo=FALSE in chunks.\n<div class=\"layout-chunk\" data-layout=\"l-body\">\n\n\n<\/div>\n\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:36-07:00"
+      "last_modified": "2021-09-05T23:11:02-07:00"
     },
     {
       "path": "readings-01.html",
       "title": "Week 1 - Introduction",
       "author": [],
       "contents": "\nMonday\nRead chapter 2 of “An Introduction to Statistical Learning”. This is a big picture chapter that lays the foundation of the rest of the book. It is not expected to have read this before class.\nChapter 1 serves as an introduction to the book, data, and notation. Can be read or skimmed through if you want.\nWe will be using R which can be downloaded here. Additionally, it is also advised to use RStudio which can be downloaded here, but any IDE will work.\nWe will be using the tidymodels ecosystem of packages designed for modeling. If you haven’t already you should install these packages along with tidyverse.\n\n\ninstall.packages(\"tidymodels\")\ninstall.packages(\"tidyverse\")\n\n\n\nThursday\nRead chapter 3 of “An Introduction to Statistical Learning”. This chapter goes over simple linear regression, multiple linear regression, and the considerations used in linear regression. As far as I can tell, you have all taken courses where linear regression has been introduced. It is still worthwhile for you to read this chapter to get familiar with the book, and hopefully, it will be an easy read.\nIf you want more information about the way to fit a model using the tidymodels, read chapter 6 of Tidy Modeling with R, Fitting models with parsnip.\nIf you want more information on the theoretical background you can read sections 3.1 and 3.2 of “The Elements of Statistical Learning”. This is optional reading.\nInstead of reading the lab sections of chapter 3, read this chapter instead which I rewrote to use tidymodels.\nSlides Monday\n\n\n\nfitvids('.shareagain', {players: 'iframe'});\n\nPDF download Full Screen\nSlides Thursday\n\n\n\nfitvids('.shareagain', {players: 'iframe'});\n\nPDF download Full Screen\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:37-07:00"
+      "last_modified": "2021-09-05T23:11:02-07:00"
     },
     {
       "path": "readings-02.html",
       "title": "Week 2 - Linear Regression",
       "author": [],
       "contents": "\nThis week is a half week because of Labor Day. There will be no class Monday, and the Thursday class will be labs about linear regression to accompany the lecture from last week.\nIf you need a reminder this is the reading about linear regression models.\nRead chapter 3 of “An Introduction to Statistical Learning”. This chapter goes over simple linear regression, multiple linear regression, and the considerations used in linear regression. As far as I can tell, you have all taken courses where linear regression has been introduced. It is still worthwhile for you to read this chapter to get familiar with the book, and hopefully, it will be an easy read.\nIf you want more information about the way to fit a model using the tidymodels, read chapter 6 of Tidy Modeling with R, Fitting models with parsnip.\nIf you want more information on the theoretical background you can read sections 3.1 and 3.2 of “The Elements of Statistical Learning”. This is optional reading.\nInstead of reading the lab sections of chapter 3, read this chapter instead which I rewrote to use tidymodels.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:37-07:00"
+      "last_modified": "2021-09-05T23:11:03-07:00"
     },
     {
       "path": "readings-03.html",
       "title": "Week 3 - Logistic Regression",
       "author": [],
       "contents": "\nStart read chapter 4 of “An Introduction to Statistical Learning”, we will color 4.1, 4.2, and 4.3. This chapter covers logistic regression, linear discriminant analysis, quadratic discriminant analysis, and Naive Bayes. We will start by talking about logistic regression this week and talk about linear discriminant analysis and quadratic discriminant analysis next week. Furthermore, this is the first we will be talking about classification methods, take note of the differences between this and regression.\nWe will also talk about the notion of data splitting or “train-test splitting”. Please read the 5th chapter of “Tidy Modeling with R” which can be found here.\nThe reading labs for chapter 4 can be found here\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:38-07:00"
+      "last_modified": "2021-09-05T23:11:03-07:00"
     },
     {
       "path": "readings-04.html",
       "title": "Week 4 - LDA, QDA, KNN, Naive Bayes",
       "author": [],
       "contents": "\nThis lecture will be covering Linear Discriminant Analysis (LDA), Quadratic Discriminant Analysis (QDA), K-Nearest Neighbors (KNN) and Naive Bayes. Please finish reading chapter 4 (4.4 and 4.5) in “An Introduction to Statistical Learning”. If you haven’t already please make brush up on section 3.5 where KNN is covered for regression.\nThe reading labs for chapter 4 can be found here\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:38-07:00"
+      "last_modified": "2021-09-05T23:11:04-07:00"
     },
     {
       "path": "readings-05.html",
       "title": "Week 5 - Feature Engineering",
       "author": [],
       "contents": "\nPlease read Feature engineering with recipes from Tidy Modeling with R.\nrecipes will be introduces as the R package we will use to perform pre-processing.\nAs optional but highly recommended reading is chapter 5, 6, and 8 from Feature Engineering and Selection: A Practical Approach for Predictive Models.\nEncoding Categorical Predictors\nEngineering Numeric Predictors\nHandling Missing Data\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:38-07:00"
+      "last_modified": "2021-09-05T23:11:04-07:00"
     },
     {
       "path": "readings-06.html",
       "title": "Week 6 - Resampling",
       "author": [],
       "contents": "\nPlease read chapter 5 in “An Introduction to Statistical Learning”, which looks at bootstrapping and cross-validation. In addition will we also talk about data leakage some more. We will also be talking about evaluating model performance so please also read chapter 9 - Judging model effectiveness in “Tidy Modeling with R, which we will use as the introduction for the R package yardstick.\nPlease also read chapter 10 and 11 from Tidy Modeling with R\nResampling for evaluating performance\nComparing models with resampling\nThe accompanied tidymodels labs can be found here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:39-07:00"
+      "last_modified": "2021-09-05T23:11:04-07:00"
     },
     {
       "path": "readings-07.html",
       "title": "Week 7 - Clustering",
       "author": [],
       "contents": "\nPlease read chapter 12 in “An Introduction to Statistical Learning”. This will be the only major jump on the textbook, but it shouldn’t affect reading too much. The chapter covers clustering methods and we will look at “K-Means Clustering and Hierarchical clustering. This will (sadly) be our only peak at unsupervised learning this course. Also read the article K-means clustering with tidy data principles from tidymodels.org which covers how to work with clustering in the tidymodels framework.\nThe accompanied tidymodels labs can be found here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:39-07:00"
+      "last_modified": "2021-09-05T23:11:05-07:00"
     },
     {
       "path": "readings-08.html",
       "title": "Week 7 - Topics in ML",
       "author": [],
       "contents": "\nWe will be working on the midterm this week. I will take the opportunity to talk about topics in Machine Learning on a broader scale then just implementation and statistics.\nI’ll post more reading soon!\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:40-07:00"
+      "last_modified": "2021-09-05T23:11:05-07:00"
     },
     {
       "path": "readings-09.html",
       "title": "Week 9 - PCA",
       "author": [],
       "contents": "\nThis week we will take a look at PCA (chapter 10 in “An Introduction to Statistical Learning”) and PCA regression (chapter 6.2).\nThe tidymodels lab sections can be found here and here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:40-07:00"
+      "last_modified": "2021-09-05T23:11:06-07:00"
     },
     {
       "path": "readings-10.html",
       "title": "Week 10 - Shrinkage",
       "author": [],
       "contents": "\nPlease finish reading chapter 6 of “An Introduction to Statistical Learning”. The chapter covers Shrinkage methods including ridge and lasso regression.\nThis will be a good time to finally talk about hyper parameter tuning. We will use the tune package and dials package. A great place to start learning about these packages is this post.\nThe tidymodels labs chapter can be found here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:41-07:00"
+      "last_modified": "2021-09-05T23:11:06-07:00"
     },
     {
       "path": "readings-11.html",
       "title": "Week 11 - Splines & GAMs",
       "author": [],
       "contents": "\nWe will be talking about splines and Generalized additive models (GAM). Please read chapter 7 in “An Introduction to Statistical Learning”.\nThe tidymodels lab sections can be found here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:41-07:00"
+      "last_modified": "2021-09-05T23:11:07-07:00"
     },
     {
       "path": "readings-12.html",
       "title": "Week 12 - Trees",
       "author": [],
       "contents": "\nWe will be talking about Decision trees, bagging, boosting and random forests. Please read chapter 8 in “An Introduction to Statistical Learning”.\nThe tidymodels lab sections can be found here.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:42-07:00"
+      "last_modified": "2021-09-05T23:11:07-07:00"
     },
     {
       "path": "readings-13.html",
       "title": "Week 13 - SVM",
       "author": [],
       "contents": "\nWe will be talking about Support Vector Machines. Please read chapter 9 in “An Introduction to Statistical Learning”.\nThe tidymodels lab sections can be found here.\nThere will not be any labs this week due to Thanksgiving. The corresponding lab will be done next Monday.\nSlides\nTo be posted!\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:42-07:00"
+      "last_modified": "2021-09-05T23:11:08-07:00"
     },
     {
       "path": "readings-14.html",
       "title": "Week 14 - SVM labs",
       "author": [],
       "contents": "\nWe will continue last weeks talk on SVMs and do the corresponding lab.\nThe Thursday class will be dedicated for last minute questions and guidance about the final project.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:42-07:00"
+      "last_modified": "2021-09-05T23:11:08-07:00"
     },
     {
       "path": "readings-15.html",
       "title": "Week 15 - Finals Presentations",
       "author": [],
       "contents": "\nBoth days will be dedicated to presentations of finals.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:43-07:00"
+      "last_modified": "2021-09-05T23:11:08-07:00"
     },
     {
       "path": "readings.html",
       "title": "Readings",
       "author": [],
       "contents": "\nThe readings for this course will be based on the textbooks listed in the syllabus. Readings will primarily be taken from the main textbook, but will sometimes be other material. Additional optional reading will also be listed for each week for the students who want to dig deeper into the content of the week. Information from the optional reading will not be expected knowledge in the homework and the exams and should be seen as a learning opportunity only.\nReading before class is strongly encouraged to allow you to find the areas you have additional questions about and ask them in class.\nSlides will also be posted here for each week.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:43-07:00"
+      "last_modified": "2021-09-05T23:11:09-07:00"
     },
     {
       "path": "reference.html",
       "title": "Reference",
       "author": [],
       "contents": "\nVarious information links will be posted here as needed.\nTimer\n15 minute timer\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:44-07:00"
+      "last_modified": "2021-09-05T23:11:09-07:00"
     },
     {
       "path": "schedule.html",
       "title": "Schedule",
       "author": [],
       "contents": "\n\nContents\nWeek 1\nWeek 2\nWeek 3\nWeek 4\nWeek 5\nWeek 6\nWeek 7\nWeek 8\nWeek 9\nWeek 10\nWeek 11\nWeek 12\nWeek 13\nWeek 14\nWeek 15\n\n\n\n\n\n\n\nWeek 1\n2021-08-30 to 2021-09-05\nMonday\nTopics: Introductions, What is Statistical Machine Learning?, R, RStudio, Tidymodels\nreadings\nThursday\nTopics: Linear regression, Regression\nWeek 2\n2021-09-06 to 2021-09-12\nTopics: Linear regression, Regression\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 3\n2021-09-13 to 2021-09-19\nTopics: Logistic Regression, Classification, Train-Test Split\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 4\n2021-09-20 to 2021-09-26\nTopics: LDA, QDA, K-Nearest Neighbors, Naive Bayes\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 5\n2021-09-27 to 2021-10-03\nTopics: Feature Engineering, Data Preprocessing\nreadings\nLabs haven’t been posted yet\nNo assignment due to “All American Weekend”\nWeek 6\n2021-10-04 to 2021-10-10\nTopics: Bootstrap, Model Diagnostics, Evaluation Metrics, Cross Validation\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 7\n2021-10-11 to 2021-10-17\nTopics: Clustering, K-Means Clustering, Hierarchical Clustering\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 8\n2021-10-18 to 2021-10-24\nTopics: Topics in ML\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 9\n2021-10-25 to 2021-10-31\nTopics: PCA, PCA Regression\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 10\n2021-11-01 to 2021-11-07\nTopics: Shrinkage Methods, Rigde, Lasso, Hyper Parameter Tuning\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 11\n2021-11-08 to 2021-11-14\nTopics: Splines, GAM\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 12\n2021-11-15 to 2021-11-21\nTopics: Decision Trees, Bagging, Boosting, Random Forests\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 13\n2021-11-22 to 2021-11-28\nTopics: SVM\nreadings\nNo lab due to Thanksgiving\nAssignments haven’t been posted yet\nWeek 14\n2021-11-29 to 2021-12-05\nTopics: SVM Labs\nreadings\nLabs haven’t been posted yet\nAssignments haven’t been posted yet\nWeek 15\n2021-12-06 to 2021-12-12\nTopics: Final Project Presentations\nreadings\nNo labs this week due to Final\nAssignments haven’t been posted yet\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:45-07:00"
+      "last_modified": "2021-09-05T23:11:10-07:00"
     },
     {
       "path": "syllabus.html",
       "title": "Syllabus",
       "author": [],
       "contents": "\n\nContents\nInstructor\nPre-requisites\nTextbooks\nMain textbook\nSupplementary books\n\nCourse Plan\nAssignments and grading\nLearning objectives\nOnline help\nSoftware\nLearning during a pandemic\nLauren’s Promise\nSupport Services\nEmergency preparedness\nMathematics & Statistics Tutoring Lab (Don Myers Building)\nAcademic Support and Access Center\nCenter for Diversity & Inclusion (X3651, MGC 201)\nThe Office of Advocacy Services for Interpersonal and Sexual Violence (X7070)\nCounseling Center (x3500)\nReligious Holidays\nAcademic Integrity Code\n\n\nInstructor\nInstructor: Emil Hvitfeldt\nTime: Monday & Thursday 8:20-9:35PM ET - 9:35PM ET time zone (Washington DC time)\nCourse website: https://emilhvitfeldt.github.io/AU-2021fall-627/index.html\nOffice hours: Thursday 9:35PM - 10:35PM & Sunday 3:00PM - 4:00PM\nEmail: emilh@american.edu\nTwiter: @Emil_Hvitfeldt\nE-mail are the best ways to get in contact with me. I will try to respond to all course-related e-mails within 24 hours (really) but also remember that life can be busy and chaotic for everyone (including me!), so if I don’t respond right away, don’t worry!\nPre-requisites\nSTAT 520 “Applied Multivariate Analysis” or STAT 615 “Regression”.\nTextbooks\nMain textbook\nThis book will be required reading and we will aim to cover most of the content.\n“An Introduction to Statistical Learning with Applications in R” by G. James, D. Witten, T. Hastie, and R. Tibshirani; Springer, 2021. ISBN 1071614177 The latest corrected printing is available on James’s page at https://statlearning.com/\nThe lab sections of ISLR have been rewritten to use tidymodels and can be found here.\nSupplementary books\nThese books are by no means necessary to buy or read to complete this course but serve as great stepping stones for deeper study. Some week’s readings will refer to these books for extra readings.\n“The Elements of Statistical Learning: Data Mining, Inference, and Prediction”, by T. Hastie, R. Tibshirani, and J. Friedman, 2nd Edition; Springer, 2009. ISBN 0387848576. Available on Hastie’s page at https://web.stanford.edu/~hastie/Papers/ESLII.pdf [more technical; contains advanced explanations and mathematical proofs].\n“Tidy Modeling with R” by Max Kuhn and Julia Silge. Available online at https://www.tmwr.org/.\nCourse Plan\nIntroduction, motivation, and examples. Understanding large and complex data sets. Statistical learning. First steps in R. [Chap. 1-2].\nReview of regression modeling and analysis; implementation in R. [Chap. 3].\nClassification problems and classification tools. Logistic regression and review of linear discriminant analysis. [Chap. 4]\nResampling methods; bootstrap. [Chap. 5 and lecture notes].\nHigh-dimensional data and shrinkage. Ridge regression. LASSO. Model selection methods and dimension reduction. Principal components. Partial least squares. [Chap. 6]\nNonlinear trends and splines. [Chap. 7; 7.4-7.5]\nRegression trees and decision trees [Chap. 8]\nIntroduction to support vector machines [Chap. 9]\nClustering methods [Chap. 10]\nAdditional topics and applications, if time permits.\nAssignments and grading\nAssignments (30%): During the semester I will assign, collect, and grade assignments. You may receive assistance from other students in the class and me, but your submissions must be composed of your own thoughts, coding, and words. A typical homework will include a few problems to do by hand, to see how things work, and a few realistic problems to do using R. Late submission is accepted at a cost of a 5% deduction for each day, with a maximum deduction of 50%.\nLabs (30%): 30-45 minute labs at the end of each class. Each lab covers the material of the lecture. You will have to submit the solutions of each lab on Blackboard the Sunday after each class.\nmidterm (10%) will much like the assignments but with a larger focus on a real analysis.\nProject (30%) (25% report 5% presentation): Each student will receive or choose a data set with data description, problem formulation, and instructions. Using sound statistical methods, you will do the necessary modeling and data analysis and write a report summarizing your results and answering specific questions of your project. A 10-minute presentation summarizing the report will be given to the class or submitted on Canvas.\n90 – 100 % = A\n87 – 90 % = A-\n83 – 87 % = B+\n80 – 83 % = B\n77 – 80 % = B-\n73 – 77 = C+\n70 – 73 % = C\n60 – 70 % = C-\nPlease schedule a meeting with me if you would like to see or discuss your grade at any point during the semester.\nLearning objectives\nGraduate students (STAT 627)\nStudents will be able to:\nIdentify appropriate statistical learning methods for the given problem involving real data.\nUnderstand the underlying assumptions, verify them, and propose appropriate actions if some assumptions do not hold.\nIdentify other possible problems with messy data, such as multicollinearity, understand their consequences, and propose solutions.\nEvaluate the performance of the chosen regression and classification techniques and compare them.\nApply cross-validation techniques to find the optimal degree of flexibility - the best subset of predictors or the optimal tuning parameters.\nShow, analytically, or empirically, the optimal balance between precision within training data and prediction power.\nIllustrate results with appropriate plots and diagrams.\nUndergraduate students (STAT 427)\nStudents will be able to:\nIdentify appropriate statistical learning methods for the given problem involving real data.\nUnderstand the underlying assumptions, techniques available to verify them, and propose appropriate remedies.\nUse training and testing data to evaluate the performance of the chosen regression and classification techniques and compare them.\nUse available empirical tools to find the optimal balance between precision within training data and prediction power.\nIllustrate results with appropriate plots and diagrams.\nStudents will demonstrate competence in using different statistical learning methods involving large, messy, and multi-dimensional numerical and categorical data. Methods include linear, logistic, and polynomial regression with proper variable selection, linear and quadratic discriminant analysis, K-nearest neighbor classifier, bootstrap, ridge regression, lasso, principal components regression, partial least squares, splines, regression and classification trees, support vector machines, clustering, and related methods. In addition, graduate students (STAT 627) will demonstrate competency in the analytic justification of the chosen methods, tuning of the algorithms, and evaluating their prediction power.\nOnline help\nData science and statistical programming can be difficult. Computers are stupid and little errors in your code can cause hours of headache (even if you’ve been doing this stuff for years!).\nFortunately, there are tons of online resources to help you with this. Two of the most important are StackOverflow (a Q&A site with hundreds of thousands of answers to all sorts of programming questions) and RStudio Community (a forum specifically designed for people using RStudio and the tidyverse (i.e. you)).\nIf you use Twitter, post R-related questions, and content with #rstats. The community there is exceptionally generous and helpful.\nSearching for help with R on Google can sometimes be tricky because the program name is, um, a single letter. Google is generally smart enough to figure out what you mean when you search for “r scatterplot,” but if it does struggle, try searching for “rstats” instead (e.g. “rstats scatterplot”).\nAdditionally, we have a class chatroom at Slack where anyone in the class can ask questions and anyone can answer. I will monitor Slack regularly and will respond quickly. Ask questions about the readings, assignments, and project. You’ll likely have similar questions as your peers, and you’ll likely be able to answer other people’s questions too.\nSoftware\nWe will be using R and tidymodels in this class. While not required, it is highly recommended that you use an IDE for R, I recommend https://rstudio.com/products/rstudio/.\nLearning during a pandemic\nLife absolutely sucks right now. None of us is really okay. We’re all just pretending.\nYou most likely know people who have lost their jobs, have tested positive for COVID-19, have been hospitalized, or perhaps have even died. You all have increased (or possibly decreased) work responsibilities and increased family care responsibilities—you might be caring for extra people (young and/or old!) right now, and you are likely facing uncertain job prospects (or have been laid off!).\nI’m fully committed to making sure that you learn everything you were hoping to learn from this class! I will make whatever accommodations I can to help you finish your exercises, do well on your projects, and learn and understand the class material. Under ordinary conditions, I am flexible and lenient with grading and course expectations when students face difficult challenges. Under pandemic conditions, that flexibility and leniency are intensified.\nIf you tell me you’re having trouble, I will not judge you or think less of you. I hope you’ll extend me the same grace.\nYou never owe me personal information about your health (mental or physical). You are always welcome to talk to me about things that you’re going through, though. If I can’t help you, I usually know somebody who can.\nIf you need extra help, or if you need more time with something, or if you feel like you’re behind or not understanding everything, do not suffer in silence! Talk to me! I will work with you. I promise.\nLauren’s Promise\nI will listen and believe you if someone is threatening you.\nLauren McCluskey, a 21-year-old honors student-athlete, was murdered on October 22, 2018, by a man she briefly dated on the University of Utah campus. We must all take action to ensure that this never happens again.\nIf you are in immediate danger, call 911 or AU police (202 885-2527).\nIf you are experiencing sexual assault, domestic violence, or stalking, please report it to me and I will connect you to resources or find appropriate contact information for Counseling Center.\nSupport Services\nEmergency preparedness\nIn the event of an emergency, students should refer to the AU Web site http: //www.american.edu/emergency and the AU information line at (202) 885-1100 for general university-wide information. In case of a prolonged closure of the University, I send updates to you by email and will post all announcements on Blackboard.\nMathematics & Statistics Tutoring Lab (Don Myers Building)\nprovides tutoring in Intermediate Mathematics and Statistics. http://www.american.edu/cas/mathstat/tutoring.cfm\nAcademic Support and Access Center\noffers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities. Writing support is also available in the Writing Center, Battelle-Tompkins 228.\nCenter for Diversity & Inclusion (X3651, MGC 201)\nis dedicated to enhancing LGBTQ, Multicultural, First Generation, and Women’s experiences on campus and to advance AU’s commitment to respecting & valuing diversity by serving as a resource and liaison to students, staff, and faculty on issues of equity through education, outreach, and advocacy.\nThe Office of Advocacy Services for Interpersonal and Sexual Violence (X7070)\nprovides free and confidential advocacy services for anyone in the campus community who is impacted by sexual violence (sexual assault, dating or domestic violence, and stalking).\nCounseling Center (x3500)\noffers counseling and consultations regarding personal concerns, self-help information, and connections to off-campus mental health resources. Academic Support and Access Center (x3360) offers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities.\nReligious Holidays\nStudents may receive accommodation in the course for the observance of a religious and/or cultural holiday. The student should notify the professor as soon as possible should such a need exist. More information about accommodations for religious and/or cultural holidays can be found at www.american.edu/ocl/kay/request-for-religious-accommodation.cfm.\nAcademic Integrity Code\nPlease be sure that you are familiar with AU’s Academic Integrity Code, as I am required to report any cases of academic dishonesty to the dean of CAS. For your review: http://www.american.edu/academics/ integrity/.\n\n\n\n",
-      "last_modified": "2021-08-28T22:10:45-07:00"
+      "last_modified": "2021-09-05T23:11:11-07:00"
     }
   ],
   "collections": []

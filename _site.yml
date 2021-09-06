@@ -57,6 +57,8 @@ navbar:
         - text: "Information"
           href: assignments.html
         - text: "---"
+        - text: "Assignment 1 - Linear regression"
+          href: assignment-01.html
     - text: "Reference"
       href: reference.html
 output: distill::distill_article
