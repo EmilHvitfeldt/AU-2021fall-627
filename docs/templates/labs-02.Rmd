@@ -1,13 +1,8 @@
 ---
 title: "Week 2 - Linear regression"
+author: "YOUR NAME HERE"
+output: html_document
 ---
-
-Download template [here](templates/labs-02.Rmd)
-
-```{r setup, include=FALSE}
-# Delete this chunk!
-knitr::opts_chunk$set(eval = FALSE)
-```
 
 The following chunk will set up your document. Run it, then ignore it.
 
