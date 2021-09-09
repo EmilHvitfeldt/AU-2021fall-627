@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Statistical Machine Learning: Week 11 - Splines &amp; GAMs</title>
+  <title>Statistical Machine Learning: Untitled</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Statistical Machine Learning: Week 11 - Splines &amp; GAMs"/>
+  <meta property="og:title" content="Statistical Machine Learning: Untitled"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Statistical Machine Learning"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Statistical Machine Learning: Week 11 - Splines &amp; GAMs"/>
+  <meta property="twitter:title" content="Statistical Machine Learning: Untitled"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Week 11 - Splines & GAMs"]}]}
+  {"type":"list","attributes":{},"value":[]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2356,7 +2356,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Week 11 - Splines & GAMs","authors":[]}
+{"title":"Untitled","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2429,7 +2429,7 @@ Assignments
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Week 11 - Splines &amp; GAMs</h1>
+<h1>labs-02.knit</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2437,10 +2437,149 @@ Assignments
 
 
 <div class="d-article">
-<p>We will be talking about splines and Generalized additive models (GAM). Please read chapter 7 in “An Introduction to Statistical Learning”.</p>
-<p>The tidymodels lab sections can be found <a href="https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/moving-beyond-linearity.html">here</a>.</p>
-<h2 id="slides">Slides</h2>
-<p>To be posted!</p>
+<p>The following chunk will set up your document. Run it, then ignore it.</p>
+<p>If the system prompts you to install a package, or gives you a “package not found” error, simply run <code>install.packages("packagename")</code> once to install it.</p>
+<h1 id="the-data-set">The data set</h1>
+<p>Today we will use the <code>ames</code> data set containing 82 fields were recorded for 2,930 properties in Ames IA. Run the chunk below to load the data, and to check out the first few rows of your data set.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"ames"</span>, package <span class='op'>=</span> <span class='st'>"modeldata"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ames</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>The first thing we need to do with any data set is check for missing data, and make sure the variables are the right type:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Looks good for this data, with one exception:</p>
+<p>The next thing we should do is visualize our variables to get a feel for what is going on in this data. There is a lot of variables in this data set so we will focus on <code>Sale_Price</code>, <code>Bedroom_AbvGr</code>, and <code>Gr_Liv_Area</code>.</p>
+<ul>
+<li><code>Sale_Price</code> Sale price in USD</li>
+<li><code>Bedroom_AbvGr</code> Bedrooms above grade (does NOT include basement bedrooms)</li>
+<li><code>Gr_Liv_Area</code>Above grade (ground) living area square feet</li>
+</ul>
+<p>Data dictionary can be found <a href="http://jse.amstat.org/v19n3/decock/DataDocumentation.txt">here</a>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Gr_Liv_Area</span>, y <span class='op'>=</span> <span class='va'>Sale_Price</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We see that there is some kind of trend between them. Let up filter away the observations with more than 4000 observations.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames_df</span> <span class='op'>&lt;-</span> <span class='va'>ames</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Gr_Liv_Area</span> <span class='op'>&lt;</span> <span class='fl'>4000</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>plotting again to make sure we are filtering correctly</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames_df</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Gr_Liv_Area</span>, y <span class='op'>=</span> <span class='va'>Sale_Price</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Let us see what we get if we include <code>Bedroom_AbvGr</code> in the chart.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames_df</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Gr_Liv_Area</span>, y <span class='op'>=</span> <span class='va'>Sale_Price</span>, color <span class='op'>=</span> <span class='va'>Bedroom_AbvGr</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h2 id="fitting-a-model">Fitting a model</h2>
+<p>Let’s begin with a simple linear model. We will look at how <code>Gr_Liv_Area</code> affects the <code>Sale_Price</code>.</p>
+<p>Our first step is to establish a which model(s) we want to try on the data.</p>
+<p>For now, this is just a simple linear model.</p>
+<p>To establish the model, we need to determine which R package it comes from (the “engine”) and whether we are doing <em>regression</em> or <em>classification</em>.</p>
+<p>(These functions come from the <em>tidymodels</em> package that we loaded in the setup chunk.)</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lin_reg</span> <span class='op'>&lt;-</span> <span class='fu'>linear_reg</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"lm"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"regression"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Next, we will <strong>fit</strong> the model to our data:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lin_reg_fit</span> <span class='op'>&lt;-</span> <span class='va'>lin_reg</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>fit</span><span class='op'>(</span><span class='va'>Sale_Price</span> <span class='op'>~</span> <span class='va'>Gr_Liv_Area</span>, data <span class='op'>=</span> <span class='va'>ames_df</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Let’s check out the output of this model fit:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lin_reg_fit</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>extract_fit_engine</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>How do we interpret this?</p>
+<ul>
+<li><p>The slope is 116.225. That means that for every square foot of living area the Sale_Price would increase by about 115 USD.</p></li>
+<li><p>The p-value of the model is basically 0. That means this model is very significant, i.e., there is probably a relationship between the variables.</p></li>
+<li><p>The r-squared value is 0.52. This means 52% of the variance in sale prices is explained by the area of the above ground living area.</p></li>
+</ul>
+<h2 id="residuals">Residuals</h2>
+<p>Now let’s look the residuals of the model.</p>
+<p>First, we can find out what values were predicted by the model:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames_preds</span> <span class='op'>&lt;-</span> <span class='va'>lin_reg_fit</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>ames_df</span><span class='op'>)</span>
+<span class='va'>ames_preds</span>
+</code></pre>
+</div>
+</div>
+<p>Then, we can calculate and visualize the residuals:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>ames_resid</span> <span class='op'>&lt;-</span> <span class='va'>lin_reg_fit</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>augment</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>ames</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>select</span><span class='op'>(</span><span class='va'>Sale_Price</span>, <span class='va'>Gr_Liv_Area</span>, <span class='va'>.pred</span>, <span class='va'>.resid</span><span class='op'>)</span>
+
+<span class='va'>ames_resid</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Gr_Liv_Area</span>, y <span class='op'>=</span> <span class='va'>.resid</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+    <span class='fu'>geom_point</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Do the residuals seem to represent “random noise”?</p>
+<p>That is, was our choice of model reasonable?</p>
+<p>We can also do sepcific predictions to see what</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>lin_reg_fit</span>, <span class='fu'>tibble</span><span class='op'>(</span>Gr_Liv_Area <span class='op'>=</span> <span class='fl'>1500</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h2 id="metrics">Metrics</h2>
+<p>If we are trying to find the “best” model, we should measure how well this one did.</p>
+<p>We can compute the SSE and MSE “by hand”:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>ames_resid</span><span class='op'>$</span><span class='va'>.resid</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>ames_resid</span><span class='op'>$</span><span class='va'>.resid</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="your-turn">YOUR TURN</h1>
+<p>What about the bedrooms? What is the patterns with the number of bedrooms? Can you include <code>Bedroom_AbvGr</code> in the model, and interpret the results?</p>
+<p>Create a new notebook (you can copy this one if you want), and fit a model using both <code>Gr_Liv_Area</code> <em>and</em> <code>Bedroom_AbvGr</code> as predictors. Report your results.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->

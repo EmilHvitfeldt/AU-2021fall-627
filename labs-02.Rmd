@@ -1,0 +1,162 @@
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+The following chunk will set up your document. Run it, then ignore it.
+
+```{r, include = FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+If the system prompts you to install a package, or gives you a "package not found" error,
+simply run `install.packages("packagename")` once to install it.
+
+# The data set
+
+Today we will use the `ames` data set containing 82 fields were recorded for 2,930 properties in Ames IA. Run the chunk below to load the data, and to check out the first few rows of your data set.
+
+```{r}
+data("ames", package = "modeldata")
+head(ames)
+```
+
+The first thing we need to do with any data set is check for missing data, and make sure the variables are the right type:
+
+```{r}
+ames %>% summary()
+```
+
+Looks good for this data, with one exception:  
+
+The next thing we should do is visualize our variables to get a feel for what is going on in this data. There is a lot of variables in this data set so we will focus on `Sale_Price`, `Bedroom_AbvGr`, and `Gr_Liv_Area`.
+
+- `Sale_Price` Sale price in USD
+- `Bedroom_AbvGr` Bedrooms above grade (does NOT include basement bedrooms)
+- `Gr_Liv_Area`Above grade (ground) living area square feet
+
+Data dictionary can be found [here](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
+
+```{r}
+ames %>%
+  ggplot(aes(x = Gr_Liv_Area, y = Sale_Price)) +
+  geom_point()
+```
+
+We see that there is some kind of trend between them. Let up filter away the observations with more than 4000 observations.
+
+```{r}
+ames_df <- ames %>%
+  filter(Gr_Liv_Area < 4000)
+```
+
+plotting again to make sure we are filtering correctly
+
+```{r}
+ames_df %>%
+  ggplot(aes(x = Gr_Liv_Area, y = Sale_Price)) +
+  geom_point()
+```
+
+Let us see what we get if we include `Bedroom_AbvGr` in the chart.
+
+```{r}
+ames_df %>%
+  ggplot(aes(x = Gr_Liv_Area, y = Sale_Price, color = Bedroom_AbvGr)) +
+  geom_point()
+```
+
+## Fitting a model
+
+Let's begin with a simple linear model. We will look at how `Gr_Liv_Area` affects the `Sale_Price`.
+
+Our first step is to establish a which model(s) we want to try on the data. 
+
+For now, this is just a simple linear model.
+
+To establish the model, we need to determine which R package it comes from (the "engine") and whether we are doing *regression* or *classification*.
+
+(These functions come from the *tidymodels* package that we loaded in the setup chunk.)
+
+```{r}
+lin_reg <- linear_reg() %>%
+  set_engine("lm") %>%
+  set_mode("regression")
+```
+
+Next, we will **fit** the model to our data:
+
+```{r}
+lin_reg_fit <- lin_reg %>%
+  fit(Sale_Price ~ Gr_Liv_Area, data = ames_df)
+```
+
+Let's check out the output of this model fit:
+
+```{r}
+lin_reg_fit %>% 
+  extract_fit_engine() %>%
+  summary()
+```
+
+How do we interpret this?
+
+* The slope is 116.225. That means that for every square foot of living area the Sale_Price would increase by about 115 USD.
+
+* The p-value of the model is basically 0. That means this model is very significant, i.e., there is probably a relationship between the variables.
+
+* The r-squared value is 0.52. This means 52% of the variance in sale prices is explained by the area of the above ground living area.
+
+## Residuals
+
+Now let's look the residuals of the model.
+
+First, we can find out what values were predicted by the model:
+
+```{r}
+ames_preds <- lin_reg_fit %>% 
+  predict(new_data = ames_df)
+ames_preds
+```
+
+Then, we can calculate and visualize the residuals:
+
+```{r}
+ames_resid <- lin_reg_fit %>%
+  augment(new_data = ames) %>%
+  select(Sale_Price, Gr_Liv_Area, .pred, .resid)
+
+ames_resid %>%
+  ggplot(aes(x = Gr_Liv_Area, y = .resid)) +
+    geom_point()
+```
+
+Do the residuals seem to represent "random noise"?
+
+That is, was our choice of model reasonable?
+
+We can also do sepcific predictions to see what
+
+```{r}
+predict(lin_reg_fit, tibble(Gr_Liv_Area = 1500))
+```
+
+## Metrics
+
+If we are trying to find the "best" model, we should measure how well this one did.
+
+We can compute the SSE and MSE "by hand":
+
+```{r}
+sum(ames_resid$.resid^2)
+mean(ames_resid$.resid^2)
+```
+
+# YOUR TURN
+
+What about the bedrooms? What is the patterns with the number of bedrooms?
+Can you include `Bedroom_AbvGr` in the model, and interpret the results?
+
+Create a new notebook (you can copy this one if you want), and fit a model using both `Gr_Liv_Area` *and* `Bedroom_AbvGr` as predictors. Report your results.
