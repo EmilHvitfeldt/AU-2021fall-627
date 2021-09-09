@@ -1,3 +1,6 @@
+---
+title: "Week 2 - Linear regression"
+---
 
 ```{r setup, include=FALSE}
 # Delete this chunk!
