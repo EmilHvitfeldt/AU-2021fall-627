@@ -1,0 +1,48 @@
+---
+title: "Assignment 2"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1 (10 points)
+
+Suppose we collect data for a group of students in a statistics class with variables $X_1$ = hours studied, $X_2$ = undergrad GPA, and $Y$ = receive an A. We fit a logistic regression and produce estimated coefficient, $\hat{\beta}_0=-6$, $\hat{\beta}_1=0.05$, $\hat{\beta}_2=1$.
+
+a) Estimate the probability that a student who studies for 40 hours and has an undergrad GPA of $3.5$ gets an A in the class.
+a) How many hours would that student in part (a) need to study to have a 50% chance of getting an A in the class?
+
+# Exercise 2 (5 points)
+
+Suppose that we take a data set, divide it into equally-sized training and test sets, and then try out two different classification procedures. First, we use logistic regression and get an error rate of 20% on the training data and 30% on the test data. Next, we use 1-nearest neighbors (i.e. $K = 1$) and get an average error rate (averaged over both test and training data sets) of 18%. Based on these results, which method should we prefer to use for classification of new observations? Why?
+
+# Exercise 3 (15 points)
+
+In this exercise, we will explore a data set about cars called `auto` which you can find [here](data/auto.csv).
+
+The data set contains 1 factor variable and 6 numeric variables. The factor variable `mpg` has two levels `high` and `low` indicating whether the car has a high or low miles per gallon. We will in this exercise investigate if we are able to use a logistic regression classifier to predict if a car has high or low mpg from the other variables.
+
+a) Read in the data and create a test-train `rsplit` object of `auto` using `initial_split()`. Use default arguments for `initial_split()`.
+
+b) Create the training and testing data set with `training()` and `testing()` respectively.
+
+c) Fit a logistic regression model using `logistic_reg()`. Use all the 6 numeric variables as predictors (a formula shorthand is to write `mpg ~ .` where `.` means everything. Remember to fit the model only using the training data set.
+
+d) Inspect the model with `summary()` and `tidy()`. Which of the variables are significant?
+
+e) Predict values for the training data set and save them as `training_pred`.
+
+f) Use the following code to calculate the training accuracy
+
+```{r, eval=FALSE}
+bind_cols(
+  training_pred,
+  auto_training
+) %>%
+  accuracy(truth = mpg, estimate = .pred_class)
+```
+
+(`auto_training` should be renamed to match your training data set if needed.)
+
+g) Predict values for the testing data set and use the above code to calculate the testing accuracy. Compare.
