@@ -54,6 +54,8 @@ navbar:
         - text: "---"
         - text: "Week 2 - Linear Regression"
           href: labs-02.html
+        - text: "Week 3 - Logistic Regression"
+          href: labs-03.html
     - text: "Assignments"
       menu:
         - text: "Information"

@@ -10,7 +10,8 @@ Imports:
     xaringan,
     remotes,
     sass,
-    flair
+    flair,
+    nycflights13
 Remotes:
     EmilHvitfeldt/distillcourse,
     gadenbuie/xaringanExtra

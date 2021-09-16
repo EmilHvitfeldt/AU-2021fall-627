@@ -1,0 +1,153 @@
+---
+title: "Week 2 - Linear regression"
+author: "YOUR NAME HERE"
+output: html_document
+---
+
+The following chunk will set up your document. Run it, then ignore it.
+
+```{r}
+library(tidymodels)
+library(nycflights13)
+```
+
+If the system prompts you to install a package, or gives you a "package not found" error,
+simply run `install.packages("packagename")` once to install it.
+
+# The data set
+
+We will be using the `flights` data set from the [nycflights13](https://github.com/tidyverse/nycflights13) package. nycflights13 is an R data package containing all out-bound flights from NYC.
+
+```{r}
+glimpse(flights)
+```
+
+We will build a classification model that sees if any given flight is delayed or not.
+Furthermore, let us trim down the number of variables we are working with. Lastly, let us select to only work with flights taken place during the first month.
+
+```{r}
+flights1 <- flights %>%
+  mutate(delay = factor(arr_delay > 0, c(TRUE, FALSE),
+                        c("Delayed", "On time"))) %>%
+  filter(month == 1, !is.na(delay)) %>%
+  select(delay, hour, minute, dep_delay, carrier, distance)
+```
+
+now that we have performed some cleaning, will we proceed to perform a train-test split.
+
+```{r}
+flights_split <- initial_split(flights1)
+
+flights_train <- training(flights_split)
+flights_test <- testing(flights_split)
+```
+
+we will use the training data set for visual exploratory data analysis to reinforce the idea that we don't touch the testing data set.
+
+# EDA
+
+We can look at many things with this data set. What we want to look at is how any of the variables relate to `delay`.
+
+```{r}
+flights1 %>%
+  count(hour, delay) %>%
+  ggplot(aes(hour, delay, fill = n)) +
+  geom_raster()
+```
+
+We see a varied amount of flights throughout the day. This makes sense, no one wants to leave early or late from the airport.
+
+```{r}
+flights1 %>%
+  count(minute, delay) %>%
+  ggplot(aes(minute, delay, fill = n)) +
+  geom_raster()
+```
+
+We see some strong artifacts in the time of scheduled departure. Most flights leave on a multiple of 5 which we confirm below.
+
+```{r}
+flights1 %>%
+  count(minute, sort = TRUE)
+```
+
+By combining `hour` and `minute` we can look at how much the different flights have departure delays. There are some really long delays in here!
+
+```{r}
+flights1 %>%
+  mutate(time = hour * 60 + minute) %>%
+  ggplot(aes(time, dep_delay)) +
+  geom_point()
+```
+If we color the points by `delay` we see that it appears that most of the delayed arrivals happen because of a delayed departure.
+
+```{r}
+flights1 %>%
+  mutate(time = hour * 60 + minute) %>%
+  ggplot(aes(time, dep_delay, color = delay)) +
+  geom_point(alpha = 0.2)
+```
+
+# Modeling
+
+Let's begin with a logistic model. We will look at how `dep_delay` and `distance` affects `delay`.
+
+Our first step is to establish which model(s) we want to try on the data. 
+
+For now, this is just a logistic model.
+
+To establish the model, we need to determine which R package it comes from (the "engine") and whether we are doing *regression* or *classification*.
+
+(These functions come from the *tidymodels* package that we loaded in the setup chunk.)
+
+```{r}
+lr_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+```
+
+Next, we will **fit** the model to our data:
+
+```{r}
+lr_fit <- lr_spec %>%
+  fit(delay ~ dep_delay + distance, data = flights_train)
+```
+
+Let's check out the output of this model fit:
+
+```{r}
+lr_fit %>% 
+  extract_fit_engine() %>%
+  summary()
+```
+
+the coefficients are shown as log-odds terms. We could also get this information using `tidy()`
+
+```{r}
+tidy(lr_fit)
+```
+
+setting `exponentiate = TRUE`, gives us the odds instead of log-odds.
+
+```{r}
+tidy(lr_fit, exponentiate = TRUE)
+```
+
+We can also take a look at how well the model is doing. By using `augment()` we can generate predictions, and `conf_mat()` and `autoplot()` let us create a confusion matrix and visualize it.
+
+```{r}
+augment(lr_fit, flights_train) %>%
+  conf_mat(truth = delay, estimate = .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+```{r}
+augment(lr_fit, flights_train) %>%
+  accuracy(truth = delay, estimate = .pred_class)
+```
+
+# YOUR TURN
+
+Experiment with using some of the other predictors in your model. Are the answers surprising? Evaluate your models with `conf_mat()` and `accuracy()`.
+
+Once you have a model you like, predict on the test data set and calculate the performance metric. Compare to the performance metrics you got for the training data set.

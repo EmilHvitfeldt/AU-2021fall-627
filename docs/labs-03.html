@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Statistical Machine Learning: Assignments</title>
+  <title>Statistical Machine Learning: Week 3 - Logistic Regression</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Statistical Machine Learning: Assignments"/>
+  <meta property="og:title" content="Statistical Machine Learning: Week 3 - Logistic Regression"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Statistical Machine Learning"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Statistical Machine Learning: Assignments"/>
+  <meta property="twitter:title" content="Statistical Machine Learning: Week 3 - Logistic Regression"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Assignments"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Week 3 - Logistic Regression"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2356,7 +2356,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Assignments","authors":[]}
+{"title":"Week 3 - Logistic Regression","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2431,7 +2431,7 @@ Assignments
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Assignments</h1>
+<h1>Week 3 - Logistic Regression</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2439,16 +2439,159 @@ Assignments
 
 
 <div class="d-article">
-<p>We will 10 weekly assignments, a midterm, and a final project in this class. The placement of these is located in the <a href="schedule.html">schedule</a>.</p>
-<p>Assignments are to be turned in on Canvas. Assignments will be available no later than 3 days before class and are due to be turned in on the following Sunday. Specific times can be found on Canvas. The assignment will contain a mix of conceptual, technical, and coding exercises.</p>
-<p>The midterm will much like the assignments but with a larger focus on a real analysis.</p>
-<p>The final project will have two parts. The final project will be a full data analysis of data of your choosing. The Project is a chance for you to show that you understand the data and to showcase some of the models and techniques you have learned to use in this class. The project can be done in groups. Both groups and the data you want to use should be approved by email by me. Approval must happen no later than November 14th.</p>
-<p>Ideas for data can be found here:</p>
-<ul>
-<li><a href="https://github.com/rfordatascience/tidytuesday" class="uri">https://github.com/rfordatascience/tidytuesday</a></li>
-<li><a href="https://www.data-is-plural.com/" class="uri">https://www.data-is-plural.com/</a></li>
-<li><a href="https://www.kaggle.com/" class="uri">https://www.kaggle.com/</a></li>
-</ul>
+<p>Download template <a href="templates/labs-03.Rmd">here</a></p>
+<p>The following chunk will set up your document. Run it, then ignore it.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/hadley/nycflights13'>nycflights13</a></span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>If the system prompts you to install a package, or gives you a “package not found” error, simply run <code>install.packages("packagename")</code> once to install it.</p>
+<h1 id="the-data-set">The data set</h1>
+<p>We will be using the <code>flights</code> data set from the <a href="https://github.com/tidyverse/nycflights13">nycflights13</a> package. nycflights13 is an R data package containing all out-bound flights from NYC.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>glimpse</span><span class='op'>(</span><span class='va'>flights</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We will build a classification model that sees if any given flight is delayed or not. Furthermore, let us trim down the number of variables we are working with. Lastly, let us select to only work with flights taken place during the first month.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>&lt;-</span> <span class='va'>flights</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>arr_delay</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
+                        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Delayed"</span>, <span class='st'>"On time"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>month</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>delay</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>select</span><span class='op'>(</span><span class='va'>delay</span>, <span class='va'>hour</span>, <span class='va'>minute</span>, <span class='va'>dep_delay</span>, <span class='va'>carrier</span>, <span class='va'>distance</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>now that we have performed some cleaning, will we proceed to perform a train-test split.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights_split</span> <span class='op'>&lt;-</span> <span class='fu'>initial_split</span><span class='op'>(</span><span class='va'>flights1</span><span class='op'>)</span>
+
+<span class='va'>flights_train</span> <span class='op'>&lt;-</span> <span class='fu'>training</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+<span class='va'>flights_test</span> <span class='op'>&lt;-</span> <span class='fu'>testing</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>we will use the training data set for visual exploratory data analysis to reinforce the idea that we don’t touch the testing data set.</p>
+<h1 id="eda">EDA</h1>
+<p>We can look at many things with this data set. What we want to look at is how any of the variables relate to <code>delay</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>hour</span>, <span class='va'>delay</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span><span class='va'>hour</span>, <span class='va'>delay</span>, fill <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_raster</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We see a varied amount of flights throughout the day. This makes sense, no one wants to leave early or late from the airport.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>minute</span>, <span class='va'>delay</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span><span class='va'>minute</span>, <span class='va'>delay</span>, fill <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_raster</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We see some strong artifacts in the time of scheduled departure. Most flights leave on a multiple of 5 which we confirm below.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='va'>minute</span>, sort <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>By combining <code>hour</code> and <code>minute</code> we can look at how much the different flights have departure delays. There are some really long delays in here!</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>time <span class='op'>=</span> <span class='va'>hour</span> <span class='op'>*</span> <span class='fl'>60</span> <span class='op'>+</span> <span class='va'>minute</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span><span class='va'>time</span>, <span class='va'>dep_delay</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>If we color the points by <code>delay</code> we see that it appears that most of the delayed arrivals happen because of a delayed departure.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>time <span class='op'>=</span> <span class='va'>hour</span> <span class='op'>*</span> <span class='fl'>60</span> <span class='op'>+</span> <span class='va'>minute</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>ggplot</span><span class='op'>(</span><span class='fu'>aes</span><span class='op'>(</span><span class='va'>time</span>, <span class='va'>dep_delay</span>, color <span class='op'>=</span> <span class='va'>delay</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span>
+  <span class='fu'>geom_point</span><span class='op'>(</span>alpha <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="modeling">Modeling</h1>
+<p>Let’s begin with a logistic model. We will look at how <code>dep_delay</code> and <code>distance</code> affects <code>delay</code>.</p>
+<p>Our first step is to establish which model(s) we want to try on the data.</p>
+<p>For now, this is just a logistic model.</p>
+<p>To establish the model, we need to determine which R package it comes from (the “engine”) and whether we are doing <em>regression</em> or <em>classification</em>.</p>
+<p>(These functions come from the <em>tidymodels</em> package that we loaded in the setup chunk.)</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lr_spec</span> <span class='op'>&lt;-</span> <span class='fu'>logistic_reg</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"glm"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Next, we will <strong>fit</strong> the model to our data:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lr_fit</span> <span class='op'>&lt;-</span> <span class='va'>lr_spec</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>fit</span><span class='op'>(</span><span class='va'>delay</span> <span class='op'>~</span> <span class='va'>dep_delay</span> <span class='op'>+</span> <span class='va'>distance</span>, data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Let’s check out the output of this model fit:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lr_fit</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>extract_fit_engine</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>the coefficients are shown as log-odds terms. We could also get this information using <code>tidy()</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>tidy</span><span class='op'>(</span><span class='va'>lr_fit</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>setting <code>exponentiate = TRUE</code>, gives us the odds instead of log-odds.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>tidy</span><span class='op'>(</span><span class='va'>lr_fit</span>, exponentiate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We can also take a look at how well the model is doing. By using <code>augment()</code> we can generate predictions, and <code>conf_mat()</code> and <code>autoplot()</code> let us create a confusion matrix and visualize it.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>augment</span><span class='op'>(</span><span class='va'>lr_fit</span>, <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>conf_mat</span><span class='op'>(</span>truth <span class='op'>=</span> <span class='va'>delay</span>, estimate <span class='op'>=</span> <span class='va'>.pred_class</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>autoplot</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"heatmap"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>augment</span><span class='op'>(</span><span class='va'>lr_fit</span>, <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>accuracy</span><span class='op'>(</span>truth <span class='op'>=</span> <span class='va'>delay</span>, estimate <span class='op'>=</span> <span class='va'>.pred_class</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="your-turn">YOUR TURN</h1>
+<p>Experiment with using some of the other predictors in your model. Are the answers surprising? Evaluate your models with <code>conf_mat()</code> and <code>accuracy()</code>.</p>
+<p>Once you have a model you like, predict on the test data set and calculate the performance metric. Compare to the performance metrics you got for the training data set.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
