@@ -282,6 +282,13 @@
       "Repository": "CRAN",
       "Hash": "a0cbe758a531d054b537d16dff4d58a1"
     },
+    "discrim": {
+      "Package": "discrim",
+      "Version": "0.1.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "236506b05c7c377835429f49c1e08842"
+    },
     "distill": {
       "Package": "distill",
       "Version": "1.2",

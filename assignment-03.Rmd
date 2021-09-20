@@ -1,0 +1,50 @@
+---
+title: "Assignment 3"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Exercise 1 (10 points)
+
+You will in this exercise examine the differences between LDA and QDA.
+
+a. If the Bayes decision boundary is linear, do we expect LDA or QDA to perform better on the training set? On the test set?
+a. If the Bayes decision boundary is non-linear, do we expect LDA or QDA to perform better on the training set? On the test set?
+a. In general, as the sample size $n$ increases, do we expect the test prediction accuracy or QDA relative to LDA to improve, decline, or be unchanged? Why?
+a. True or False: Even if the Bayes decision boundary for a given problem is linear, we will probably achieve a superior test error rate using QDA rather than LDA because QDA is flexible enough to model a linear decision boundary. Justify your answer.
+
+# Execise 3 (20 points)
+
+This exercise should be answered using the `Weekly` data set, which is part of the `LSLR` package. If you don't have it installed already you can install it with
+
+```{r}
+install.packages("ISLR")
+```
+
+To load the data set run the following code
+
+```{r}
+library(ISLR)
+data("Weekly")
+```
+
+This data is similar in nature to the `Smarket` data from chapter 4's lab, it contains 1089 weekly returns for 21 years, from the beginning of 1990 to the end of 2010.
+
+a. Produce some numerical and graphical summaries of the data. Does there appear to be any patterns?
+a. Use the whole data set to perform a logistic regression (with `logistic_reg()`) with `Direction` as the response and the five lag variables plus `Volume` as predictors. Use the `summary()` function to print the results. Do any of the predictors appear to be statistically significant? if so, which ones?
+a. Use `conf_int()` and `accuracy()` from `yardstick` package to calculate the confusion matrix and the accuracy (overall fraction of correct predictions). Explain what the confusion matrix is telling you about the types of mistakes made by logistic regression.
+a. Split the data into a training and testing data set using the following code
+
+    ```{r, eval=FALSE}
+    weekly_training <- Weekly %>% filter(Year <= 2008)
+    weekly_testing <- Weekly %>% filter(Year > 2008)
+    ```
+
+a. Now fit the logistic regression model using the training data, with `Lag2` as the only predictor. Compute the confusion matrix and accuracy metric using the testing data set.
+a. Repeat (e) using LDA.
+a. Repeat (e) using QDA.
+a. Repeat (e) using KNN with `K = 1`.
+a. Which of these methods appear to provide the best results on the data?
+a. (Optional) Experiment with different combinations of predictors for each of the methods. Report the variables, methods, and associated confusion matrix that appears to provide the best results on the held-out data. Note that you can also experiment with different values of K in KNN. (This kind of running many many models and testing on the testing data set many times is not good practice. We will look at ways in later weeks on how we can properly explore multiple models.)

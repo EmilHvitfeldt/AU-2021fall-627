@@ -65,6 +65,8 @@ navbar:
           href: assignment-01.html
         - text: "Assignment 2 - Logistic Regression"
           href: assignment-02.html
+        - text: "Assignment 3 - LDA, QDA, KNN"
+          href: assignment-03.html
     - text: "Reference"
       href: reference.html
 output: distill::distill_article

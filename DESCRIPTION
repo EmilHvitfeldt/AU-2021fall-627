@@ -11,7 +11,8 @@ Imports:
     remotes,
     sass,
     flair,
-    nycflights13
+    nycflights13,
+    discrim
 Remotes:
     EmilHvitfeldt/distillcourse,
     gadenbuie/xaringanExtra

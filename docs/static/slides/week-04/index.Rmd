@@ -2,7 +2,7 @@
 title: "LDA, QDA & KNN"
 subtitle: "AU STAT-427/627"
 author: "Emil Hvitfeldt"
-date: "2021-5-26"
+date: "2021-09-20"
 output:
   xaringan::moon_reader:
     css: ["theme.css", "default"]
