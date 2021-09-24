@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Statistical Machine Learning: Labs</title>
+  <title>Statistical Machine Learning: Week 4 - LDA, QDA &amp; KNN</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Statistical Machine Learning: Labs"/>
+  <meta property="og:title" content="Statistical Machine Learning: Week 4 - LDA, QDA &amp; KNN"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Statistical Machine Learning"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Statistical Machine Learning: Labs"/>
+  <meta property="twitter:title" content="Statistical Machine Learning: Week 4 - LDA, QDA &amp; KNN"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Labs"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Week 4 - LDA, QDA & KNN"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2356,7 +2356,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Labs","authors":[]}
+{"title":"Week 4 - LDA, QDA & KNN","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2433,7 +2433,7 @@ Assignments
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Labs</h1>
+<h1>Week 4 - LDA, QDA &amp; KNN</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2441,19 +2441,63 @@ Assignments
 
 
 <div class="d-article">
-<p>Each lecture will be followed by lab time which is sometimes where we will be using <a href="https://cran.r-project.org/">R</a> and <a href="https://www.tidymodels.org/">tidymodels</a> to implement the methods we will have talked about that week.</p>
-<p>Labs are to be turned in on Blackboard. labs will be available no later than 3 days before class and are due to be turned in on the following Sunday. We will be collectively be talking about the labs and come up with some of the answers. To get full credit for labs the document that is turned in should contain not just the right code to solve the problem but also text explaining what has been done.</p>
-<ul>
-<li>Don’t print raw data.frames. If you want to print part, turn it into a tibble</li>
-<li>Don’t print verbose code</li>
-</ul>
-<p>Output can be excluding by setting <code>echo=FALSE</code> in chunks.</p>
-<pre><code>&lt;div class=&quot;layout-chunk&quot; data-layout=&quot;l-body&quot;&gt;
-
-
-&lt;/div&gt;
+<p>Download template <a href="templates/labs-04.Rmd">here</a></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/hadley/nycflights13'>nycflights13</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://discrim.tidymodels.org'>discrim</a></span><span class='op'>)</span>
 </code></pre>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+</div>
+</div>
+<p>We will be using the add-on package <a href="https://discrim.tidymodels.org/">discrim</a> to access functions to perform discriminant analysis models with parsnip and <code>kknn</code> to perform KNN methods. If the system prompts you to install a package, or gives you a “package not found” error, simply run <code>install.packages("packagename")</code> once to install it.</p>
+<h1 id="the-data-set">The data set</h1>
+<p>We will be using the same <code>flights</code> data set from the <a href="https://github.com/tidyverse/nycflights13">nycflights13</a> package. nycflights13 is an R data package containing all out-bound flights from NYC.</p>
+<p>We will build a classification model that sees if any given flight is delayed or not. Furthermore, let us trim down the number of variables we are working with. Lastly, let us select to only work with flights taken place during the first month.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>&lt;-</span> <span class='va'>flights</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>arr_delay</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
+                        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Delayed"</span>, <span class='st'>"On time"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>month</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>delay</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>select</span><span class='op'>(</span><span class='va'>delay</span>, <span class='va'>hour</span>, <span class='va'>minute</span>, <span class='va'>dep_delay</span>, <span class='va'>carrier</span>, <span class='va'>distance</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>now that we have performed some cleaning, will we proceed to perform a train-test split.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights_split</span> <span class='op'>&lt;-</span> <span class='fu'>initial_split</span><span class='op'>(</span><span class='va'>flights1</span><span class='op'>)</span>
+
+<span class='va'>flights_train</span> <span class='op'>&lt;-</span> <span class='fu'>training</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+<span class='va'>flights_test</span> <span class='op'>&lt;-</span> <span class='fu'>testing</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Now would be a good time to do EDA, but we habe already done the EDA for this section of the data last week, so we will jump right</p>
+<h1 id="modeling">Modeling</h1>
+<p>We will repeat the modeling we did last week but this time use a LDA, QDA and KNN specification.</p>
+<p>The specification for each of these models can be found here in the following chunk.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>lda_spec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://discrim.tidymodels.org/reference/discrim_linear.html'>discrim_linear</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"MASS"</span><span class='op'>)</span>
+
+<span class='va'>qda_spec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://discrim.tidymodels.org/reference/discrim_quad.html'>discrim_quad</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"MASS"</span><span class='op'>)</span>
+
+<span class='va'>knn_spec</span> <span class='op'>&lt;-</span> <span class='fu'>nearest_neighbor</span><span class='op'>(</span>neighbors <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"kknn"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Notice how <code>nearest_neighbor()</code> reqruires that we set a number of neighbors.</p>
+<h1 id="your-turn">YOUR TURN</h1>
+<p>Fit each of these modes to see how <code>dep_delay</code> and <code>distance</code> affects <code>delay</code>. Evaluate the performance of each if the models using <code>conf_mat()</code> and <code>accuracy()</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

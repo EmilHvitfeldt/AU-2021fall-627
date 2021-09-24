@@ -1,0 +1,71 @@
+---
+title: "Week 4 - LDA, QDA & KNN"
+author: "YOUR NAME HERE"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(nycflights13)
+library(discrim)
+```
+
+We will be using the add-on package [discrim](https://discrim.tidymodels.org/) to access functions to perform discriminant analysis models with parsnip and `kknn` to perform KNN methods. If the system prompts you to install a package, or gives you a "package not found" error,
+simply run `install.packages("packagename")` once to install it.
+
+# The data set
+
+We will be using the same `flights` data set from the [nycflights13](https://github.com/tidyverse/nycflights13) package. nycflights13 is an R data package containing all out-bound flights from NYC.
+
+We will build a classification model that sees if any given flight is delayed or not.
+Furthermore, let us trim down the number of variables we are working with. Lastly, let us select to only work with flights taken place during the first month.
+
+```{r}
+flights1 <- flights %>%
+  mutate(delay = factor(arr_delay > 0, c(TRUE, FALSE),
+                        c("Delayed", "On time"))) %>%
+  filter(month == 1, !is.na(delay)) %>%
+  select(delay, hour, minute, dep_delay, carrier, distance)
+```
+
+now that we have performed some cleaning, will we proceed to perform a train-test split.
+
+```{r}
+flights_split <- initial_split(flights1)
+
+flights_train <- training(flights_split)
+flights_test <- testing(flights_split)
+```
+
+Now would be a good time to do EDA, but we habe already done the EDA for this section of the data last week, so we will jump right 
+
+# Modeling
+
+We will repeat the modeling we did last week but this time use a LDA, QDA and KNN specification.
+
+The specification for each of these models can be found here in the following chunk.
+
+```{r}
+lda_spec <- discrim_linear() %>%
+  set_mode("classification") %>%
+  set_engine("MASS")
+
+qda_spec <- discrim_quad() %>%
+  set_mode("classification") %>%
+  set_engine("MASS")
+
+knn_spec <- nearest_neighbor(neighbors = 5) %>%
+  set_mode("classification") %>%
+  set_engine("kknn")
+```
+
+Notice how `nearest_neighbor()` reqruires that we set a number of neighbors.
+
+# YOUR TURN
+
+Fit each of these modes to see how `dep_delay` and `distance` affects `delay`. Evaluate the performance of each if the models using `conf_mat()` and `accuracy()`.

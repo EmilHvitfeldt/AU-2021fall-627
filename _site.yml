@@ -56,6 +56,8 @@ navbar:
           href: labs-02.html
         - text: "Week 3 - Logistic Regression"
           href: labs-03.html
+        - text: "Week 4 - LDA, QDA, KNN"
+          href: labs-04.html
     - text: "Assignments"
       menu:
         - text: "Information"

@@ -1,5 +1,5 @@
 ---
-title: "Week 2 - Linear regression"
+title: "Week 3 - Logistic regression"
 author: "YOUR NAME HERE"
 output: html_document
 ---
