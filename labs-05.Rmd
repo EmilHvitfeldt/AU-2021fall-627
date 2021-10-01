@@ -1,0 +1,118 @@
+---
+title: "Week 5 - Feature Engineering"
+---
+
+Download template [here](templates/labs-05.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(nycflights13)
+```
+
+We will not be using any new packages to us today. If the system prompts you to install a package, or gives you a "package not found" error, simply run `install.packages("packagename")` once to install it.
+
+# The data set
+
+We will be using the same `flights` data set from the [nycflights13](https://github.com/tidyverse/nycflights13) package. nycflights13 is an R data package containing all out-bound flights from NYC.
+
+```{r}
+flights
+```
+
+We start by creating the proper response variable before creating the validation split
+
+```{r}
+flights1 <- flights %>%
+  mutate(delay = factor(arr_delay > 0, c(TRUE, FALSE),
+                        c("Delayed", "On time"))) %>%
+  select(-c(year, month, day, hour, minute))
+```
+
+Then we create the test and training data sets.
+
+```{r}
+set.seed(1234)
+flights_split <- initial_split(flights1)
+
+flights_train <- training(flights_split)
+flights_test <- testing(flights_split)
+```
+
+We will now try some different preprocessing steps with {recipes} to get a hold of it. Every recipe you create starts with a call to `recipe`.
+
+```{r}
+recipe(delay ~ ., data = flights_train)
+```
+
+then we want to add some steps. Before we add steps, let us think about the order they should be computed in. recipes has a vignette on the [Ordering of Steps](https://recipes.tidymodels.org/articles/Ordering.html) that gives a reasonnable starting point for ordering.
+
+We saw that we have some missing data. So let us try to rectify that. We have two different types of data here. numeric and nominal data. Both these types have different ways of handing missing data. We will use a simple mean imputation for numerics and `step_unknown()` to change `NA`s in the categorical predictors to `"unknown"`
+
+```{r}
+rec1 <- recipe(delay ~ ., data = flights_train) %>%
+  step_impute_mean(all_numeric_predictors()) %>%
+  step_unknown(all_nominal_predictors())
+```
+
+We now need to actually calculate the means. We use the `prep()` function to do that.
+
+```{r}
+rec1_prepped <- rec1 %>%
+  prep()
+rec1_prepped
+```
+
+We can now apply this recipe to new data. Using the `bake()` function os what we use here. This function works a lot like `predict()` in the sense that it takes int a trained/fitted object and is applied to new data.
+
+```{r}
+rec1_prepped %>%
+  bake(new_data = flights_train)
+```
+
+We could also in this case have set `new_data = NULL` since we are using the same data as we supplied to `recipe()`
+
+```{r}
+rec1_prepped %>%
+  bake(new_data = NULL)
+```
+
+We can also investigate the values that were estimated using the `tidy()` function. Just using `tidy()` gives us a list of operations that were performed.
+
+```{r}
+rec1_prepped %>%
+  tidy()
+```
+
+We can then dig deeper into each  operation by specifying the number of the operation. For `step_impute_mean()` we get the estimated means
+
+```{r}
+rec1_prepped %>%
+  tidy(1)
+```
+
+For `step_unknown()` we see which variables were included and what value get got.
+
+```{r}
+rec1_prepped %>%
+  tidy(2)
+```
+
+Next up us dealing with the datetime variable. We will see what happens when we use the `features`, `abbr`, `label`, `ordinal` and `keep_original_cols`  argument.
+
+```{r}
+rec2 <- recipe(~ time_hour, flights_train) %>%
+  step_date(time_hour)
+
+prep(rec2) %>%
+  bake(new_data = NULL)
+```
+
+
+# YOUR TURN
+
+Create a single recipe, containing the above steps. Create dummy variables of all the nominal predictors with `step_dummy()` and end with a normalization step via `step_normalize()`. Prep it on the training data set, and bake it on the testing data set.

@@ -2337,7 +2337,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   }</style>
   <!--/radix_placeholder_distill-->
   <script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
-  <script src="site_libs/fitvids-2.1.1/fitvids.min.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2443,22 +2442,123 @@ Assignments
 
 
 <div class="d-article">
-<p>Please read <a href="https://www.tmwr.org/recipes.html">Feature engineering with recipes</a> from Tidy Modeling with R.</p>
-<p><a href="https://recipes.tidymodels.org/">recipes</a> will be introduces as the R package we will use to perform pre-processing.</p>
-<p>As optional but highly recommended reading is chapter 5, 6, and 8 from <a href="http://www.feat.engineering/">Feature Engineering and Selection: A Practical Approach for Predictive Models</a>.</p>
-<ul>
-<li><a href="http://www.feat.engineering/encoding-categorical-predictors.html">Encoding Categorical Predictors</a></li>
-<li><a href="http://www.feat.engineering/engineering-numeric-predictors.html">Engineering Numeric Predictors</a></li>
-<li><a href="http://www.feat.engineering/handling-missing-data.html">Handling Missing Data</a></li>
-</ul>
-<h2 id="slides">Slides</h2>
+<p>Download template <a href="templates/labs-05.Rmd">here</a></p>
 <div class="layout-chunk" data-layout="l-body">
-<div class="shareagain" style="min-width:300px;margin:1em auto;">
-<iframe src="static/slides/week-05/index.html" width="1600" height="900" style="border:2px solid currentColor;" loading="lazy" allowfullscreen></iframe>
-<script>fitvids('.shareagain', {players: 'iframe'});</script>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/hadley/nycflights13'>nycflights13</a></span><span class='op'>)</span>
+</code></pre>
 </div>
 </div>
-<p><a href="static/slides/week-05/week-05.pdf">PDF download</a> <a href="static/slides/week-05/index.html">Full Screen</a></p>
+<p>We will not be using any new packages to us today. If the system prompts you to install a package, or gives you a “package not found” error, simply run <code>install.packages("packagename")</code> once to install it.</p>
+<h1 id="the-data-set">The data set</h1>
+<p>We will be using the same <code>flights</code> data set from the <a href="https://github.com/tidyverse/nycflights13">nycflights13</a> package. nycflights13 is an R data package containing all out-bound flights from NYC.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights</span>
+</code></pre>
+</div>
+</div>
+<p>We start by creating the proper response variable before creating the validation split</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>&lt;-</span> <span class='va'>flights</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>arr_delay</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
+                        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Delayed"</span>, <span class='st'>"On time"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>select</span><span class='op'>(</span><span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>year</span>, <span class='va'>month</span>, <span class='va'>day</span>, <span class='va'>hour</span>, <span class='va'>minute</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Then we create the test and training data sets.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
+<span class='va'>flights_split</span> <span class='op'>&lt;-</span> <span class='fu'>initial_split</span><span class='op'>(</span><span class='va'>flights1</span><span class='op'>)</span>
+
+<span class='va'>flights_train</span> <span class='op'>&lt;-</span> <span class='fu'>training</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+<span class='va'>flights_test</span> <span class='op'>&lt;-</span> <span class='fu'>testing</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We will now try some different preprocessing steps with {recipes} to get a hold of it. Every recipe you create starts with a call to <code>recipe</code>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='fu'>recipe</span><span class='op'>(</span><span class='va'>delay</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>then we want to add some steps. Before we add steps, let us think about the order they should be computed in. recipes has a vignette on the <a href="https://recipes.tidymodels.org/articles/Ordering.html">Ordering of Steps</a> that gives a reasonnable starting point for ordering.</p>
+<p>We saw that we have some missing data. So let us try to rectify that. We have two different types of data here. numeric and nominal data. Both these types have different ways of handing missing data. We will use a simple mean imputation for numerics and <code>step_unknown()</code> to change <code>NA</code>s in the categorical predictors to <code>"unknown"</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1</span> <span class='op'>&lt;-</span> <span class='fu'>recipe</span><span class='op'>(</span><span class='va'>delay</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>step_impute_mean</span><span class='op'>(</span><span class='fu'>all_numeric_predictors</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>step_unknown</span><span class='op'>(</span><span class='fu'>all_nominal_predictors</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We now need to actually calculate the means. We use the <code>prep()</code> function to do that.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>&lt;-</span> <span class='va'>rec1</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>prep</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>rec1_prepped</span>
+</code></pre>
+</div>
+</div>
+<p>We can now apply this recipe to new data. Using the <code>bake()</code> function os what we use here. This function works a lot like <code>predict()</code> in the sense that it takes int a trained/fitted object and is applied to new data.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>bake</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We could also in this case have set <code>new_data = NULL</code> since we are using the same data as we supplied to <code>recipe()</code></p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>bake</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We can also investigate the values that were estimated using the <code>tidy()</code> function. Just using <code>tidy()</code> gives us a list of operations that were performed.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>tidy</span><span class='op'>(</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>We can then dig deeper into each operation by specifying the number of the operation. For <code>step_impute_mean()</code> we get the estimated means</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>tidy</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>For <code>step_unknown()</code> we see which variables were included and what value get got.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec1_prepped</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>tidy</span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>Next up us dealing with the datetime variable. We will see what happens when we use the <code>features</code>, <code>abbr</code>, <code>label</code>, <code>ordinal</code> and <code>keep_original_cols</code> argument.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>rec2</span> <span class='op'>&lt;-</span> <span class='fu'>recipe</span><span class='op'>(</span><span class='op'>~</span> <span class='va'>time_hour</span>, <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>step_date</span><span class='op'>(</span><span class='va'>time_hour</span><span class='op'>)</span>
+
+<span class='fu'>prep</span><span class='op'>(</span><span class='va'>rec2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>bake</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="your-turn">YOUR TURN</h1>
+<p>Create a single recipe, containing the above steps. Create dummy variables of all the nominal predictors with <code>step_dummy()</code> and end with a normalization step via <code>step_normalize()</code>. Prep it on the training data set, and bake it on the testing data set.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
