@@ -2,7 +2,7 @@
 title: "Principal Compoonents Analysis"
 subtitle: "AU STAT627"
 author: "Emil Hvitfeldt"
-date: "2021-06-07"
+date: "2021-10-25"
 output:
   xaringan::moon_reader:
     css: ["theme.css", "default"]
@@ -42,7 +42,7 @@ Why would you want to do this?
 
 - Motivation
 
-Suppose you have many dimension and want to visualize the relationship between them
+Suppose you have many dimensions and want to visualize the relationship between them
 
 If you wanted to do them pairwise then you have ${p \choose 2} = \dfrac{p(p-1)}{2}$ plots to do
 
@@ -417,7 +417,7 @@ In other words, each principal component can contain at most $k$ loadings
 
 $$\sum_{i=1}^n \sum_{j=1}^p \left( X_{ij}- (UV)_{ij} \right)^2$$
 
-Under the constraint that there is at most 1 columns in $U$
+Under the constraint that there is at most 1 column in $U$
 
 ---
 
@@ -432,15 +432,3 @@ Under the constraint that all the values of $U$ and $V$ are non-negative
 # A Bluffer's Guide to Dimension Reduction - Leland McInnes
 
 More about this: https://www.youtube.com/watch?v=9iol3Lk6kyU&t=6s
-
----
-
-# Final Project
-
-Search for data!
-
-Ideas:
-
-- https://github.com/rfordatascience/tidytuesday
-- https://www.data-is-plural.com/
-- https://www.kaggle.com/
