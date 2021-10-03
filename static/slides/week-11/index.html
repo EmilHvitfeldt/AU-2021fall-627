@@ -4,8 +4,8 @@
     <title>Moving Beyond Linearity</title>
     <meta charset="utf-8" />
     <meta name="author" content="Emil Hvitfeldt" />
-    <meta name="date" content="2021-06-14" />
-    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <meta name="date" content="2021-11-08" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="theme.css" type="text/css" />
   </head>
@@ -16,7 +16,7 @@ class: center, middle, title-slide
 # Moving Beyond Linearity
 ## AU STAT627
 ### Emil Hvitfeldt
-### 2021-06-14
+### 2021-11-08
 
 ---
 
@@ -91,7 +91,7 @@ Simple linear regression
 
 `$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$`
 
-2nd degree polynomial regression
+2nd-degree polynomial regression
 
 `$$y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \epsilon_i$$`
 
@@ -197,7 +197,7 @@ We divide a variable into multiple bins, constructing an ordered categorical var
 
 Depending on the number of cuts, you might miss the action of the variable in question
 
-Be wary about using this method if you are going in blind, you end up creating a lot more columns of your data set and your flexibility increase drastically
+Be wary about using this method if you are going in blind, you end up creating a lot more columns of your data set, and your flexibility increase drastically
 
 ---
 
@@ -296,7 +296,7 @@ Given us
 
 `$$y_i = \beta_0 + f_1(x_{i1}) + f_2(x_{i2}) + f_3(x_{i3}) + ... +  f_p(x_{ip}) + \epsilon_i$$`
 
-Since we are keeping the model additive we left with a more interpretable model since we are able to look at the effect of each of the predictors on the response by keeping the other predictors constant
+Since we are keeping the model additive we are left with a more interpretable model since we can look at the effect of each of the predictors on the response by keeping the other predictors constant
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
