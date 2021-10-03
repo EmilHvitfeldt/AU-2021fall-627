@@ -2,7 +2,7 @@
 title: "Support Vector Machines"
 subtitle: "AU STAT627"
 author: "Emil Hvitfeldt"
-date: "2021-06-21"
+date: "2021-11-22"
 output:
   xaringan::moon_reader:
     css: ["theme.css", "default"]
@@ -28,39 +28,6 @@ library(horus)
   font-size: 75%;
 }
 ```
-
-
-# Boston Data Set
-
-.small[
-.pull-left[
-- **crim** per capita crime rate by town.
-- **zn** proportion of residential land zoned for lots over 25,000 sq.ft.
-- **indus** proportion of non-retail business acres per town.
-- **chas** Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
-- **nox** nitrogen oxides concentration (parts per 10 million).
-- **rm** average number of rooms per dwelling.
-- **age** proportion of owner-occupied units built prior to 1940
-]
-
-.pull-right[
-- **dis** weighted mean of distances to five Boston employment centres.
-- **rad** index of accessibility to radial highways.
-- **tax** full-value property-tax rate per $10,000.
-- **ptratio** pupil-teacher ratio by town.
-- **black** 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
-- **lstat** lower status of the population (percent).
-- **medv** median value of owner-occupied homes in $1000s.
-]
-]
-
----
-
-# Boston Data Set
-
-**black** 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
-
----
 
 # Support Vector Machines
 
@@ -274,8 +241,8 @@ SVM are typically fitted iteratively, if $C$ is chosen too low then there are no
 
 $C$ is essentially a tuning parameter that controls the bias-variance trade-off
 
-- Small $C$ gives narrow margins that are rarely violated, highly fit to the data, low bias, high variance
-- Large $C$ gives wide margins that are more often violated, loosely fit to data, high bias, low variance
+- Small $C$ gives narrow margins that are rarely violated, highly fit the data, low bias, high variance
+- Large $C$ gives wide margins that are more often violated, loosely fit data, high bias, low variance
 
 ---
 
@@ -299,7 +266,7 @@ We can do this in (at least) two ways, using .blue[polynomials] and .orange[kern
 
 # Support Vector Machine
 
-Without going into too many details, the main the algorithm at works ends up calculation similarities between two observations
+Without going into too many details, the main algorithm at works ends up calculation similarities between two observations
 
 $K(x_i, x_{i'})$
 
@@ -393,7 +360,7 @@ viz_decision_boundary(svm_fit, data1) +
 
 # Polynomial kernel of degree 15
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 svm_spec <- svm_poly(degree = 15) %>%
   set_mode("classification") %>%
   set_engine("kernlab")
@@ -402,7 +369,9 @@ svm_fit <- workflow() %>%
   add_formula(z ~ x + y) %>%
   add_model(svm_spec) %>%
   fit(data1)
+```
 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 viz_decision_boundary(svm_fit, data1) +
   scale_fill_manual(values = c(pink, blue)) +
   guides(fill = "none") +
@@ -485,7 +454,7 @@ viz_decision_boundary(svm_fit, data1) +
 
 # SVMs for more than 2 classes
 
-This is actually a more general question
+This is a more general question
 
 How do we extend a binary classifier to multi-classification
 
