@@ -71,6 +71,8 @@ navbar:
           href: assignment-02.html
         - text: "Assignment 3 - LDA, QDA, KNN"
           href: assignment-03.html
+        - text: "Assignment 4 - Resampling"
+          href: assignment-04.html
     - text: "Reference"
       href: reference.html
 output: distill::distill_article

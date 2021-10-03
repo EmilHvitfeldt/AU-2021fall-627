@@ -19,10 +19,8 @@ As optional but highly recommended reading is chapter 5, 6, and 8 from [Feature 
 
 ## Slides
 
-
 ```{r, echo=FALSE, eval=TRUE}
 xaringanExtra::embed_xaringan(url = "static/slides/week-05/index.html", ratio = "16:9")
 ```
 
 [PDF download](static/slides/week-05/week-05.pdf) [Full Screen](static/slides/week-05/index.html)
-

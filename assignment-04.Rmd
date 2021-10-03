@@ -1,0 +1,45 @@
+---
+title: "Assignment 4"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Exercise 1 (7.5 points)
+
+Review of *k*-fold cross-validation.
+
+a. Explain how *k*-fold cross-validation is implemented.
+a. What are the advantages and disadvantages of *k*-fold cross-validation relative to
+    - The validation set approach
+    - LOOCV
+
+# Exercise 2 (7.5 points)
+
+Denote whether the following statements are true or false. Explain your reasoning.
+
+a. When $k = n$ the cross-validation estimator is approximately unbiased for the true prediction error.
+b. When $k = n$ the cross-validation estimator will always have a low variance.
+c. Statistical transformations on the predictors, such as scaling and centering, must be done inside each fold.
+
+# Exercise 3 (15 points)
+
+This exercise should be answered using the `Weekly` data set, which is part of the `LSLR` package. If you don't have it installed already you can install it with
+
+```{r}
+install.packages("ISLR")
+```
+
+To load the data set run the following code
+
+```{r}
+library(ISLR)
+data("Weekly")
+```
+
+a. Create a test and training set using `initial_split()`. Split proportion is up to you. Remember to set a seed!
+b. Create a logistic regression specification using `logistic_reg()`. Set the engine to `glm`.
+c. Create a 5-fold cross-validation object using the training data, and fit the resampled folds with `fit_resamples()` and `Direction` as the response and the five lag variables plus `Volume` as predictors. Remember to set a seed before creating k-fold object.
+d. Collect the performance metrics using `collect_metrics()`. Interpret.
+e. Fit the model on the whole training data set. Calculate the accuracy on the test set. How does this result compare to results in d. Interpret. 
