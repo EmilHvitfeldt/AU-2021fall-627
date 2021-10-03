@@ -4,8 +4,8 @@
     <title>Shrinkage Methods and Hyperparameter tunning</title>
     <meta charset="utf-8" />
     <meta name="author" content="Emil Hvitfeldt" />
-    <meta name="date" content="2021-06-09" />
-    <script src="libs/header-attrs-2.6.6/header-attrs.js"></script>
+    <meta name="date" content="2021-11-01" />
+    <script src="libs/header-attrs-2.10/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="theme.css" type="text/css" />
   </head>
@@ -16,7 +16,7 @@ class: center, middle, title-slide
 # Shrinkage Methods and Hyperparameter tunning
 ## AU STAT627
 ### Emil Hvitfeldt
-### 2021-06-09
+### 2021-11-01
 
 ---
 
@@ -144,7 +144,7 @@ You must scale your variables to have them influence the model evenly
 
 # Bias - Variance trade-off
 
-The beauty of this method is that different values of `\(\lambda\)` slides across the bias/variance spectrum
+The beauty of this method is that different values of `\(\lambda\)` slide across the bias/variance spectrum
 
 ---
 
@@ -201,7 +201,7 @@ biomass_scaled
 ```
 
 ```
-## # A tibble: 536 x 6
+## # A tibble: 536 × 6
 ##     carbon hydrogen  oxygen nitrogen  sulfur     HHV
 ##      &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ##  1  0.149    0.152   0.404   -0.561  -0.482   0.227 
@@ -259,7 +259,7 @@ predict(ridge_fit, new_data = biomass_scaled)
 ```
 
 ```
-## # A tibble: 536 x 1
+## # A tibble: 536 × 1
 ##      .pred
 ##      &lt;dbl&gt;
 ##  1  0.106 
@@ -287,7 +287,7 @@ predict(ridge_fit, new_data = biomass_scaled, penalty = 100)
 ```
 
 ```
-## # A tibble: 536 x 1
+## # A tibble: 536 × 1
 ##        .pred
 ##        &lt;dbl&gt;
 ##  1 -0.000760
@@ -307,7 +307,7 @@ predict(ridge_fit, new_data = biomass_scaled, penalty = 100)
 
 # Predicting for a Ridge Regression model
 
-We could also specify the penalty directly when we fit the model, but there is not as often a usecase for this
+We could also specify the penalty directly when we fit the model, but there is not as often a use-case for this
 
 
 ```r
@@ -321,7 +321,7 @@ predict(ridge_fit, new_data = biomass_scaled)
 ```
 
 ```
-## # A tibble: 536 x 1
+## # A tibble: 536 × 1
 ##        .pred
 ##        &lt;dbl&gt;
 ##  1 -0.000760
@@ -460,7 +460,7 @@ lambda_grid
 ```
 
 ```
-## # A tibble: 50 x 1
+## # A tibble: 50 × 1
 ##     penalty
 ##       &lt;dbl&gt;
 ##  1 1   e-10
@@ -503,19 +503,19 @@ collect_metrics(tune_rs)
 ```
 
 ```
-## # A tibble: 100 x 7
+## # A tibble: 100 × 7
 ##     penalty .metric .estimator  mean     n std_err .config              
 ##       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-##  1 1   e-10 rmse    standard   1.53      5  0.258  Preprocessor1_Model01
-##  2 1   e-10 rsq     standard   0.833     5  0.0455 Preprocessor1_Model01
-##  3 1.60e-10 rmse    standard   1.53      5  0.258  Preprocessor1_Model02
-##  4 1.60e-10 rsq     standard   0.833     5  0.0455 Preprocessor1_Model02
-##  5 2.56e-10 rmse    standard   1.53      5  0.258  Preprocessor1_Model03
-##  6 2.56e-10 rsq     standard   0.833     5  0.0455 Preprocessor1_Model03
-##  7 4.09e-10 rmse    standard   1.53      5  0.258  Preprocessor1_Model04
-##  8 4.09e-10 rsq     standard   0.833     5  0.0455 Preprocessor1_Model04
-##  9 6.55e-10 rmse    standard   1.53      5  0.258  Preprocessor1_Model05
-## 10 6.55e-10 rsq     standard   0.833     5  0.0455 Preprocessor1_Model05
+##  1 1   e-10 rmse    standard   1.59      5  0.306  Preprocessor1_Model01
+##  2 1   e-10 rsq     standard   0.837     5  0.0482 Preprocessor1_Model01
+##  3 1.60e-10 rmse    standard   1.59      5  0.306  Preprocessor1_Model02
+##  4 1.60e-10 rsq     standard   0.837     5  0.0482 Preprocessor1_Model02
+##  5 2.56e-10 rmse    standard   1.59      5  0.306  Preprocessor1_Model03
+##  6 2.56e-10 rsq     standard   0.837     5  0.0482 Preprocessor1_Model03
+##  7 4.09e-10 rmse    standard   1.59      5  0.306  Preprocessor1_Model04
+##  8 4.09e-10 rsq     standard   0.837     5  0.0482 Preprocessor1_Model04
+##  9 6.55e-10 rmse    standard   1.59      5  0.306  Preprocessor1_Model05
+## 10 6.55e-10 rsq     standard   0.837     5  0.0482 Preprocessor1_Model05
 ## # … with 90 more rows
 ```
 
@@ -549,14 +549,14 @@ tune_rs %&gt;%
 ```
 
 ```
-## # A tibble: 5 x 7
-##    penalty .metric .estimator  mean     n std_err .config              
-##      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
-## 1 1.46e- 2 rmse    standard    1.53     5   0.257 Preprocessor1_Model41
-## 2 2.33e- 2 rmse    standard    1.53     5   0.257 Preprocessor1_Model42
-## 3 9.10e- 3 rmse    standard    1.53     5   0.258 Preprocessor1_Model40
-## 4 1   e-10 rmse    standard    1.53     5   0.258 Preprocessor1_Model01
-## 5 1.60e-10 rmse    standard    1.53     5   0.258 Preprocessor1_Model02
+## # A tibble: 5 × 7
+##   penalty .metric .estimator  mean     n std_err .config              
+##     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
+## 1  0.0954 rmse    standard    1.58     5   0.300 Preprocessor1_Model45
+## 2  0.153  rmse    standard    1.58     5   0.295 Preprocessor1_Model46
+## 3  0.0596 rmse    standard    1.58     5   0.302 Preprocessor1_Model44
+## 4  0.0373 rmse    standard    1.58     5   0.303 Preprocessor1_Model43
+## 5  0.0233 rmse    standard    1.59     5   0.304 Preprocessor1_Model42
 ```
 
 
@@ -622,7 +622,7 @@ final_lasso
 ## Linear Regression Model Specification (regression)
 ## 
 ## Main Arguments:
-##   penalty = 0.0145634847750124
+##   penalty = 0.0954095476349996
 ##   mixture = 1
 ## 
 ## Computational engine: glmnet
@@ -653,19 +653,19 @@ predict(fitted_lasso, biomass_test)
 ```
 
 ```
-## # A tibble: 402 x 1
+## # A tibble: 402 × 1
 ##    .pred
 ##    &lt;dbl&gt;
-##  1  19.1
-##  2  28.5
-##  3  22.1
-##  4  19.1
-##  5  19.2
-##  6  17.3
-##  7  18.3
-##  8  19.1
-##  9  19.4
-## 10  15.9
+##  1  17.6
+##  2  18.3
+##  3  18.2
+##  4  18.5
+##  5  19.3
+##  6  20.2
+##  7  19.4
+##  8  19.8
+##  9  20.7
+## 10  16.1
 ## # … with 392 more rows
 ```
 

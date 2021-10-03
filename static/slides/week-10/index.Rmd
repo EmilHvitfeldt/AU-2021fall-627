@@ -2,7 +2,7 @@
 title: "Shrinkage Methods and Hyperparameter tunning"
 subtitle: "AU STAT627"
 author: "Emil Hvitfeldt"
-date: "2021-06-09"
+date: "2021-11-01"
 output:
   xaringan::moon_reader:
     css: ["theme.css", "default"]
@@ -108,7 +108,7 @@ You must scale your variables to have them influence the model evenly
 
 # Bias - Variance trade-off
 
-The beauty of this method is that different values of $\lambda$ slides across the bias/variance spectrum
+The beauty of this method is that different values of $\lambda$ slide across the bias/variance spectrum
 
 ---
 
@@ -211,7 +211,7 @@ predict(ridge_fit, new_data = biomass_scaled, penalty = 100)
 
 # Predicting for a Ridge Regression model
 
-We could also specify the penalty directly when we fit the model, but there is not as often a usecase for this
+We could also specify the penalty directly when we fit the model, but there is not as often a use-case for this
 
 ```{r}
 ridge_spec <- linear_reg(mixture = 0, penalty = 100) %>%
