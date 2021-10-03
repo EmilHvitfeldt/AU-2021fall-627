@@ -655,3 +655,15 @@ There are two possible kinds of problems here
 
 - Forced to be part of a cluster
 - Can only be part of one cluster
+
+---
+
+# Final Project
+
+Search for data!
+
+Ideas:
+
+- https://github.com/rfordatascience/tidytuesday
+- https://www.data-is-plural.com/
+- https://www.kaggle.com/

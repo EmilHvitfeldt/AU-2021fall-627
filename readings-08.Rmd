@@ -10,6 +10,15 @@ We will be working on the midterm this week. I will take the opportunity to talk
 
 I'll post more reading soon!
 
+Search for data!
+
+Ideas for Final project Data:
+
+- https://github.com/rfordatascience/tidytuesday
+- https://www.data-is-plural.com/
+- https://www.kaggle.com/
+
+
 ## Slides
 
 To be posted!
