@@ -12,7 +12,9 @@ Imports:
     sass,
     flair,
     nycflights13,
-    discrim
+    discrim,
+    baguette,
+    rpart.plot
 Remotes:
     EmilHvitfeldt/distillcourse,
     gadenbuie/xaringanExtra
