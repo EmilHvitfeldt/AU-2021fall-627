@@ -1,0 +1,91 @@
+---
+title: "Assignment 5"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Exercise 1 (10 points)
+
+We will now derive the probability that a given observation is part of a bootstrap sample. 
+Suppose that we obtain a bootstrap sample from a set of $n$ observations.
+
+a. What is the probability that the first bootstrap observation is *not* the $j$th observation from the original sample? Justify your answer.
+a. What is the probability that the second bootstrap observation is *not* the $j$th observation from the original sample? Justify your answer.
+a. Argue that the probability that the $j$th observation is *not* in the bootstrap sample is $(1-1/n)^n$.
+a. When $n = 5$ what is the probability that the $j$th observation is in the bootstrap sample?
+a. When $n = 100$ what is the probability that the $j$th observation is in the bootstrap sample?
+a. When $n = 10,000$ what is the probability that the $j$th observation is in the bootstrap sample?
+a. Create a plot that displays, for each integer value of $n$ from 1 to 100,000 the probability that the $j$th observation is in the bootstrap sample. Comment on what you observe.
+a. We will now investigate numerically that a bootstrap sample of size $n = 100$ contains the $j$th observation. Here $j = 4$. We repeatedly create bootstrap samples, and each time we record whether or not the fourth observation is contained in the bootstrap sample.
+
+```{r}
+set.seed(  ) # set a seed here
+
+store <- integer(10000)
+
+for (i in seq_along(store)) {
+  store[i] <- sum(sample(seq_len(100), replace = TRUE) == 4) > 0
+}
+
+mean(store)
+```
+
+Comment on the results obtained.
+
+# Exercise 2 (10 points)
+
+Suppose that we use some statistical learning method to make a prediction for the response $Y$ for a particular value of the predictor $X$. 
+
+a. Carefully describe how we might estimate the standard deviation of our prediction.
+a. Is this procedure depends on what statistical learning method we are using?
+
+# Exercise 3  (10 points)
+
+This exercise should be answered using the `Default` data set, which is part of the `LSLR` package. If you don't have it installed already you can install it with
+
+```{r}
+install.packages("ISLR")
+```
+
+To load the data set run the following code
+
+```{r}
+library(ISLR)
+data("Default")
+```
+
+a. Use the `parsnip` package to fit a logistic regression on the `default` data set. `default` is the response and `income` and `balance` are the predictors. Then use `summary()` on the fitted model to determine the estimated standard errors for the coefficients associated with `income` and `balance`. Comment on the estimated standard errors.
+a. Use the `bootstraps()` function from the `rsample` package to generate 25 bootstraps of `Default`.
+a. Run the following code. Change `boots` to the name of the bootstrapping object created in the previous question. This will take a minute or two to run. Comment on 
+
+```{r}
+# This function takes a `bootstrapped` split object, and fits a logistic model
+fit_lr_on_bootstrap <- function(split) {
+  logistic_reg() %>%
+    set_engine("glm") %>%
+    set_mode("classification") %>%
+    fit(default ~ income + balance, analysis(split))
+}
+
+# This code uses `map()` to run the model inside each split. Then it used
+# `tidy()` to extract the model estimates the parameter
+boot_models <-
+  boots %>% 
+  mutate(model = map(splits, fit_lr_on_bootstrap),
+         coef_info = map(model, tidy))
+
+# This code extract the estimates for each model that was fit
+boot_coefs <-
+  boot_models %>% 
+  unnest(coef_info)
+
+# This code calculates the standard deviation of the estimate
+sd_estimates <- boot_coefs %>%
+  group_by(term) %>%
+  summarise(std.error_est = sd(estimate))
+sd_estimates
+```
+
+a. Comment on the estimated standard errors obtained using the `summary()` function on the first model and the estimated standard errors you found using the above code.

@@ -1,0 +1,34 @@
+---
+title: "Assignment 9"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+Draw an example (of your own invention) of a partition of two-dimensional feature space that could result from recursive binary splitting. Your example should contain at least six regions. Draw a decision tree corresponding to this partition. Be sure to label all aspects of your figures, including regions $R_1, R_2, ...$, the cut points $t_1, t_2, ...$, and so forth.
+
+# Exercise 2
+
+Provide a detailed explanation of the algorithm that is used to fit a regression tree.
+
+# Exercise 3
+
+Explain the difference between bagging, boosting, and random forests.
+
+# Exercise 4
+
+You will be using the `lending_club` data found modeldata. 
+
+```{r, eval=FALSE}
+library(modeldata)
+data("lending_club")
+```
+
+The response is `Class` and the remaining variables are predictors.
+
+Do test-training split as usual, and fit a random forest model or boosted tree (your choice) and a linear regression model.
+
+The random forest or boosted tree model has a selection of hyper-parameters that you can tune to improve performance. Perform hyperparameter tuning using k-fold cross-validation to find a model with good predictive power. How does this model compare to the linear regression model?

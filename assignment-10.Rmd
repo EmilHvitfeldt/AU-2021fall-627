@@ -1,0 +1,57 @@
+---
+title: "Assignment 10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+This problem involves hyperplanes in two dimensions.
+
+a. Sketch the hyperplane $1 + 3X_1 - X_2 = 0$. Indicate the set of points for which $1 + 3X_1 - X_2 > 0$, as well as the sett of points for which $1 + 3X_1 - X_2 < 0$.
+b. On the same plot, sketch the hyperplane $-2 + X_1 + 2 X_2 = 0$. Indicate the set of points for which $-2 + X_1 + 2 X_2 > 0$, as well as the sett of points for which $-2 + X_1 + 2 X_2 < 0$.
+
+# Exercise 2
+
+We have seen that in $p = 2$ dimensions, a linear decision boundary takes the form $\beta_0 + \beta_1 X_1 + \beta_2 X_2 = 0$. We now investigate a non-linear decision boundary.
+
+a. Sketch the curve
+
+$$(1 + X_1)^2 + (2 - X_2)^2 = 4$$
+
+b. On your sketch, indicate the set of points for which
+
+$$(1 + X_1)^2 + (2 - X_2)^2 > 4$$
+
+as well as the set of points for which
+
+$$(1 + X_1)^2 + (2 - X_2)^2 \leq 4$$
+
+c. Suppose that a classifier assigns an observation to the blue class if
+
+$$(1 + X_1)^2 + (2 - X_2)^2 > 4$$
+
+and to the red class otherwise. To what class is the observation $(0, 0)$ classified? $(-1, 1)$?, $(2, 2)$?, $(3, 8)$?
+
+# Exercise 3
+
+In this problem, you will use support vector approaches to predict whether a given car gets high or low gas mileage based on the `Auto` data set from the **ISLR** package. To the following code to turn the `mpg` variable to a binary factor that is split by the median value of `mpg`.
+
+You will need to use the 
+
+```{r}
+library(tidymodels)
+library(ISLR)
+
+Auto <- Auto %>%
+  mutate(mpg = factor(mpg > median(mpg), 
+                      levels = c(TRUE, FALSE),
+                      labels = c("High", "Low"))) %>%
+  select(-origin, -name)
+```
+
+Use k-fold cross-validation to fit an SVM with a polynomial radial basis kernel (`svm_poly()`) to select a good value of `cost` and `degree`. Report the different errors associated with different values of this parameter. Comment on your results.
+
+Repeat with an SVM with a radial basis kernel (`svm_rbf()`). This model can be tuned over `cost` and `rbf_sigma` which is The cost of predicting a sample within or on the wrong side of the margin and The precision parameter for the radial basis function, respectively. Comment on your results.

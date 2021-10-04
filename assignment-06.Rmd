@@ -1,0 +1,51 @@
+---
+title: "Assignment 6"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+Explain the assumptions we are making when performing Principle Component Analysis (PCA). What happens when these assumptions are violated?
+
+# Exercise 2
+
+Answer the following questions regarding Principle Component Analysis.
+
+- Is it important to standardize before applying PCA?
+- Should one remove highly correlated variables before doing PCA?
+- What will happen when eigenvalues are roughly equal?
+- Can PCA be used to reduce the dimensionality of a highly nonlinear data set?
+
+# Exercise 3
+
+You will in this exercise explore a data set using PCA. The data comes from the [#tidytuesday project](https://github.com/rfordatascience/tidytuesday) and is about [Student Loan Payments](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-11-26).
+
+Load in the data using the following script.
+
+```{r, eval=FALSE}
+library(tidymodels)
+loans <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-26/loans.csv") %>%
+  select(-agency_name, -added) %>%
+  drop_na()
+```
+
+a.  Use the `prcomp()` function to perform PCA on the loans data set. Set `scale. = TRUE` to perform scaling. What results are contained in this object? (hint: use the `names()` function)
+
+b. Calculate the amount of variance explained by each principal component. (hint: look at `?broom:::tidy.prcomp`)
+
+c. Use the `tidy()` function to extract the the loadings. Which variable contributed most to the first principle component? Second Component?
+
+d. Use the `augment()` function to get back the transformation and create a scatter plot of any two components of your choice.
+
+# Exercise 4
+
+In this exercise, you are tasked to predict the weight of an animal in a zoo, based on which words are used to describe it. The `animals` data set can be downloaded [here](data/animals.csv).
+
+This data set contains 1001 variables. The first variable `weight` is the natural log of the mean weight of the animal. The remaining variables are named `tf_*` which shows how many times the word `*` appears in the description of the animal.
+
+Use {tidymodels} to set up a workflow to train a PC regression. We can do this by specifying a linear regression model, and create a preprocessor recipe with {recipes} that applies PCA transformation on the predictors using `step_pca()`. Use the `threshold` argument in `step_pca()` to only keep the principal components that explain 90% of the variance.
+
+How well does this model perform on the testing data set?

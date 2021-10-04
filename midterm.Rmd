@@ -1,0 +1,43 @@
+---
+title: "Midterm"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1 (15 points)
+
+Explain whether each scenario is a classification or regression problem, and indicate whether we are most interested in inference or prediction. 
+
+a. We collect several different measurements of salmon swimming through a small river. These measurements include; length, width, weight, color, and time of day the measurement was taken. Later down the river data is collected whether the fish survived the journey.
+a. We are considering launching a new product and wish to know whether it will be a success or a failure. We collect data on 40 similar products that were previously launched. For each product, we have recorded whether it was a big success or failure, price charged for the product, marketing budget, competition price, and ten other variables. This product is scheduled to be rolled out to multiple stores across the midwest.
+a. You are a real estate agent and you are looking at predicting the sale price of your upcoming houses based on lot size, house size, number of bathrooms, number of bedrooms, and presence of a pool.  
+
+# Exercise 2 (15 points)
+
+What are the advantages and disadvantages of a very flexible approach compared to a less flexible approach for regression or classification? If you were you draw the decision boundary for a very flexible classification model how would it look? Under what circumstances might a more flexible approach be preferred to a less flexible approach?
+
+# Exercise 3 (15 points)
+
+Explain the differences between K-nearest neighbor and linear regression for a general regression task. Under what circumstances would a K-nearest neighbor approach perform better than a linear model. The performance here is measured using an appropriate performance metric calculated on the training data set. 
+
+# Exercise 4 (15 points)
+
+Explain how the scaling of predictor variables will or won't be affecting the model fit for K-nearest neighbors, logistic regression, LDA, and QDA.
+
+# Exercise 5 (15 points)
+
+Suppose you are given a data set and told to perform a clustering analysis to determine how many clusters are present. Explain how you would go about doing that.
+
+# Exercise 6 (15 points)
+
+Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction.
+
+# Exercise 7 (60 points)
+
+In this exercise, you will try to fit a classification model. You are given a data set with a response and 10 numeric predictors. You are to fit 2 knn models one with (K = 1) and one with (K = 2), 1 LDA, and one QDA. The data have already been split for you and can be downloaded here [vowel_train](data/vowel_train.csv) and [vowel_test](data/vowel_test.csv). Use K-fold cross-validation with K = 10 with accuracy as the performance metric to select 1 of the 4 models.
+Fit this one model on the training data set, predict on the testing data set, and calculate the testing accuracy and construct a confusion matrix. Comment on your results.
+
+
+

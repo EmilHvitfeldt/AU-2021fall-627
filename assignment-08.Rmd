@@ -1,0 +1,45 @@
+---
+title: "Assignment 8"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+Suppose we fit a curve with basis functions $b_1(X) = X$, $B_2(X) = (X - 1)^2 I(X \geq 1)$. Note that $I(X \geq 1)$ equals 1 for $X \geq 1$ and 0 otherwise. We fit the linear regression  model
+
+$$Y = \beta_0 + \beta_1b_1(X) + \beta_2b_2(X) + \varepsilon$$
+
+and obtain the coefficient estimates $\hat \beta_0 = 1$, $\hat \beta_1 = 1$, $\hat \beta_2 = -2$. Sketch the estimated curve between $X = -2$ and $X = 2$. Note the intercepts, slopes and other relevant information. Remember to plot using enough points to adequately see them shape of the curve.
+
+# Exercise 2
+
+Suppose we fit a curve with basis functions $b_1(X) = I(0 \leq X \leq 2) - (X-1)I(1 \leq X \leq 2)$, $B_2(X) = (X - 3) I(3 \leq X \leq 4) + I(4 < X \leq 5)$. We fit the linear regression  model
+
+$$Y = \beta_0 + \beta_1b_1(X) + \beta_2b_2(X) + \varepsilon$$
+
+and obtain the coefficient estimates $\hat \beta_0 = 1$, $\hat \beta_1 = 1$, $\hat \beta_2 = 3$. Sketch the estimated curve between $X = -2$ and $X = 2$. Note the intercepts, slopes and other relevant information. Remember to plot using enough points to adequately see them shape of the curve.
+
+# Exercise 3
+
+Explain what happens to the bias/variance trade-off of our model estimates use regression splines.
+
+# Exercise 4
+
+In  this exercise you will analyze the `Wage` data set. It is found in the `ISLR` package and can be loaded like so
+
+```{r}
+library(ISLR)
+data(Wage)
+```
+
+a. Perform polynomial regression to predict `wage` using `age`. Polynomial regression can be performed in tidymodels by using a linear regression model (`linear_reg()`) with a recipe that performs polynomial expansion (`step_poly()`).
+Use cross-validation to select the optimal `degree`.  
+
+Optional: Make a plot of the resulting polynomial fit to he data.
+
+b. Fit a step function (using a linear regression model and `step_discretize()`) and perform cross-validation to choose the optimal number of cuts.
+
+Optional: Make a plot of the fit.

@@ -1,0 +1,53 @@
+---
+title: "Assignment 7"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1 (12 points)
+
+For part (a) through (c) indicate which of the statements are correct. Justify your answers.
+
+a. The lasso, relative to least squares, is:
+    - More flexible and hence will give improved prediction accuracy when its increase in bias is less than its decrease in variance.
+    - More flexible and hence will give improved prediction accuracy when its increase in variance is less than its decrease in bias.
+    - Less flexible and hence will give improved prediction accuracy when its increase in bias is less than its decrease in variance.
+    - Less flexible and hence will give improved prediction accuracy when its increase in variance is less than its decrease in bias.
+b. Repeat (a) for ridge regression relative to least squares.
+c. Repeat (a) for non-linear methods relative to least squares.
+    
+
+# Exercise 2 (10 points)
+
+Suppose we estimate the regression coefficients in a linear regression model by minimizing
+
+$$
+\sum_{i=1}^n \left( y_i - \beta_0 - \sum^p_{j=1}\beta_j x_{ij} \right)^2 + \lambda \sum_{j=1}^p \beta_j^2
+$$
+
+for a particular value of $\lambda$. For part (a) through (c) indicate which of the statements are correct. Justify your answers.
+
+a. As we increase $\lambda$ from 0, the training RSS will:
+    - Increase initially, and then eventually start decreasing in an inverted U shape.
+    - Decrease initially, and then eventually start increasing in a U shape.
+    - Steadily increase.
+    - Steadily decrease.
+    - Remain constant.
+b. Repeat (a) for test RSS.
+c. Repeat (a) for variance.
+d. Repeat (a) for squared bias.
+e. Repeat (a) for the irreducible error.
+
+# Exercise 3 (13 points)
+
+In this exercise, you are tasked to predict the weight of an animal in a zoo, based on which words are used to describe it. The `animals` data set can be downloaded [here](data/animals.csv).
+
+This data set contains 1001 variables. The first variable `weight` is the natural log of the mean weight of the animal. The remaining variables are named `tf_*` which shows how many times the word `*` appears in the description of the animal.
+
+Fit a lasso regression model to predict `weight` based on all the other variables.
+
+Use the **tune** package to perform hyperparameter tuning to select the best value of $\lambda$. Use 10 bootstraps as the `resamples` data set.
+
+How well does this model perform on the testing data set?
