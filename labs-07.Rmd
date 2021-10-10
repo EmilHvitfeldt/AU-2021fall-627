@@ -1,0 +1,146 @@
+---
+title: "Week 7 - Clustering"
+---
+
+Download template [here](templates/labs-07.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(beans)
+```
+
+We will be using the `beans` package for the first time today. If the system prompts you to install a package or gives you a "package not found" error, simply run `install.packages("packagename")` once to install it.
+
+# The data set
+
+This data set contains morphologic image features for a larger number of beans. With more information [here](https://archive.ics.uci.edu/ml/datasets/Dry+Bean+Dataset). It contains 7 different types of beans
+
+```{r}
+beans %>%
+  count(class)
+```
+
+We can also get some information using `skimr::skim()`. We see no missing data which is nice.
+
+```{r}
+skimr::skim(beans)
+```
+
+We want to perform K-Means clustering, so we need to work with numeric data. We are hoping that the numeric variables contain some latent groupings/clusters.
+
+```{r}
+beans_scaled <- recipe(class ~ ., data = beans) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  prep() %>%
+  bake(new_data = NULL)
+
+beans_scaled
+```
+
+Once we have a scaled version of our data set we can pass it to `kmeans()` to perform the clustering. I'm removing the `class` variable before passing it to `kmeans()` as it would complain otherwise. I'm setting `centers = 2` because I want to get 2 clusters. I also set a seed to ensure I get the same results every time I run this.
+
+```{r}
+set.seed(1234)
+beans_kmeans2 <- beans_scaled %>%
+  select(-class) %>%
+  kmeans(centers = 2)
+```
+
+We can now inspect the results:
+
+```{r}
+beans_kmeans2
+```
+
+Another way to interact with the fitted model is to use tidiers from the {broom} package. The `tidy()` function returns the locations of the clusters.
+
+```{r}
+tidy(beans_kmeans2)
+```
+
+`glance()` gives us some metrics about the final clustering.
+
+```{r}
+glance(beans_kmeans2)
+```
+
+And `augment()` "applies" the clustering to new data.
+
+```{r}
+augment(beans_kmeans2, data = beans_scaled) %>%
+  select(.cluster, everything())
+```
+
+Using `augment()` let us do some easy visualizations to see if we are finding some clusters. If we pick 2 predictors, we can create a scatter plot to compare the clusters with the data.
+
+```{r}
+beans_kmeans2 %>%
+  augment(data = beans_scaled) %>%
+  ggplot(aes(area, perimeter)) +
+  geom_point(aes(color = .cluster), alpha = 0.2)
+```
+
+if we want we can also locate the clusters by using `tidy()`
+
+```{r}
+beans_kmeans2 %>%
+  augment(data = beans_scaled) %>%
+  ggplot(aes(area, perimeter)) +
+  geom_point(aes(color = .cluster), alpha = 0.2) +
+  geom_text(aes(label = cluster), data = tidy(beans_kmeans2))
+```
+
+Let us now take a look at where the classes are. They might not line up with these patterns at all!
+
+```{r}
+beans_kmeans2 %>%
+  augment(data = beans_scaled) %>%
+  ggplot(aes(area, perimeter, color = class)) +
+  geom_point(alpha = 0.2)
+```
+
+By using faceting we can look at both class and cluster at the same time without spending too much effort
+
+```{r}
+beans_kmeans2 %>%
+  augment(data = beans_scaled) %>%
+  ggplot(aes(area, perimeter, color = class)) +
+  facet_wrap(~.cluster) +
+  geom_point(alpha = 0.2)
+```
+
+Let us try one more pair of variables.
+
+```{r}
+beans_kmeans2 %>%
+  augment(data = beans_scaled) %>%
+  ggplot(aes(major_axis_length, minor_axis_length, color = .cluster)) +
+  geom_point(alpha = 0.2)
+```
+
+We could instead look at the agreement between `class` and `.cluster`
+
+```{r}
+augment(beans_kmeans2, data = beans_scaled) %>%
+  count(class, .cluster)
+```
+
+We can visualize these results too and we see that the model is doing a pretty good job at putting each class into either cluster 1 or 2.
+
+```{r}
+augment(beans_kmeans2, data = beans_scaled) %>%
+  count(class, .cluster) %>%
+  ggplot(aes(class, .cluster, fill = n)) +
+  geom_raster()
+```
+
+# YOUR TURN
+
+You have some options in what you want to try. You could try to see what happens if you don't include all the predictors in the data set. How does that change then results?
+Try fitting the model with a different number of clusters? Analyze the results and see if it is a better fit for your model.
+Try what happens if you don't perform scaling on the predictors. Before running this one, try to write down what you would expect to happen, then do the calculations, and write about what you found. You don't have to do all of this. Pick one or two things.
