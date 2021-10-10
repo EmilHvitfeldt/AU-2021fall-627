@@ -314,6 +314,71 @@ the need for dummy variables
 
 ---
 
+```{r, echo=FALSE}
+library(modeldata)
+library(tidymodels)
+
+data("penguins")
+
+penguins <- tidyr::drop_na(penguins)
+
+gini_before_fun <- function(x) {
+  tab <- table(x)
+  tab_sum <- sum(tab)
+  2 * (tab[1] / tab_sum) * (tab[2] / tab_sum)
+}
+
+gini_after_fun <- function(x, y) {
+  tab <- table(y, x)
+  tab_sum <- sum(tab)
+  row_sum <- rowSums(tab)
+  2 * ((tab[1, 1] / tab_sum) * (tab[1, 2] / row_sum[1]) + 
+       (tab[2, 1] / tab_sum) * (tab[2, 2] / row_sum[2]))
+}
+
+gini_split_plot <- function(data, response, predictor) {
+  gini_before <- gini_before_fun(data[[response]])
+
+  unique_values <- data[[predictor]] |> unique() |> sort()
+  
+  gini_values <- purrr::map_dbl(unique_values, ~ {
+    split <- factor(data[[predictor]] >= .x, 
+                    levels = c(TRUE, FALSE))
+  
+    gini_after_fun(data[[response]], split)
+    }
+  )
+  
+  gini_difference <- round(gini_before - min(gini_values, na.rm = TRUE), 3)
+  lowest_value <- unique_values[which(min(gini_values, na.rm = TRUE) == gini_values)+1]
+  
+  tibble(values = unique_values,
+         gini_values = gini_values) %>%
+    drop_na() %>%
+    ggplot(aes(values, gini_values)) +
+    geom_point() +
+    theme_minimal() +
+    geom_hline(yintercept = gini_before, color = "red") +
+    geom_segment(aes(x = lowest_value,
+                     xend = lowest_value,
+                     y = min(gini_values),
+                     yend = gini_before),
+                 color = "red") +
+    labs(title = glue::glue("Gini values for '{predictor}'"),
+         subtitle = glue::glue("Difference: {gini_difference}"))
+}
+
+library(patchwork)
+
+
+(gini_split_plot(penguins, "sex", "bill_length_mm") +
+gini_split_plot(penguins, "sex", "bill_depth_mm")) /
+(gini_split_plot(penguins, "sex", "flipper_length_mm") +
+gini_split_plot(penguins, "sex", "body_mass_g"))
+```
+
+---
+
 # Next Steps
 
 Individual decision trees don't offer great predictive performance due to their simple nature

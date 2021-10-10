@@ -73,6 +73,9 @@ navbar:
           href: assignment-03.html
         - text: "Assignment 4 - Resampling"
           href: assignment-04.html
+        - text: "Assignment 5 - Bootstrapping"
+          href: assignment-05.html
+
     - text: "Reference"
       href: reference.html
 output: distill::distill_article

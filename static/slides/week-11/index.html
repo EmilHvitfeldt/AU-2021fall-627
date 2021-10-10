@@ -297,6 +297,30 @@ Given us
 `$$y_i = \beta_0 + f_1(x_{i1}) + f_2(x_{i2}) + f_3(x_{i3}) + ... +  f_p(x_{ip}) + \epsilon_i$$`
 
 Since we are keeping the model additive we are left with a more interpretable model since we can look at the effect of each of the predictors on the response by keeping the other predictors constant
+
+---
+
+# Pros and Cons
+
+Pro: GAMs allow us to fit a non-linear `\(f_j\)` to each `\(X_j\)`, so that we can automatically model non-linear relationships that standard linear regression will miss. This means that we do not need to manually try out many different transformations on each variable individually.
+
+---
+
+# Pros and Cons
+
+Pro: The non-linear fits can potentially make more accurate predictions for the response `\(Y\)`.
+
+Pro: Because the model is additive, we can examine the effect of each `\(X_j\)` on `\(Y\)` individually while holding all of the other variables fixed.
+
+Pro: The smoothness of the function `\(f_j\)` for the variable `\(X_j\)` can be summarized via degrees of freedom.
+
+---
+
+# Pros and Cons
+
+Con: The main limitation of GAMs is that the model is restricted to be additive. With many variables, important interactions can be missed. 
+
+We can manually add interaction terms into the model by using appropriate pre-processing
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
