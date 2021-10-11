@@ -1,0 +1,120 @@
+---
+title: "Week 9 - PCA"
+---
+
+```{r}
+library(tidymodels)
+library(beans)
+```
+
+We will be using the `beans` package again today. If the system prompts you to install a package or gives you a "package not found" error, simply run `install.packages("packagename")` once to install it.
+
+# Analysis
+
+We will now see how we can perform Principal Components Analysis in R. We will do two different approaches, using `prcomp()` directly, and using the {recipes} package. Starting with `prcomp()`, we have to pass it a matrix or something that can be turned into a matrix. Such as a data.frame with only numeric variables. I'm setting `scale. = TRUE` to have `prcomp()` perform the normalization for us.
+
+```{r}
+beans_pca <- beans %>%
+  select(-class) %>%
+  prcomp(scale. = TRUE)
+```
+
+now that we have performed PCA, we can explore the resulting object. We will again use `tidy()`, and `augment()`. There is no `glance()` method for `prcomp()` objects.
+
+The `tidy()` function can be used in a couple of different ways. You can explore these ways by look at `?tidy.prcomp`. The default `"scores"` returns the scores, the information about the map from the original space.
+
+```{r}
+tidy(beans_pca, matrix = "scores")
+```
+
+The loadings show us how much each variable influences each PC.
+
+```{r}
+tidy(beans_pca, matrix = "loadings")
+```
+
+```{r}
+tidy(beans_pca, matrix = "loadings") %>%
+  filter(PC == 1) %>%
+  ggplot(aes(value, column)) +
+  geom_col()
+```
+
+Lastly, setting `matrix = "eigenvalues"` gives us PC by PC information about the amount of variance explained.
+
+```{r}
+tidy(beans_pca, matrix = "eigenvalues")
+```
+
+We see that 7 PCs are enough to explain over 99% of the variance contained in the 16 original columns. We can also show this visually with ggplot2.
+
+```{r}
+tidy(beans_pca, matrix = "eigenvalues") %>%
+  ggplot(aes(PC, cumulative)) +
+  geom_point() +
+  geom_line()
+```
+
+using `augment()` applies the transformation to the data that was used to train it. You can also pass in new data to `newdata` to have the transformation applied to new data.
+
+```{r}
+augment(beans_pca)
+```
+
+We can plot the first 2 PCs against each other. Remember that the first two PCs account for over 80% of the variance in the data.
+
+```{r}
+augment(beans_pca) %>%
+  bind_cols(beans) %>%
+  ggplot(aes(.fittedPC1, .fittedPC2)) +
+  geom_point(alpha = 0.2)
+```
+
+by binding the original data back on, lets us add color to show things such as the `class`
+
+```{r}
+augment(beans_pca) %>%
+  bind_cols(beans) %>%
+  ggplot(aes(.fittedPC1, .fittedPC2, color = class)) +
+  geom_point(alpha = 0.2)
+```
+
+or other variables such as the `aspect_ratio`.
+
+```{r}
+augment(beans_pca) %>%
+  bind_cols(beans) %>%
+  ggplot(aes(.fittedPC1, .fittedPC2, color = aspect_ratio)) +
+  geom_point(alpha = 0.2) +
+  scale_color_viridis_c()
+```
+
+We can perform these same calculations using the {recipes} package. We can select the number of PCs to keep by using the `threshold` or `num_comp` variables.
+
+```{r}
+rec_pca <- recipe(class ~ ., data = beans) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_pca(all_numeric_predictors(), threshold = 0.9)
+```
+
+This can then be prepped or included in a `workflow()`.
+
+```{r}
+rec_pca_prepped <- rec_pca %>%
+  prep() 
+
+rec_pca_prepped %>%
+  bake(new_data = NULL)
+```
+
+We can also use `tidy()` on the prepped recipe to get out what we need.
+
+```{r}
+tidy(rec_pca_prepped, 2)
+```
+
+
+# YOUR TURN
+
+Do some more visualizations of the different PCs. You can also look into how you can use the `rec_pca` together with an LDA model.
+
