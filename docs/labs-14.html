@@ -86,26 +86,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </style>
 
   <!--radix_placeholder_meta_tags-->
-  <title>Statistical Machine Learning: Syllabus</title>
+  <title>Statistical Machine Learning: Week 14 - SVM</title>
 
 
 
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="Statistical Machine Learning: Syllabus"/>
+  <meta property="og:title" content="Statistical Machine Learning: Week 14 - SVM"/>
   <meta property="og:type" content="article"/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="Statistical Machine Learning"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="Statistical Machine Learning: Syllabus"/>
+  <meta property="twitter:title" content="Statistical Machine Learning: Week 14 - SVM"/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","output"]}},"value":[{"type":"character","attributes":{},"value":["Syllabus"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["toc","toc_depth","toc_float"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"integer","attributes":{},"value":[2]},{"type":"logical","attributes":{},"value":[true]}]}]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title"]}},"value":[{"type":"character","attributes":{},"value":["Week 14 - SVM"]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -2356,7 +2356,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"Syllabus","authors":[]}
+{"title":"Week 14 - SVM","authors":[]}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2438,7 +2438,7 @@ Assignments
 <!--/radix_placeholder_site_before_body-->
 
 <div class="d-title">
-<h1>Syllabus</h1>
+<h1>Week 14 - SVM</h1>
 <!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
 
@@ -2446,143 +2446,94 @@ Assignments
 
 
 <div class="d-article">
-<div class="d-contents d-contents-float">
-<nav class="l-text toc figcaption" id="TOC">
-<h3>Contents</h3>
-<ul>
-<li><a href="#instructor">Instructor</a></li>
-<li><a href="#pre-requisites">Pre-requisites</a></li>
-<li><a href="#textbooks">Textbooks</a>
-<ul>
-<li><a href="#main-textbook">Main textbook</a></li>
-<li><a href="#supplementary-books">Supplementary books</a></li>
-</ul></li>
-<li><a href="#course-plan">Course Plan</a></li>
-<li><a href="#assignments-and-grading">Assignments and grading</a></li>
-<li><a href="#learning-objectives">Learning objectives</a></li>
-<li><a href="#online-help">Online help</a></li>
-<li><a href="#software">Software</a></li>
-<li><a href="#learning-during-a-pandemic">Learning during a pandemic</a></li>
-<li><a href="#laurens-promise">Lauren’s Promise</a></li>
-<li><a href="#support-services">Support Services</a>
-<ul>
-<li><a href="#emergency-preparedness">Emergency preparedness</a></li>
-<li><a href="#mathematics-statistics-tutoring-lab-don-myers-building">Mathematics &amp; Statistics Tutoring Lab (Don Myers Building)</a></li>
-<li><a href="#academic-support-and-access-center">Academic Support and Access Center</a></li>
-<li><a href="#center-for-diversity-inclusion-x3651-mgc-201">Center for Diversity &amp; Inclusion (X3651, MGC 201)</a></li>
-<li><a href="#the-office-of-advocacy-services-for-interpersonal-and-sexual-violence-x7070">The Office of Advocacy Services for Interpersonal and Sexual Violence (X7070)</a></li>
-<li><a href="#counseling-center-x3500">Counseling Center (x3500)</a></li>
-<li><a href="#religious-holidays">Religious Holidays</a></li>
-<li><a href="#academic-integrity-code">Academic Integrity Code</a></li>
-</ul></li>
-</ul>
-</nav>
+<p>Download template <a href="templates/labs-14.Rmd">here</a></p>
+<p>We will be using tidymodels and the <code>flights</code> data set from {nycflights13}.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/hadley/nycflights13'>nycflights13</a></span><span class='op'>)</span>
+</code></pre>
 </div>
-<h1 id="instructor">Instructor</h1>
-<p>Instructor: Emil Hvitfeldt<br />
-Time: Monday &amp; Thursday 8:20-9:35PM ET - 9:35PM ET time zone (Washington DC time)<br />
-Course website: <a href="https://emilhvitfeldt.github.io/AU-2021fall-627/index.html" class="uri">https://emilhvitfeldt.github.io/AU-2021fall-627/index.html</a><br />
-Office hours: Thursday 9:35PM - 10:35PM &amp; Sunday 3:00PM - 4:00PM<br />
-Email: <a href="mailto:emilh@american.edu" class="email">emilh@american.edu</a><br />
-Twiter: <span class="citation" data-cites="Emil_Hvitfeldt">@Emil_Hvitfeldt</span></p>
-<p>E-mail are the best ways to get in contact with me. I will try to respond to all course-related e-mails within 24 hours (really) but also remember that life can be busy and chaotic for everyone (including me!), so if I don’t respond right away, don’t worry!</p>
-<h1 id="pre-requisites">Pre-requisites</h1>
-<p>STAT 520 “Applied Multivariate Analysis” or STAT 615 “Regression”.</p>
-<h1 id="textbooks">Textbooks</h1>
-<h2 id="main-textbook">Main textbook</h2>
-<p>This book will be required reading and we will aim to cover most of the content.</p>
-<p>“An Introduction to Statistical Learning with Applications in R” by G. James, D. Witten, T. Hastie, and R. Tibshirani; Springer, 2021. ISBN 1071614177 The latest corrected printing is available on James’s page at <a href="https://statlearning.com/" class="uri">https://statlearning.com/</a></p>
-<p>The lab sections of ISLR have been rewritten to use tidymodels and can be found <a href="https://emilhvitfeldt.github.io/ISLR-tidymodels-labs/index.html">here</a>.</p>
-<h2 id="supplementary-books">Supplementary books</h2>
-<p>These books are by no means necessary to buy or read to complete this course but serve as great stepping stones for deeper study. Some week’s readings will refer to these books for extra readings.</p>
-<p>“The Elements of Statistical Learning: Data Mining, Inference, and Prediction”, by T. Hastie, R. Tibshirani, and J. Friedman, 2nd Edition; Springer, 2009. ISBN 0387848576. Available on Hastie’s page at <a href="https://web.stanford.edu/~hastie/Papers/ESLII.pdf" class="uri">https://web.stanford.edu/~hastie/Papers/ESLII.pdf</a> [more technical; contains advanced explanations and mathematical proofs].</p>
-<p>“Tidy Modeling with R” by Max Kuhn and Julia Silge. Available online at <a href="https://www.tmwr.org/" class="uri">https://www.tmwr.org/</a>.</p>
-<h1 id="course-plan">Course Plan</h1>
-<ol type="1">
-<li>Introduction, motivation, and examples. Understanding large and complex data sets. Statistical learning. First steps in R. [Chap. 1-2].</li>
-<li>Review of regression modeling and analysis; implementation in R. [Chap. 3].</li>
-<li>Classification problems and classification tools. Logistic regression and review of linear discriminant analysis. [Chap. 4]</li>
-<li>Resampling methods; bootstrap. [Chap. 5 and lecture notes].</li>
-<li>High-dimensional data and shrinkage. Ridge regression. LASSO. Model selection methods and dimension reduction. Principal components. Partial least squares. [Chap. 6]</li>
-<li>Nonlinear trends and splines. [Chap. 7; 7.4-7.5]</li>
-<li>Regression trees and decision trees [Chap. 8]</li>
-<li>Introduction to support vector machines [Chap. 9]</li>
-<li>Clustering methods [Chap. 10]</li>
-<li>Additional topics and applications, if time permits.</li>
-</ol>
-<h1 id="assignments-and-grading">Assignments and grading</h1>
-<p>Assignments (30%): During the semester I will assign, collect, and grade assignments. You may receive assistance from other students in the class and me, but your submissions must be composed of your own thoughts, coding, and words. A typical homework will include a few problems to do by hand, to see how things work, and a few realistic problems to do using R. Late submission is accepted at a cost of a 5% deduction for each day, with a maximum deduction of 50%.</p>
-<p>Labs (30%): 30-45 minute labs at the end of each class. Each lab covers the material of the lecture. You will have to submit the solutions of each lab on Blackboard the Sunday after each class.</p>
-<p>midterm (10%) will much like the assignments but with a larger focus on a real analysis.</p>
-<p>Project (30%) (25% report 5% presentation): Each student will receive or choose a data set with data description, problem formulation, and instructions. Using sound statistical methods, you will do the necessary modeling and data analysis and write a report summarizing your results and answering specific questions of your project. A 10-minute presentation summarizing the report will be given to the class or submitted on Canvas.</p>
-<p>90 – 100 % = A<br />
-87 – 90 % = A-<br />
-83 – 87 % = B+<br />
-80 – 83 % = B<br />
-77 – 80 % = B-<br />
-73 – 77 = C+<br />
-70 – 73 % = C<br />
-60 – 70 % = C-</p>
-<p>Please schedule a meeting with me if you would like to see or discuss your grade at any point during the semester.</p>
-<h1 id="learning-objectives">Learning objectives</h1>
-<p><strong>Graduate students (STAT 627)</strong><br />
-Students will be able to:</p>
-<ul>
-<li>Identify appropriate statistical learning methods for the given problem involving real data.</li>
-<li>Understand the underlying assumptions, verify them, and propose appropriate actions if some assumptions do not hold.</li>
-<li>Identify other possible problems with messy data, such as multicollinearity, understand their consequences, and propose solutions.</li>
-<li>Evaluate the performance of the chosen regression and classification techniques and compare them.</li>
-<li>Apply cross-validation techniques to find the optimal degree of flexibility - the best subset of predictors or the optimal tuning parameters.</li>
-<li>Show, analytically, or empirically, the optimal balance between precision within training data and prediction power.</li>
-<li>Illustrate results with appropriate plots and diagrams.</li>
-</ul>
-<p><strong>Undergraduate students (STAT 427)</strong><br />
-Students will be able to:</p>
-<ul>
-<li>Identify appropriate statistical learning methods for the given problem involving real data.</li>
-<li>Understand the underlying assumptions, techniques available to verify them, and propose appropriate remedies.</li>
-<li>Use training and testing data to evaluate the performance of the chosen regression and classification techniques and compare them.</li>
-<li>Use available empirical tools to find the optimal balance between precision within training data and prediction power.</li>
-<li>Illustrate results with appropriate plots and diagrams.</li>
-</ul>
-<p>Students will demonstrate competence in using different statistical learning methods involving large, messy, and multi-dimensional numerical and categorical data. Methods include linear, logistic, and polynomial regression with proper variable selection, linear and quadratic discriminant analysis, K-nearest neighbor classifier, bootstrap, ridge regression, lasso, principal components regression, partial least squares, splines, regression and classification trees, support vector machines, clustering, and related methods. In addition, graduate students (STAT 627) will demonstrate competency in the analytic justification of the chosen methods, tuning of the algorithms, and evaluating their prediction power.</p>
-<h1 id="online-help">Online help</h1>
-<p>Data science and statistical programming can be difficult. Computers are stupid and little errors in your code can cause hours of headache (even if you’ve been doing this stuff for years!).</p>
-<p>Fortunately, there are tons of online resources to help you with this. Two of the most important are StackOverflow (a Q&amp;A site with hundreds of thousands of answers to all sorts of programming questions) and RStudio Community (a forum specifically designed for people using RStudio and the tidyverse (i.e. you)).</p>
-<p>If you use Twitter, post R-related questions, and content with #rstats. The community there is exceptionally generous and helpful.</p>
-<p>Searching for help with R on Google can sometimes be tricky because the program name is, um, a single letter. Google is generally smart enough to figure out what you mean when you search for “r scatterplot,” but if it does struggle, try searching for “rstats” instead (e.g. “rstats scatterplot”).</p>
-<p>Additionally, we have a class chatroom at Slack where anyone in the class can ask questions and anyone can answer. I will monitor Slack regularly and will respond quickly. Ask questions about the readings, assignments, and project. You’ll likely have similar questions as your peers, and you’ll likely be able to answer other people’s questions too.</p>
-<h1 id="software">Software</h1>
-<p>We will be using <a href="https://cran.r-project.org/">R</a> and <a href="https://www.tidymodels.org/">tidymodels</a> in this class. While not required, it is highly recommended that you use an IDE for R, I recommend <a href="https://rstudio.com/products/rstudio/">https://rstudio.com/products/rstudio/</a>.</p>
-<h1 id="learning-during-a-pandemic">Learning during a pandemic</h1>
-<p>Life absolutely sucks right now. None of us is really okay. We’re all just pretending.</p>
-<p>You most likely know people who have lost their jobs, have tested positive for COVID-19, have been hospitalized, or perhaps have even died. You all have increased (or possibly decreased) work responsibilities and increased family care responsibilities—you might be caring for extra people (young and/or old!) right now, and you are likely facing uncertain job prospects (or have been laid off!).</p>
-<p>I’m fully committed to making sure that you learn everything you were hoping to learn from this class! I will make whatever accommodations I can to help you finish your exercises, do well on your projects, and learn and understand the class material. Under ordinary conditions, I am flexible and lenient with grading and course expectations when students face difficult challenges. Under pandemic conditions, that flexibility and leniency are intensified.</p>
-<p>If you tell me you’re having trouble, I will not judge you or think less of you. I hope you’ll extend me the same grace.</p>
-<p>You never owe me personal information about your health (mental or physical). You are always welcome to talk to me about things that you’re going through, though. If I can’t help you, I usually know somebody who can.</p>
-<p>If you need extra help, or if you need more time with something, or if you feel like you’re behind or not understanding everything, do not suffer in silence! Talk to me! I will work with you. I promise.</p>
-<h1 id="laurens-promise">Lauren’s Promise</h1>
-<p>I will listen and believe you if someone is threatening you.</p>
-<p>Lauren McCluskey, a 21-year-old honors student-athlete, was murdered on October 22, 2018, by a man she briefly dated on the University of Utah campus. We must all take action to ensure that this never happens again.</p>
-<p>If you are in immediate danger, call 911 or AU police (202 885-2527).</p>
-<p>If you are experiencing sexual assault, domestic violence, or stalking, please report it to me and I will connect you to resources or find appropriate contact information for <a href="https://www.american.edu/ocl/counseling/">Counseling Center</a>.</p>
-<h1 id="support-services">Support Services</h1>
-<h2 id="emergency-preparedness">Emergency preparedness</h2>
-<p>In the event of an emergency, students should refer to the AU Web site http: //www.american.edu/emergency and the AU information line at (202) 885-1100 for general university-wide information. In case of a prolonged closure of the University, I send updates to you by email and will post all announcements on Blackboard.</p>
-<h2 id="mathematics-statistics-tutoring-lab-don-myers-building">Mathematics &amp; Statistics Tutoring Lab (Don Myers Building)</h2>
-<p>provides tutoring in Intermediate Mathematics and Statistics. <a href="http://www.american.edu/cas/mathstat/tutoring.cfm" class="uri">http://www.american.edu/cas/mathstat/tutoring.cfm</a></p>
-<h2 id="academic-support-and-access-center">Academic Support and Access Center</h2>
-<p>offers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities. Writing support is also available in the Writing Center, Battelle-Tompkins 228.</p>
-<h2 id="center-for-diversity-inclusion-x3651-mgc-201">Center for Diversity &amp; Inclusion (X3651, MGC 201)</h2>
-<p>is dedicated to enhancing LGBTQ, Multicultural, First Generation, and Women’s experiences on campus and to advance AU’s commitment to respecting &amp; valuing diversity by serving as a resource and liaison to students, staff, and faculty on issues of equity through education, outreach, and advocacy.</p>
-<h2 id="the-office-of-advocacy-services-for-interpersonal-and-sexual-violence-x7070">The Office of Advocacy Services for Interpersonal and Sexual Violence (X7070)</h2>
-<p>provides free and confidential advocacy services for anyone in the campus community who is impacted by sexual violence (sexual assault, dating or domestic violence, and stalking).</p>
-<h2 id="counseling-center-x3500">Counseling Center (x3500)</h2>
-<p>offers counseling and consultations regarding personal concerns, self-help information, and connections to off-campus mental health resources. Academic Support and Access Center (x3360) offers study skills workshops, individual instruction, tutor referrals, Supplemental Instruction, writing support, and technical and practical support and assistance with accommodations for students with physical, medical, or psychological disabilities.</p>
-<h2 id="religious-holidays">Religious Holidays</h2>
-<p>Students may receive accommodation in the course for the observance of a religious and/or cultural holiday. The student should notify the professor as soon as possible should such a need exist. More information about accommodations for religious and/or cultural holidays can be found at www.american.edu/ocl/kay/request-for-religious-accommodation.cfm.</p>
-<h2 id="academic-integrity-code">Academic Integrity Code</h2>
-<p>Please be sure that you are familiar with AU’s Academic Integrity Code, as I am required to report any cases of academic dishonesty to the dean of CAS. For your review: <a href="http://www.american.edu/academics/" class="uri">http://www.american.edu/academics/</a> integrity/.</p>
+</div>
+<p>We will do the same transformation as we have done before.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>flights1</span> <span class='op'>&lt;-</span> <span class='va'>flights</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>delay <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>arr_delay</span> <span class='op'>&gt;</span> <span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>,
+                        <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Delayed"</span>, <span class='st'>"On time"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>month</span> <span class='op'>==</span> <span class='fl'>1</span>, <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>delay</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>select</span><span class='op'>(</span><span class='va'>delay</span>, <span class='va'>hour</span>, <span class='va'>minute</span>, <span class='va'>dep_delay</span>, <span class='va'>carrier</span>, <span class='va'>distance</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
+<span class='va'>flights_split</span> <span class='op'>&lt;-</span> <span class='fu'>initial_split</span><span class='op'>(</span><span class='va'>flights1</span><span class='op'>)</span>
+
+<span class='va'>flights_train</span> <span class='op'>&lt;-</span> <span class='fu'>training</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+<span class='va'>flights_test</span> <span class='op'>&lt;-</span> <span class='fu'>testing</span><span class='op'>(</span><span class='va'>flights_split</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="the-models">The models</h1>
+<p>We will start using a <code>svm_linear()</code> model . These can be used for both regression and classification so we need to specify it for this model. We will be using the <code>kernlab</code> package as the engine.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>svm_lin_spec</span> <span class='op'>&lt;-</span> <span class='fu'>svm_linear</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"kernlab"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>and then we will fit it right away. The fitting might take a minute or two but we shouldn’t worry.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>svm_lin_fit</span> <span class='op'>&lt;-</span> <span class='fu'>fit</span><span class='op'>(</span><span class='va'>svm_lin_spec</span>, <span class='va'>delay</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span>
+<span class='va'>svm_lin_fit</span>
+</code></pre>
+</div>
+</div>
+<p>We can get the confusion matrix</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>svm_lin_fit</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>augment</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>conf_mat</span><span class='op'>(</span><span class='va'>delay</span>, <span class='va'>.pred_class</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>autoplot</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"heatmap"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>and calculate the accuracy.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>bean_tree</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>augment</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>beans_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>accuracy</span><span class='op'>(</span><span class='va'>class</span>, <span class='va'>.pred_class</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<p>They are not doing well.</p>
+<p>Let us try a polynomial SVM model to see if that helps at all.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>svm_poly_spec</span> <span class='op'>&lt;-</span> <span class='fu'>svm_poly</span><span class='op'>(</span>degree <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"classification"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"kernlab"</span><span class='op'>)</span>
+
+<span class='va'>svm_poly_fit</span> <span class='op'>&lt;-</span> <span class='fu'>fit</span><span class='op'>(</span><span class='va'>svm_poly_spec</span>, <span class='va'>delay</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span>
+<span class='va'>svm_poly_fit</span>
+</code></pre>
+</div>
+</div>
+<p>calculating another confusion matrix doesn’t give us much luck.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span class='va'>svm_poly_fit</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>augment</span><span class='op'>(</span>new_data <span class='op'>=</span> <span class='va'>flights_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>conf_mat</span><span class='op'>(</span><span class='va'>delay</span>, <span class='va'>.pred_class</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>autoplot</span><span class='op'>(</span>type <span class='op'>=</span> <span class='st'>"heatmap"</span><span class='op'>)</span>
+</code></pre>
+</div>
+</div>
+<h1 id="your-turn">Your turn</h1>
+<p>But wait, we didn’t do any preprocessing. Let us do some proper preprocessing to see if we can improve on the model. We also have a <code>cost</code> parameter we could tune. Let us try that as well.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
