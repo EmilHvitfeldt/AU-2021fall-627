@@ -1,0 +1,137 @@
+---
+title: "Week 12 - Trees"
+---
+
+Download template [here](templates/labs-12.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+We will be using tidymodels and the `beans` data set.
+
+```{r}
+library(tidymodels)
+library(beans)
+```
+
+We will also use a couple of other packages such as `rpart.plot`, `rpart`, `ranger`, and `vip`. The {beans} need no further introduction. We will split it right away.
+
+```{r}
+set.seed(1234)
+beans_split <- initial_split(beans)
+
+beans_train <- training(beans_split)
+beans_test <- testing(beans_split)
+```
+
+# The models
+
+We will start using a `decision_tree()`. These can be used for both regression and classification so we need to specify it for this model. We will be using the `rpart` package as the engine.
+
+```{r}
+tree_spec <- decision_tree() %>%
+  set_mode("classification") %>%
+  set_engine("rpart")
+```
+
+and then we will fit it right away. We could do some pre-processing, but in this case, it should be needed. Trees can handle the numeric data just fine, even without scaling.
+
+```{r}
+bean_tree <- fit(tree_spec, class ~ ., data = beans_train)
+bean_tree
+```
+
+The model has been written out in completion.
+
+We can use the `rpart.plot()` function from the `rpart.plot` package to visualize the tree in its entirety
+
+```{r}
+bean_tree %>%
+  extract_fit_engine() %>%
+  rpart.plot::rpart.plot(box.palette = as.list(rainbow(7)))
+```
+
+We can also get the confusion matrix
+
+```{r}
+bean_tree %>%
+  augment(new_data = beans_train) %>%
+  conf_mat(class, .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+and calculate the accuracy.
+
+```{r}
+bean_tree %>%
+  augment(new_data = beans_train) %>%
+  accuracy(class, .pred_class)
+```
+
+decision trees have a couple of parameters we could change. Below is what happens when we increase the cost complexity (it defaults to 0.05).
+
+```{r}
+bean_tree01 <- tree_spec %>%
+  set_args(cost_complexity = 0.1) %>%
+  fit(class ~ ., data = beans_train)
+```
+
+This tree is a lot smaller, it even neglects a couple of the classes due to its size.
+
+```{r}
+bean_tree01 %>%
+  extract_fit_engine() %>%
+  rpart.plot::rpart.plot(box.palette = as.list(rainbow(7)))
+```
+
+Which we can see represented in its confusion matrix. This model is simply unable to predict 2 of our classes.
+
+```{r}
+bean_tree01 %>%
+  augment(new_data = beans_train) %>%
+  conf_mat(class, .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+If we wanted some improvements it might be worth it to take a look at a random forest model. We set `importance = "impurity"` so we can extract variable importance after.
+
+```{r}
+rf_spec <- rand_forest(trees = 100) %>%
+  set_mode("classification") %>%
+  set_engine("ranger", importance = "impurity")
+```
+
+Now we fit like normal
+
+```{r}
+rf_fit <- fit(rf_spec, class ~ ., data = beans_train)
+```
+
+And let us look at the performance. It is doing quite well
+
+```{r}
+rf_fit %>%
+  augment(new_data = beans_train) %>%
+  accuracy(class, .pred_class)
+```
+
+And the confusion matrix looks good too
+
+```{r}
+rf_fit %>%
+  augment(new_data = beans_train) %>%
+  conf_mat(class, .pred_class)
+```
+
+
+Lastly, we can use the `vip()` function from the `vip` package to extract and visualize the variable importance in this model.
+
+```{r}
+vip::vip(rf_fit)
+```
+
+# Your turn
+
+You have 2 options. A, tune some parameters to see if you can improve the performance. B, give boosted trees a try. Boosted trees will require some hyperparameter tuning as well. Try using `grid_latin_hypercube()` instead of `grid_regular()`. The random forest we fit performed really well, so we should properly use some cross-validation to detect if we are overfitting.

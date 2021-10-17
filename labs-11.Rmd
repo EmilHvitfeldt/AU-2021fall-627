@@ -1,0 +1,110 @@
+---
+title: "Week 11 - Splines"
+---
+
+Download template [here](templates/labs-11.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+library(tidymodels)
+```
+
+We will just be using the `tidymodels` today. If the system prompts you to install a package or gives you a "package not found" error, simply run `install.packages("packagename")` once to install it.
+
+# The Data
+
+We will use the `ames` data set from the `modeldata` library. It can be loaded using the following code
+
+```{r}
+data("ames", package = "modeldata")
+ames
+```
+
+we will set up the splits right away.
+
+```{r}
+set.seed(1234)
+ames_split <- initial_split(ames)
+
+ames_train <- training(ames_split)
+ames_test <- testing(ames_split)
+```
+
+We are still trying to predict the sale price but we will be trying some new techniques. If we plot the location of the houses by their `Longitude` and `Latitude` we can get an idea of the neighborhoods
+
+```{r}
+ggplot(ames_train, aes(Longitude, Latitude)) +
+  geom_point(alpha = 0.5)
+```
+
+We are actually able to visualize the neighbors directly using `Neighborhood`.
+
+```{r}
+ggplot(ames_train, aes(Longitude, Latitude, color = Neighborhood)) +
+  geom_point(alpha = 0.5) +
+  guides(color = "none")
+```
+
+We can also plot the `Sale_Price` and we see some localized trends. Note that this doesn't take into account anything related to the size and features of the houses.
+
+```{r}
+ggplot(ames_train, aes(Longitude, Latitude, color = Sale_Price)) +
+  geom_point(alpha = 0.5) +
+  scale_color_viridis_c()
+```
+
+We can also look at the date 1-dimensionally, and we see some non-linear effects happening here.
+
+```{r}
+ggplot(ames_train, aes(Longitude, Sale_Price)) +
+  geom_point()
+```
+
+# The Modeling
+
+We have been looking at a lot of different methods this week. Many of these things are available in {recipes} steps. We will explore some of those in this lab. Let us start with `step_poly()`, this will create a polynomial expansion of the variables. 
+
+```{r}
+rec_poly <- recipe(Sale_Price ~ Longitude + Latitude, data = ames_train) %>%
+  step_poly(Longitude, Latitude)
+```
+
+We will then combine it with a linear regression specification, into a workflow.
+
+```{r}
+lm_spec <- linear_reg()
+
+poly_wf <- workflow(rec_poly, lm_spec)
+```
+
+and we fit the model
+
+```{r}
+poly_wf_fit <- fit(poly_wf, data = ames_train)
+```
+
+We have seen before how we can calculate metrics and other things to validate the model. This time let us do a more visual inspection of the performance. Let us plot the predicted values on the map we created earlier.
+
+```{r}
+augment(poly_wf_fit, new_data = ames_train) %>%
+  ggplot(aes(Longitude, Latitude, color = .pred)) +
+  geom_point(alpha = 0.5) +
+  scale_color_viridis_c()
+```
+
+While this is cool, it can make it hard to see where we are doing well and where we aren't. So we can plot the residuals. By using a diverging color palette can we see where we are doing well and where we aren't.
+
+```{r}
+augment(poly_wf_fit, new_data = ames_train) %>%
+  ggplot(aes(Longitude, Latitude, color = Sale_Price - .pred)) +
+  geom_point(alpha = 0.5) +
+  scale_color_gradient2()
+```
+
+# Your turn
+
+Try different non-linear transformations. `step_bs()` to fit a splines, or `step_discretize()` or `step_cut()` to fit step functions. All of these have a hyperparameter you could tune. Try tuning one to see if that improves your model over the default settings.

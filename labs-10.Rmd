@@ -1,0 +1,159 @@
+---
+title: "Week 10 - Shinkage Methods"
+---
+
+Download template [here](templates/labs-10.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r}
+library(tidymodels)
+library(nycflights13)
+```
+
+We will be using the `nycflights13` package again today. If the system prompts you to install a package or gives you a "package not found" error, simply run `install.packages("packagename")` once to install it.
+
+```{r}
+flights1 <- flights %>%
+  mutate(delay = factor(arr_delay > 0, c(TRUE, FALSE),
+                        c("Delayed", "On time"))) %>%
+  filter(month == 1, !is.na(delay)) %>%
+  select(delay, hour, minute, dep_delay, carrier, distance, tailnum, origin, dest)
+
+set.seed(1234)
+flights_split <- initial_split(flights1)
+
+flights_train <- training(flights_split)
+flights_test <- testing(flights_split)
+```
+
+# Modeling
+
+We have already explored this data set quite a bit so we can move on to some modeling. We will be using the `logiistic_reg()` specification since we are doing binary classification.
+
+```{r}
+lasso_spec <- logistic_reg(mixture = 1, penalty = 0) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+```
+
+Next, we need to create a recipe for preprocessing. Here we want to include many variables since we will be doing shrinkage to weed out unimportant predictors.
+
+```{r}
+rec_spec <- recipe(delay ~ ., data = flights_train) %>%
+  step_novel(all_nominal_predictors()) %>%
+  step_unknown(all_nominal_predictors()) %>%
+  step_impute_mean(all_numeric_predictors()) %>%
+  step_other(all_nominal_predictors(), threshold = 0.001) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_zv(all_predictors()) %>%
+  step_normalize(all_numeric_predictors())
+```
+
+We then can combine this into a workflow. Notice that this is another way we could create a workflow.
+
+```{r}
+lasso_wf <- workflow(rec_spec, lasso_spec)
+```
+
+We can now fit the model
+
+```{r}
+fitted_model <- fit(lasso_wf, data = flights_train)
+```
+
+and look at the performance of the model.
+
+```{r}
+fitted_model %>%
+  augment(new_data = flights_train) %>%
+  conf_mat(truth = delay, estimate = .pred_class)
+```
+
+But above we set `penaty` to a specific value, which isn't ideal since we don't know what the best value would be for our case. So this time when we specify the model, we set `penalty = tune()` to tell the functions that we want to tune the `penalty` parameter.
+
+```{r}
+lasso_spec <- logistic_reg(mixture = 1, penalty = tune()) %>%
+  set_mode("classification") %>%
+  set_engine("glmnet")
+```
+
+and we create a new workflow.
+
+```{r}
+lasso_wf <- workflow(rec_spec, lasso_spec)
+```
+
+To be able to tune hyperparameters with `tune_grid()` we need 3 things. A model/workflow specification folds to fit our model across, and the parameter values we want to try. We already have the `lasso_spec`. We create the cross-validation folds with `vfold_cv()`.
+
+```{r}
+set.seed(5678)
+flights_folds <- vfold_cv(flights_train)
+```
+
+And the different hyperparameter values with `grid_regular()`.
+
+```{r}
+penalty_grid <- grid_regular(penalty(), levels = 50)
+```
+
+Now we can run the training loop.
+
+```{r}
+lasso_results <- tune_grid(
+  lasso_wf, 
+  resamples = flights_folds, 
+  grid = penalty_grid
+)
+```
+
+The results can then be summarized with either `collect_metrics()`
+
+```{r}
+lasso_results %>%
+  collect_metrics()
+```
+
+or `autoplot()`. The regularization in this model doesn't affect the performance too much.
+
+```{r}
+lasso_results %>%
+  autoplot()
+```
+
+The best performing hyperparameter pairs can be shown with `show_best()`. Notice how they are all the same.
+
+```{r}
+lasso_results %>%
+  show_best("roc_auc")
+```
+
+We can pluck out the best hyperparameters
+
+```{r}
+select_best(lasso_results, "roc_auc")
+```
+
+and use them to update our model
+
+```{r}
+lasso_wf_final <- finalize_workflow(
+  lasso_wf, 
+  select_best(lasso_results, "roc_auc")
+)
+```
+
+And now we can fit out final model on the training data set.
+
+```{r}
+lasso_wf_final_fit <- fit(lasso_wf_final, data = flights_train)
+
+lasso_wf_final_fit
+```
+
+# YOUR TURN
+
+Repeat the above procedure, but with a ridge model instead of lasso model. You get a ridge model by setting `mixture = 0`. Compare the performance of both models on the training data set, pick a model and use that one to evaluate on the testing data set. Explain how you picked your model.

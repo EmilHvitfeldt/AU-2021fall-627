@@ -1,0 +1,93 @@
+---
+title: "Week 14 - SVM"
+---
+
+Download template [here](templates/labs-14.Rmd)
+
+```{r setup, include=FALSE}
+# Delete this chunk!
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+We will be using tidymodels and the `flights` data set from {nycflights13}.
+
+```{r}
+library(tidymodels)
+library(nycflights13)
+```
+
+We will do the same transformation as we have done before.
+
+```{r}
+flights1 <- flights %>%
+  mutate(delay = factor(arr_delay > 0, c(TRUE, FALSE),
+                        c("Delayed", "On time"))) %>%
+  filter(month == 1, !is.na(delay)) %>%
+  select(delay, hour, minute, dep_delay, carrier, distance)
+
+set.seed(1234)
+flights_split <- initial_split(flights1)
+
+flights_train <- training(flights_split)
+flights_test <- testing(flights_split)
+```
+
+# The models
+
+We will start using a `svm_linear()` model . These can be used for both regression and classification so we need to specify it for this model. We will be using the `kernlab` package as the engine.
+
+```{r}
+svm_lin_spec <- svm_linear() %>%
+  set_mode("classification") %>%
+  set_engine("kernlab")
+```
+
+and then we will fit it right away. The fitting might take a minute or two but we shouldn't worry.
+
+```{r}
+svm_lin_fit <- fit(svm_lin_spec, delay ~ ., data = flights_train)
+svm_lin_fit
+```
+
+We can get the confusion matrix
+
+```{r}
+svm_lin_fit %>%
+  augment(new_data = flights_train) %>%
+  conf_mat(delay, .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+and calculate the accuracy.
+
+```{r}
+bean_tree %>%
+  augment(new_data = beans_train) %>%
+  accuracy(class, .pred_class)
+```
+
+They are not doing well.
+
+Let us try a polynomial SVM model to see if that helps at all.
+
+```{r}
+svm_poly_spec <- svm_poly(degree = 2) %>%
+  set_mode("classification") %>%
+  set_engine("kernlab")
+
+svm_poly_fit <- fit(svm_poly_spec, delay ~ ., data = flights_train)
+svm_poly_fit
+```
+
+calculating another confusion matrix doesn't give us much luck.
+
+```{r}
+svm_poly_fit %>%
+  augment(new_data = flights_train) %>%
+  conf_mat(delay, .pred_class) %>%
+  autoplot(type = "heatmap")
+```
+
+# Your turn
+
+But wait, we didn't do any preprocessing. Let us do some proper preprocessing to see if we can improve on the model. We also have a `cost` parameter we could tune. Let us try that as well.
