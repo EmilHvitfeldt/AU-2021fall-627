@@ -64,6 +64,8 @@ navbar:
           href: labs-07.html
         - text: "Week 9 - PCA"
           href: labs-09.html
+        - text: "Week 10 - Shrinkage"
+          href: labs-10.html
     - text: "Assignments"
       menu:
         - text: "Information"
@@ -83,6 +85,8 @@ navbar:
           href: midterm.html
         - text: "Assignment 6 - PCA"
           href: assignment-06.html
+        - text: "Assignment 7 - Shrinkage"
+          href: assignment-07.html
     - text: "Reference"
       href: reference.html
 output: distill::distill_article
