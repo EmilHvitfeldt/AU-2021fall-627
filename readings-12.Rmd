@@ -12,4 +12,8 @@ The tidymodels lab sections can be found [here](https://emilhvitfeldt.github.io/
 
 ## Slides
 
-To be posted!
+```{r, echo=FALSE, eval=TRUE}
+xaringanExtra::embed_xaringan(url = "static/slides/week-12/index.html", ratio = "16:9")
+```
+
+[PDF download](static/slides/week-12/week-12.pdf) [Full Screen](static/slides/week-12/index.html)

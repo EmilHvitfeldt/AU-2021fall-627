@@ -68,6 +68,8 @@ navbar:
           href: labs-10.html
         - text: "Week 11 - Splines & GAMs"
           href: labs-11.html
+        - text: "Week 12 - Trees"
+          href: labs-12.html
     - text: "Assignments"
       menu:
         - text: "Information"
@@ -91,6 +93,8 @@ navbar:
           href: assignment-07.html
         - text: "Assignemnt 8 - Splines & GAMs"
           href: assignment-08.html
+        - text: "Assignment 9 - Trees"
+          href: assignment-09.html
     - text: "Reference"
       href: reference.html
 output: distill::distill_article
