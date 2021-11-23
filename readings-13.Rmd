@@ -14,4 +14,10 @@ There will not be any labs this week due to Thanksgiving. The corresponding lab 
 
 ## Slides
 
-To be posted!
+
+```{r, echo=FALSE, eval=TRUE}
+xaringanExtra::embed_xaringan(url = "static/slides/week-13/index.html", ratio = "16:9")
+```
+
+[PDF download](static/slides/week-13/week-13.pdf) [Full Screen](static/slides/week-13/index.html)
+
