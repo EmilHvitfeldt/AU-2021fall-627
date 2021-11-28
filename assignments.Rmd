@@ -20,3 +20,23 @@ Ideas for data can be found here:
 - https://github.com/rfordatascience/tidytuesday
 - https://www.data-is-plural.com/
 - https://www.kaggle.com/
+
+The final project should consist of an analysis using a data set of your choice, where you showcase the knowledge you gained from this course and the methods you learned. You are free to write it in any format you would like, but I find the following structure to work well. Remember that you are not graded on the performance of your model, but how well you used it given you data and modeling task.
+
+- Introduction
+- Problem statement / working hypothesis (You want to clearly explain what you are trying to figure out as soon as possible)
+- Data
+- Methods
+- Results
+- Reflections (this is a good place to talk about what went wrong, if you tried models that didn't go well, ect. ect)
+- Conclusion
+
+### Grading rubrik
+
+|   | 0-50%  |  50-75% |  50-100% |
+|---|---|---|---|
+| Questions  | Questions overly simplistic, unrelated, or unmotivated  | Questions appropriate, coherent, and motivated  | Questions well motivated, interesting, insightful, and novel  |
+| Analysis  | 	Choice of analysis is overly simplistic or incomplete  | Analysis appropriate  | Analysis appropriate, complete, advanced, and informative  |
+| Results  | Conclusions are missing, incorrect, or not based on analysis. Inappropriate choice of plots; poorly labeled plots; plots missing  | Conclusions relevant, but partially correct or partially complete. Plots convey information but lack context for interpretation  | Relevant conclusions explicitly tied to analysis and to context. Plots convey information correctly with adequate and appropriate reference information  |
+| Readability  | Code is messy and poorly organized; unused or irrelevant code distracts when reading code. Variables and functions names do not helpful to understand code.  | Code is reasonably well organized.  There is little unused or irrelevant code, or this code has been moved out of the main project files.  Variable and function names generally meaningful and helpful for understanding.  | Code very well organized.  No irrelevant or distracting code.   Variable and function names have clear relationship to their purpose in the code.  Code is easy to read and understand.  |
+|  Writing | Explanation is illogical, incorrect, or incoherent  | Explanation is correct, complete, and convincing  | Explanation is correct, complete, convincing, and elegant  |
